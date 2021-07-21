@@ -1,7 +1,7 @@
 <template>
   <div id="login">
     <div class="loginBox">
-      <div class="blogLoginTitle"><h2>LOGIN</h2></div>
+      <div class="blogLoginTitle"><h2>管理员Login</h2></div>
       <transition name="el-fade-in">
         <form class="loginForm" action="">
           <div class="userNameBox">
@@ -23,12 +23,7 @@
             />
           </div>
           <div class="subLoginBox">
-            <button @click="userLogin">登录</button>
-          </div>
-          <div class="tip">
-            <router-link to="/users/blogRegister"
-              >这里前往注册的地方,欢迎您</router-link
-            >
+            <button @click="adminLogin">登录</button>
           </div>
         </form>
       </transition>
@@ -40,45 +35,42 @@
 import { defineComponent, reactive, onMounted, toRefs } from "vue";
 import { ElMessage } from "element-plus";
 import { useRouter } from "vue-router";
-import { userRegister } from "../../http/api";
-import { setStorage } from "../../util/Storage";
+import { blogAdminLogin } from "@/http/api";
+import { setStorage } from "@/util/Storage";
 export default defineComponent({
   name: "blogWebLogin",
   components: {},
   setup() {
     // 登录参数
-    const blogUserInfo = reactive({
+    const blogAdminInfo = reactive({
       username: "",
       password: "",
     });
     // 路由实例
     const router = useRouter();
-    // 登录提交
-    const userLogin = () => {
-      if (blogUserInfo.username == "" || blogUserInfo.password == "")
-        return ElMessage.warning("输入框不能为空！");
-      userRegister({
-        username: blogUserInfo.username,
-        password: blogUserInfo.password,
+    // 管理员登录
+    const adminLogin = () => {
+      if (blogAdminInfo.username == "" || blogAdminInfo.password == "")
+        return ElMessage.warning("账号 or 密码不能为空");
+      blogAdminLogin({
+        username: blogAdminInfo.username,
+        password: blogAdminInfo.password,
       })
         .then((res) => {
           if (res.data.code == 200) {
-            setStorage("blogUserInfo", { username: res.data.data });
-            setStorage("blogUserToken", { userToken: res.data.token });
+            setStorage("adminInfo", res.data.data);
+            router.replace("/creepreBlog/admin");
             ElMessage.success({
-              message: "登陆成功，即将前往首页",
+              message: res.data.msg,
               type: "success",
             });
-            setTimeout(() => {
-              router.push("/creepreBlog/blogHome");
-            }, 2000);
-          } else if (res.data.code == 400) {
-            ElMessage.error({
-              message: res.data.msg,
-              type: "error",
+          } else {
+            ElMessage.warning({
+              message: "对不起，你不是管理员用户，不能进入该区域！",
+              type: "warning",
             });
+            return false;
           }
-          console.log(res);
         })
         .catch((err) => {
           console.log(err);
@@ -88,9 +80,9 @@ export default defineComponent({
     onMounted(() => {});
 
     return {
-      ...toRefs(blogUserInfo),
+      ...toRefs(blogAdminInfo),
       onMounted,
-      userLogin,
+      adminLogin,
     };
   },
 });
@@ -100,7 +92,7 @@ export default defineComponent({
 #login {
   width: 100%;
   height: 100%;
-  background: url("../../assets/images/backgroundImg.jpg") no-repeat 100%/100%;
+  background: url("../assets/images/backgroundImg.jpg") no-repeat 100%/100%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -153,16 +145,6 @@ export default defineComponent({
           letter-spacing: 0.04rem;
           font-size: 0.16rem;
           font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
-        }
-      }
-      .tip {
-        border-bottom: none;
-        text-align: right;
-        width: 100%;
-        margin-right: 0.1rem;
-        &:hover {
-          text-decoration: underline;
-          color: rgb(235, 178, 72);
         }
       }
     }

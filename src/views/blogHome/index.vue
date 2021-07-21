@@ -25,9 +25,11 @@
         <!-- 最新文章 -->
         <div class="blog_newArticle">
           <el-row class="newArticle_left">
-            <h2 class="blog_newArticle_title"><i class="iconfont icon-xin"></i>最新文章</h2>
+            <h2 class="blog_newArticle_title">
+              <i class="iconfont icon-xin"></i>最新文章
+            </h2>
             <ul class="blog_articleBody">
-              <el-scrollbar style="width: 100%" noresize="true">
+              <el-scrollbar style="width: 100%" :noresize="true">
                 <li
                   class="article_item"
                   v-for="articleItem in recommendedArticleArr"
@@ -78,30 +80,28 @@
             </ul>
           </el-row>
           <div class="right">
-            <transition name="el-fade-in">
-              <ul class="recommendDemo">
-                <li class="recommendDemoItem">
-                  <h2>视频标题</h2>
-                  <video
-                    id="rec_video"
-                    style="width: 100%; height: calc(100% - 0.25rem)"
-                    controls
-                    autoplay
-                    src=""
-                  ></video>
-                </li>
-                <li class="recommendDemoItem">
-                  <h2>视频标题</h2>
-                  <video
-                    id="rec_video"
-                    style="width: 100%; height: calc(100% - 0.25rem)"
-                    controls
-                    autoplay
-                    src=""
-                  ></video>
-                </li>
-              </ul>
-            </transition>
+            <ul class="recommendDemo">
+              <li class="recommendDemoItem">
+                <h2>视频标题</h2>
+                <video
+                  id="rec_video"
+                  style="width: 100%; height: calc(100% - 0.25rem)"
+                  controls
+                  autoplay
+                  src=""
+                ></video>
+              </li>
+              <li class="recommendDemoItem">
+                <h2>视频标题</h2>
+                <video
+                  id="rec_video"
+                  style="width: 100%; height: calc(100% - 0.25rem)"
+                  controls
+                  autoplay
+                  src=""
+                ></video>
+              </li>
+            </ul>
           </div>
         </div>
       </el-main>
@@ -110,7 +110,9 @@
 </template>
 
 <script>
-import { defineComponent, ref, reactive } from "vue";
+import { defineComponent, ref, reactive, onMounted } from "vue";
+// import { getStorage } from "@/util/Storage";
+// import { ElMessage } from "element-plus";
 export default defineComponent({
   name: "blogWebHome",
   components: {},
@@ -195,6 +197,8 @@ export default defineComponent({
           "https://img0.baidu.com/it/u=2443950855,1530352950&fm=26&fmt=auto&gp=0.jpg",
       },
     ]);
+    // 挂载阶段
+    onMounted(() => {});
     return {
       imgList,
       recommendedArticleArr,
@@ -252,9 +256,9 @@ export default defineComponent({
         border-bottom: 0.02rem solid #cccccc;
         position: relative;
         i {
-          font-size: .1rem;
+          font-size: 0.1rem;
           position: absolute;
-          top: -.06rem;
+          top: -0.06rem;
           left: 56%;
           color: red;
         }
@@ -374,7 +378,7 @@ export default defineComponent({
       overflow: hidden;
       padding: 0.05rem;
       border-radius: 0.05rem;
-      box-shadow: inset 0 0 0.05rem .02rem #cccccc;
+      box-shadow: inset 0 0 0.05rem 0.02rem #cccccc;
       .recommendDemo {
         height: 100%;
         width: 100%;

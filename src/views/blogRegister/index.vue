@@ -2,44 +2,172 @@
   <div id="register">
     <div class="registerBox">
       <div class="blogRegisterTitle"><h2>REGISTER</h2></div>
-      <transition name="el-fade-in">
-        <form class="registerForm" action="">
-          <div class="userNameBox">
-            <label class="iconfont icon-yonghu" for="userName"></label>
-            <input type="text" id="userName" placeholder="请输入用户名" />
-          </div>
-          <div class="userPassBox">
-            <label class="iconfont icon-mima" for="userPass"></label>
-            <input type="password" id="userPass" placeholder="请输入密码" />
-          </div>
-          <div class="userEmailBox">
-            <label class="iconfont icon-youxiang" for="userEmail"></label>
-            <input type="text" id="userEmail" placeholder="请输入邮箱" />
-            <span>@qq.com</span>
-          </div>
-          <div class="sendCode">
-            <button>发送验证码</button>
-          </div>
-          <div class="emaiCodeBox">
-            <label class="iconfont icon-yanzhengma1" for="emaiCode"></label>
-            <input type="text" id="emaiCode" placeholder="请输入验证码 " />
-          </div>
-          <div class="subRegisterBox">
-            <button>注册</button>
-          </div>
-        </form>
-      </transition>
+      <form class="registerForm" action="">
+        <div class="userNameBox">
+          <label class="iconfont icon-yonghu" for="userName"></label>
+          <input
+            type="text"
+            v-model="blogUserInfo.username"
+            id="userName"
+            placeholder="请输入用户名"
+          />
+        </div>
+        <div class="userPassBox">
+          <label class="iconfont icon-mima" for="userPass"></label>
+          <input
+            type="password"
+            v-model="blogUserInfo.password"
+            id="userPass"
+            placeholder="请输入密码"
+          />
+        </div>
+        <div class="userEmailBox">
+          <label class="iconfont icon-youxiang" for="userEmail"></label>
+          <input
+            type="text"
+            v-model="blogUserInfo.email"
+            id="userEmail"
+            placeholder="请输入邮箱"
+          />
+          <span>@qq.com</span>
+        </div>
+        <div class="sendCode">
+          <button @click="sendEmailCode">发送验证码</button>
+        </div>
+        <div class="emaiCodeBox">
+          <label class="iconfont icon-yanzhengma1" for="emaiCode"></label>
+          <input
+            type="text"
+            v-model.number="blogUserInfo.code"
+            id="emaiCode"
+            placeholder="请输入验证码 "
+          />
+        </div>
+        <div class="subRegisterBox">
+          <button @click="subRegister">注册</button>
+        </div>
+        <div class="tip">
+          <router-link to="/users/blogLogin"
+            >这里前往登录的地方,欢迎您</router-link
+          >
+        </div>
+      </form>
     </div>
   </div>
 </template>
 
 <script>
-import { defineComponent } from "vue";
+import { defineComponent, reactive } from "vue";
+import { useRouter } from "vue-router";
+import { ElMessage } from "element-plus";
+import { userRegister, getEmailCode } from "@/http/api";
+import { setStorage } from "@/util/Storage";
 export default defineComponent({
   name: "blogRegister",
   components: {},
   setup() {
-    return {};
+    //   邮箱验证
+    const reg =
+      /^[a-zA-Z0-9]+([-_.][a-zA-Z0-9]+)*@[a-zA-Z0-9]+([-_.][a-zA-Z0-9]+)*\.[a-z]{2,}$/;
+    // router实例
+    const router = useRouter();
+    const blogUserInfo = reactive({
+      username: "",
+      password: "",
+      email: "",
+      code: null,
+    });
+    // 发送邮箱验证码
+    const sendEmailCode = async () => {
+      // 判断有没有填写邮箱
+      if (!blogUserInfo.email) {
+        ElMessage.warning({
+          message: "你还没有填写邮箱",
+          type: "warning",
+        });
+        return false;
+      }
+      // 判断邮箱格式是否正确
+      if (reg.test(blogUserInfo.email + "@qq.com") == true) {
+        try {
+          const res = await getEmailCode({
+            email: blogUserInfo.email + "@qq.com",
+          });
+          if (res.data.code == 200) {
+            ElMessage.success({
+              message: "验证码已发送，请在邮箱查收",
+              type: "success",
+            });
+          } else {
+            ElMessage.error("验证码发送失败！");
+          }
+        } catch (err) {
+          console.log("请求超时");
+        }
+      } else {
+        ElMessage.warning({
+          message: "填写正确邮箱",
+          type: "warning",
+        });
+        return false;
+      }
+    };
+    // 注册
+    const subRegister = async () => {
+      //   判断有没有输入
+      if (
+        blogUserInfo.username == "" ||
+        blogUserInfo.password == "" ||
+        blogUserInfo.email == "" ||
+        blogUserInfo.code == null
+      ) {
+        ElMessage.warning({
+          message: "选项不能为空",
+          type: "warning",
+        });
+        return false;
+      } else {
+        try {
+          await userRegister({
+            username: blogUserInfo.username,
+            password: blogUserInfo.password,
+            email: blogUserInfo.email + "@qq.com",
+            code: blogUserInfo.code,
+          })
+            .then((res) => {
+              const { code } = res.data;
+              if (code == 200) {
+                console.log(res);
+                setStorage("blogUserInfo", { username: res.data.username });
+                setStorage("blogUserToken", { userToken: res.data.token, });
+                ElMessage.success({
+                  message: "注册成功，即将去首页",
+                  type: "success",
+                });
+                setTimeout(() => {
+                  router.push(`/creepreBlog/blogHome`);
+                }, 2000);
+              } else if (code == 400) {
+                ElMessage.warning({
+                  message: "该账号已注册，请重新注册",
+                  type: "warning",
+                });
+                return;
+              }
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        } catch (err) {
+          console.log(err);
+        }
+      }
+    };
+    return {
+      blogUserInfo,
+      sendEmailCode,
+      subRegister,
+    };
   },
 });
 </script>
@@ -123,6 +251,16 @@ export default defineComponent({
           letter-spacing: 0.04rem;
           font-size: 0.16rem;
           font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+        }
+      }
+      .tip {
+        border-bottom: none;
+        text-align: right;
+        width: 100%;
+        margin-right: 0.1rem;
+        &:hover {
+          text-decoration: underline;
+          color: rgb(235, 178, 72);
         }
       }
     }

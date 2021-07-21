@@ -53,6 +53,71 @@ const routes = [{
                     routerName: "备用页面"
                 },
             },
+            {
+                path: "/creepreBlog/editInfo",
+                name: 'editUserInfo',
+                component: () =>
+                    import ( /* webpackChunkName: "blogSpare" */ '../components/editUserInfo'),
+                meta: {
+                    routerName: "修改信息"
+                },
+            },
+        ]
+    },
+    {
+        path: '/creepreBlog/admin',
+        name: 'admin',
+        component: () =>
+            import ( /* webpackChunkName: "admin" */ '@/blog_admin/admin.vue'),
+        redirect: "/admin/articleManage",
+        meta: {
+            routerName: "管理页面"
+        },
+        children: [{
+                path: '/admin/articlePublish',
+                name: "/articlePublish",
+                component: () =>
+                    import ( /* webpackChunkName: "articlePublish" */ '@/blog_admin/articlePublish.vue'), //articlePublish
+                meta: {
+                    routerName: "文章发布"
+                },
+            },
+            {
+                path: '/admin/articleManage',
+                name: "/articleManage",
+                component: () =>
+                    import ( /* webpackChunkName: "articleManage" */ '@/blog_admin/articleManage.vue'), //articlePublish
+                meta: {
+                    routerName: "文章管理"
+                },
+            },
+            {
+                path: '/admin/usersManage',
+                name: "/usersManage",
+                component: () =>
+                    import ( /* webpackChunkName: "usersManage" */ '@/blog_admin/usersManage.vue'), //articlePublish
+                meta: {
+                    routerName: "用户列表管理"
+                },
+            },
+            {
+                path: '/admin/photos',
+                name: "/photos",
+                component: () =>
+                    import ( /* webpackChunkName: "photos.vue" */ '@/blog_admin/photos.vue'), //articlePublish
+                meta: {
+                    routerName: "相册管理"
+                },
+            },
+            {
+                path: '/admin/videos',
+                name: "/videos",
+                component: () =>
+                    import ( /* webpackChunkName: "videos.vue" */ '@/blog_admin/videos.vue'), //articlePublish
+                meta: {
+                    routerName: "视频管理"
+                },
+            },
         ]
     },
     {
@@ -62,6 +127,15 @@ const routes = [{
             import ( /* webpackChunkName: "blogLogin" */ '@/views/blogLogin'),
         meta: {
             routerName: "Blog登录"
+        }
+    },
+    {
+        path: '/users/admin/adminLogin',
+        name: 'adminLogin',
+        component: () =>
+            import ( /* webpackChunkName: "adminLogin" */ '@/blog_admin/adminLogin.vue'),
+        meta: {
+            routerName: "admin登录"
         }
     },
     {

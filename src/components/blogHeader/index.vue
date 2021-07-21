@@ -37,8 +37,8 @@
 </template>
 
 <script>
-import { defineComponent, ref, inject } from "vue";
-
+import { defineComponent, ref, inject, onMounted } from "vue";
+// import { getBlogMusic } from "../../http/api";
 export default defineComponent({
   name: "headers",
   components: {},
@@ -48,6 +48,22 @@ export default defineComponent({
     const routerInfoArr = ref([]);
     routerInfoArr.value.push(routerInfo.children);
     const activeIndex = ref("1");
+    // 音乐的id
+    // const id = 1;
+    // 获取音乐Url
+    // const getMusic = () => {
+    //   getBlogMusic(id)
+    //     .then((res) => {
+    //       console.log(res);
+    //     })
+    //     .catch((err) => {
+    //       console.log(err);
+    //     });
+    // };
+    // 挂载阶段
+    onMounted(() => {
+      // getMusic();
+    });
     const handleSelect = (key, keyPath) => {
       console.log(key, keyPath);
     };

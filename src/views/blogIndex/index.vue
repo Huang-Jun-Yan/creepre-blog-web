@@ -14,20 +14,20 @@
                 shape="circle"
                 :size="100"
                 fit="contain"
-                src="https://img0.baidu.com/it/u=2152579680,2399144998&fm=26&fmt=auto&gp=0.jpg"
+                @click="editAvatar"
+                :src="circleUrl"
               ></el-avatar>
               <!-- 用户名字及登录注册按钮 -->
               <el-row class="blog_userName">
                 <!-- 用户名字 -->
-                <div class="userName" v-if="true">
-                  <h2>creepre</h2>
-                  <el-tag class="userTag" size="small" type="success"
-                    >管理员</el-tag
-                  >
+                <div class="userName" v-if="username">
+                  <h2 @click="toAdmin">{{ username }}</h2>
                 </div>
                 <!-- 登录注册按钮 -->
-                <div class="blogBtn" v-if="false">
-                  <el-button type="success">登录及注册</el-button>
+                <div class="blogBtn" v-if="!username">
+                  <el-button @click="toUserLogin" type="success"
+                    >登录及注册</el-button
+                  >
                 </div>
               </el-row>
               <!-- 浏览次数 -->
@@ -46,7 +46,9 @@
             </el-row>
             <!-- 推荐列表 -->
             <el-row class="blog_SuggestList">
-              <h2 class="suggestTitle">推荐文章<i class="iconfont icon-tuijian1"></i></h2>
+              <h2 class="suggestTitle">
+                推荐文章<i class="iconfont icon-tuijian1"></i>
+              </h2>
               <ul v-if="true" class="blog_SuggestList_item">
                 <el-scrollbar>
                   <li class="nav_item">
@@ -183,10 +185,9 @@
               </ul>
             </div>
           </div>
+
           <div class="rightBody">
-            <transition name="el-fade-in-linear">
-              <router-view />
-            </transition>
+            <router-view />
           </div>
         </div>
       </el-main>
@@ -200,7 +201,10 @@
 import blogHeaders from "../../components/blogHeader";
 import blogFooters from "../../components/blogFooter";
 import { useRouter } from "vue-router";
-import { defineComponent, onMounted, provide } from "vue";
+import { defineComponent, onMounted, provide, reactive, toRefs } from "vue";
+import { getStorage } from "@/util/Storage";
+import { ElMessage } from "element-plus";
+import { getuserInfo, adminIsLogined } from "../../http/api";
 export default defineComponent({
   name: "blogIndex",
   components: {
@@ -208,14 +212,108 @@ export default defineComponent({
     blogFooters,
   },
   setup() {
+    // 路由实例
     const router = useRouter();
+    // 用户信息
+    const blogUserInfo = reactive({
+      username: "",
+      introduction: "",
+      circleUrl: "",
+    });
     /* 父向子传值 */
     provide("routerInfo", router.options.routes[0]);
     /* 挂载阶段钩子 */
     onMounted(() => {
-      // console.log(router.options.routes[0]);
+      // 用户登录
+      userLogin();
+      // 管理员登录
+      adminLogin();
     });
-    return {};
+    // 用户登录
+    const userLogin = () => {
+      // 获取token
+      const { userToken } = getStorage("blogUserToken")
+        ? getStorage("blogUserToken")
+        : {};
+      if (!userToken) {
+        ElMessage.warning({
+          message: "您还没有登录注册哦!",
+          type: "warning",
+        });
+        return false;
+      } else {
+        const userInfo = getStorage("blogUserInfo");
+        // 用token查询用户信息
+        getuserInfo({ token: userToken })
+          .then((res) => {
+            if (res.data.code == 200) {
+              blogUserInfo.username = res.data.Info.username
+                ? userInfo.username.name
+                : res.data.Info.username;
+              blogUserInfo.introduction = res.data.Info.introduction;
+              blogUserInfo.circleUrl = res.data.Info.avatar;
+            } else if (res.data.code == 401) {
+              ElMessage.error(res.data.msg);
+              return false;
+            } else if (res.data.code == 400) {
+              ElMessage.error("您还没有登录哦！");
+              return false;
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }
+    };
+    // 跳转至登录页
+    const toUserLogin = () => {
+      router.push("/users/blogLogin");
+    };
+    // 管理员是否登录
+    const isAdminLogin = async () => {
+      const admin_id = getStorage("adminInfo").admin_id
+        ? getStorage("adminInfo").admin_id
+        : null;
+      if (admin_id == null) return false;
+      const res = await adminIsLogined({ admin_id: admin_id });
+      if (res.data.code == 200) {
+        return true;
+      }
+      return false;
+    };
+    // 跳转至后台管理
+    const toAdmin = () => {
+      // 先判断是否登录
+      isAdminLogin().then((res) => {
+        if (res) {
+          router.replace("/creepreBlog/admin");
+          return;
+        }
+      });
+      // 上面没有返回true，执行下面去登录
+      const { username } = getStorage("blogUserInfo");
+      if (username.username == "admin") {
+        router.replace("/users/admin/adminLogin");
+      } else {
+        ElMessage.warning({
+          message: "您还不是管理员哦！",
+          type: "warning",
+        });
+        return false;
+      }
+    };
+    // 管理员登录
+    const adminLogin = async () => {};
+    // 用户修改信息页面
+    const editAvatar = async () => {
+      router.push("/creepreBlog/editInfo");
+    };
+    return {
+      ...toRefs(blogUserInfo),
+      editAvatar,
+      toUserLogin,
+      toAdmin,
+    };
   },
   data() {
     return {};
@@ -287,14 +385,9 @@ export default defineComponent({
               font-size: 0.18rem;
               .userName {
                 width: 100%;
-                position: relative;
                 text-align: center;
                 user-select: none;
-                .userTag {
-                  position: absolute;
-                  top: 0;
-                  right: 0.1rem;
-                }
+                cursor: pointer;
               }
               .blogBtn {
                 width: 100%;
@@ -322,7 +415,7 @@ export default defineComponent({
               margin: 0.05rem 0 0.05rem 0.05rem;
               i {
                 color: orange;
-                margin: 0 .05rem;
+                margin: 0 0.05rem;
               }
             }
             .blog_SuggestList_item {
