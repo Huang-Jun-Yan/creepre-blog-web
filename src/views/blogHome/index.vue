@@ -81,25 +81,19 @@
           </el-row>
           <div class="right">
             <ul class="recommendDemo">
-              <li class="recommendDemoItem">
-                <h2>视频标题</h2>
+              <li
+                class="recommendDemoItem"
+                v-for="(item, index) in recVideo"
+                :key="index"
+              >
                 <video
                   id="rec_video"
                   style="width: 100%; height: calc(100% - 0.25rem)"
                   controls
-                  autoplay
-                  src=""
+                  :poster="item.video_pic"
+                  :src="item.video_url"
                 ></video>
-              </li>
-              <li class="recommendDemoItem">
-                <h2>视频标题</h2>
-                <video
-                  id="rec_video"
-                  style="width: 100%; height: calc(100% - 0.25rem)"
-                  controls
-                  autoplay
-                  src=""
-                ></video>
+                <h2 class="videoIntroduction">{{ item.brief }}</h2>
               </li>
             </ul>
           </div>
@@ -111,15 +105,18 @@
 
 <script>
 import { defineComponent, ref, reactive, onMounted } from "vue";
-// import { getStorage } from "@/util/Storage";
-// import { ElMessage } from "element-plus";
+import { useStore } from "vuex";
 export default defineComponent({
   name: "blogWebHome",
   components: {},
   directives: {},
   setup() {
+    // store 实例
+    const store = useStore();
+    // 推荐视频
+    let recVideo = reactive([]);
+    recVideo = store.state.video.recVideoArr;
     const imgList = ref([
-      require("../../assets/images/banner/1.jpg"),
       require("../../assets/images/banner/2.jpg"),
       require("../../assets/images/banner/3.jpg"),
       require("../../assets/images/banner/4.jpg"),
@@ -202,6 +199,7 @@ export default defineComponent({
     return {
       imgList,
       recommendedArticleArr,
+      recVideo,
     };
   },
   data() {
@@ -217,6 +215,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 #blogHome {
   height: 100%;
+  background: #eeeeee;
   .blog_banner {
     width: 100%;
     height: 2rem;
@@ -373,14 +372,13 @@ export default defineComponent({
       }
     }
     .right {
-      height: 100%;
-      // background: #cccccc;
+      height: 4.24rem;
       overflow: hidden;
       padding: 0.05rem;
       border-radius: 0.05rem;
       box-shadow: inset 0 0 0.05rem 0.02rem #cccccc;
       .recommendDemo {
-        height: 100%;
+        // height: 100%;
         width: 100%;
         .recommendDemoItem {
           border-radius: 0.05rem;
@@ -388,10 +386,12 @@ export default defineComponent({
           width: 100%;
           margin-bottom: 0.11rem;
           overflow: hidden;
-          h2 {
-            font-weight: bold;
-            letter-spacing: 0.01rem;
-            margin: 0.02rem 0.02rem 0.05rem 0.02rem;
+          .videoIntroduction {
+            font-size: 0.12rem;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 1;
+            overflow: hidden;
           }
         }
       }

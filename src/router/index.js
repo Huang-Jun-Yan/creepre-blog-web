@@ -13,7 +13,7 @@ const routes = [{
                 path: "/creepreBlog/blogHome",
                 name: 'blogHome',
                 component: () =>
-                    import ( /* webpackChunkName: "blogHome" */ '../views/blogHome'),
+                    import ( /* webpackChunkName: "blogHome" */ '@/views/blogHome'),
                 meta: {
                     routerName: "Blog首页"
                 },
@@ -22,7 +22,7 @@ const routes = [{
                 path: "/creepreBlog/blogArticle",
                 name: 'blogArticle',
                 component: () =>
-                    import ( /* webpackChunkName: "blogArticle" */ '../views/blogArticle'),
+                    import ( /* webpackChunkName: "blogArticle" */ '@/views/blogArticle'),
                 meta: {
                     routerName: "Blog文章"
                 },
@@ -30,7 +30,7 @@ const routes = [{
                 path: "/creepreBlog/blogPhoto",
                 name: 'blogPhoto',
                 component: () =>
-                    import ( /* webpackChunkName: "blogPhoto" */ '../views/blogPhoto'),
+                    import ( /* webpackChunkName: "blogPhoto" */ '@/views/blogPhoto'),
                 meta: {
                     routerName: "个人相册"
                 },
@@ -39,7 +39,7 @@ const routes = [{
                 path: "/creepreBlog/blogDemo",
                 name: 'blogDemo',
                 component: () =>
-                    import ( /* webpackChunkName: "blogDemo" */ '../views/blogDemo'),
+                    import ( /* webpackChunkName: "blogDemo" */ '@/views/blogDemo'),
                 meta: {
                     routerName: "个人Demo"
                 },
@@ -48,7 +48,7 @@ const routes = [{
                 path: "/creepreBlog/blogSpare",
                 name: 'blogSpare',
                 component: () =>
-                    import ( /* webpackChunkName: "blogSpare" */ '../views/blogSpare'),
+                    import ( /* webpackChunkName: "blogSpare" */ '@/views/blogSpare'),
                 meta: {
                     routerName: "备用页面"
                 },
@@ -57,9 +57,18 @@ const routes = [{
                 path: "/creepreBlog/editInfo",
                 name: 'editUserInfo',
                 component: () =>
-                    import ( /* webpackChunkName: "blogSpare" */ '../components/editUserInfo'),
+                    import ( /* webpackChunkName: "blogSpare" */ '@/components/editUserInfo'),
                 meta: {
                     routerName: "修改信息"
+                },
+            },
+            {
+                path: "/creepreBlog/Photos/PhotoDetail/:id",
+                name: 'PhotoDetail',
+                component: () =>
+                    import ( /* webpackChunkName: "PhotoDetail" */ '@/components/PhotoDetail'),
+                meta: {
+                    routerName: "相册详情"
                 },
             },
         ]

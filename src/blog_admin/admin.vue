@@ -4,7 +4,7 @@
       <div class="leftNav">
         <el-row style="height: 97.6%">
           <el-col style="height: 97.6%" :span="24">
-            <h2 class="navTitle">creepreの后台管理系统</h2>
+            <h2 class="navTitle">creepreの后台</h2>
             <el-menu
               style="height: 97.6%"
               :uniqueOpened="true"
@@ -172,9 +172,9 @@ export default defineComponent({
     .rightCon {
       margin-left: 2.2rem;
       height: 100%;
-      padding: 0 .3rem;
+      padding: 0 0.3rem;
       background: url("../assets/images/2.jpg") no-repeat 100%;
-      opacity: .7;
+      opacity: 0.7;
       overflow: hidden;
     }
   }

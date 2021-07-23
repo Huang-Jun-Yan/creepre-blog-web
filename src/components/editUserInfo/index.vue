@@ -50,7 +50,8 @@ import { ElMessageBox } from "element-plus";
 import { ElMessage } from "element-plus";
 import { useRouter, useRoute } from "vue-router";
 import { BASEURL, editUserInfo } from "@/http/api";
-import { getStorage, setStorage } from "../../util/Storage";
+import { getStorage, setStorage } from "@/util/Storage";
+// import { reload } from "@/util/reload";
 export default defineComponent({
   name: "BlogWebEditInfo",
   components: {},
@@ -97,10 +98,10 @@ export default defineComponent({
           localStorage.removeItem("userInfo");
           ElMessage({
             type: "success",
-            message: "您以退出登录，即将前往首页",
+            message: "您以退出登录，即将跳转到登录",
           });
           setTimeout(() => {
-            router.replace("/");
+            router.replace("/users/blogLogin");
           }, 2000);
         })
         .catch(() => {
@@ -135,7 +136,6 @@ export default defineComponent({
     };
     // 提交修改
     const subEdit = () => {
-      console.log("1");
       if (userInfo.username.length > 12)
         return ElMessage.warning("昵称长度不能大于6个");
       editUserInfo({

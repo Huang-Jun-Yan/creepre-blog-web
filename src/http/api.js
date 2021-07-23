@@ -36,6 +36,39 @@ export const getUser = val => get('/blogApi/admin/getUser', val);
  * @param {Object} username
  */
 export const deleteUser = val => post('/blogApi/admin/deleteUser', val);
+/**
+ * @method 上传Demo
+ * @param {Object} admin_id
+ * @param {Object} video_pic
+ * @param {Object} video_url
+ */
+export const upBlogVideo = val => post('/blogApi/video/sendVideo', val);
+/**
+ * @method 获取Demo
+ * @param {Object} page
+ * @param {Object} pageSize
+ */
+export const getBlogVideo = val => get('/blogApi/video/getVideo', val);
+/**
+ * @method 上传相册
+ * @param {Object} admin_id
+ * @param {Object} brief
+ * @param {Object} username
+ * @param {Object} imgsrc
+ */
+export const upBlogPhotos = val => post('/blogApi/photo/sendPhotos', val);
+/**
+ * @method 获取相册
+ * @param {Object} page
+ * @param {Object} pageSize
+ */
+export const getPhotos = val => get('/blogApi/photo/getPhoto', val);
+/**
+ * @method 获取相册
+ * @param {Object} page
+ * @param {Object} pageSize
+ */
+export const getPhotoDetail = val => post('/blogApi/photo/getPhotoById', val);
 
 /**
  * @Types  用户

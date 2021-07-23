@@ -49,6 +49,7 @@ export default defineComponent({
           console.log(err);
         });
     };
+    // 删除用户
     const removeUser = ({ username }, index) => {
       ElMessageBox.confirm("此操作将永久删除该用户, 是否继续?", "删除提示", {
         confirmButtonText: "确定删除",

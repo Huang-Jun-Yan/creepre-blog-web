@@ -43,26 +43,21 @@ export default defineComponent({
   name: "headers",
   components: {},
   setup() {
-    /* 子接收父组件传递的值 */
-    const routerInfo = inject("routerInfo");
     const routerInfoArr = ref([]);
-    routerInfoArr.value.push(routerInfo.children);
     const activeIndex = ref("1");
-    // 音乐的id
-    // const id = 1;
-    // 获取音乐Url
-    // const getMusic = () => {
-    //   getBlogMusic(id)
-    //     .then((res) => {
-    //       console.log(res);
-    //     })
-    //     .catch((err) => {
-    //       console.log(err);
-    //     });
-    // };
+    // 动态导航
+    const dynNav = () => {
+      /* 子接收父组件传递的值 */
+      const routerInfo = inject("routerInfo");
+      routerInfoArr.value.push(routerInfo.children);
+      if (routerInfoArr.value[0].length == 6) {
+        routerInfoArr.value[0].splice(5, routerInfoArr.value[0].length - 5);
+      }
+    };
     // 挂载阶段
     onMounted(() => {
-      // getMusic();
+      // 动态导航
+      dynNav();
     });
     const handleSelect = (key, keyPath) => {
       console.log(key, keyPath);

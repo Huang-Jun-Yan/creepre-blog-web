@@ -185,7 +185,6 @@
               </ul>
             </div>
           </div>
-
           <div class="rightBody">
             <router-view />
           </div>
@@ -193,13 +192,13 @@
       </el-main>
     </el-container>
     <!-- 页脚 -->
-    <blogFooters></blogFooters>
+    <!-- <blogFooters></blogFooters> -->
   </div>
 </template>
 
 <script>
 import blogHeaders from "../../components/blogHeader";
-import blogFooters from "../../components/blogFooter";
+// import blogFooters from "../../components/blogFooter";
 import { useRouter } from "vue-router";
 import { defineComponent, onMounted, provide, reactive, toRefs } from "vue";
 import { getStorage } from "@/util/Storage";
@@ -209,7 +208,7 @@ export default defineComponent({
   name: "blogIndex",
   components: {
     blogHeaders,
-    blogFooters,
+    // blogFooters,
   },
   setup() {
     // 路由实例
@@ -226,8 +225,6 @@ export default defineComponent({
     onMounted(() => {
       // 用户登录
       userLogin();
-      // 管理员登录
-      adminLogin();
     });
     // 用户登录
     const userLogin = () => {
@@ -253,6 +250,7 @@ export default defineComponent({
               blogUserInfo.introduction = res.data.Info.introduction;
               blogUserInfo.circleUrl = res.data.Info.avatar;
             } else if (res.data.code == 401) {
+              localStorage.removeItem("userInfo");
               ElMessage.error(res.data.msg);
               return false;
             } else if (res.data.code == 400) {
@@ -302,8 +300,6 @@ export default defineComponent({
         return false;
       }
     };
-    // 管理员登录
-    const adminLogin = async () => {};
     // 用户修改信息页面
     const editAvatar = async () => {
       router.push("/creepreBlog/editInfo");
@@ -324,7 +320,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 #index {
   min-height: calc(100% - 0.7rem);
-  height: calc(100% - 0.7rem);
+  height: calc(100% - 0.8rem);
   .el-container {
     width: 100%;
     .el-main {
@@ -335,7 +331,7 @@ export default defineComponent({
         width: calc(100% - 15%);
         height: 100%;
         .leftAside {
-          height: 100%;
+          height: 6.52rem;
           width: 2.3rem;
           background: #eeeeee;
           float: left;
@@ -505,10 +501,8 @@ export default defineComponent({
           }
         }
         .rightBody {
-          // background: yellow;
-          height: 100%;
+          height: 6.52rem;
           overflow: hidden;
-          margin: 0;
         }
       }
     }

@@ -8,50 +8,22 @@
         type="textarea"
         :autosize="{ minRows: 2, maxRows: 4 }"
         placeholder="输入图片介绍"
-        v-model="textarea2"
+        v-model="photoCon"
       >
       </el-input>
     </el-row>
 
     <el-row style="margin: 0.3rem 0">
       <el-upload
-        action="articleImageUpload"
+        :action="PhotosUpload"
         list-type="picture-card"
-        :auto-upload="false"
+        :on-success="onSuccess"
+        :on-preview="handlePictureCardPreview"
+        :on-remove="handleRemove"
+        :on-change="handleChange"
       >
         <template #default>
-          <i class="el-icon-plus"></i>
-        </template>
-        <template #file="{ file }">
-          <div>
-            <img
-              class="el-upload-list__item-thumbnail"
-              :src="file.url"
-              alt=""
-            />
-            <span class="el-upload-list__item-actions">
-              <span
-                class="el-upload-list__item-preview"
-                @click="handlePictureCardPreview(file)"
-              >
-                <i class="el-icon-zoom-in"></i>
-              </span>
-              <span
-                v-if="!disabled"
-                class="el-upload-list__item-delete"
-                @click="handleDownload(file)"
-              >
-                <i class="el-icon-download"></i>
-              </span>
-              <span
-                v-if="!disabled"
-                class="el-upload-list__item-delete"
-                @click="handleRemove(file)"
-              >
-                <i class="el-icon-delete"></i>
-              </span>
-            </span>
-          </div>
+          <span>上传图片</span>
         </template>
       </el-upload>
       <el-dialog v-model="dialogVisible">
@@ -60,24 +32,65 @@
     </el-row>
 
     <el-row style="margin: 0.3rem 0">
-      <el-button type="success">图片发布</el-button>
+      <el-button @click="onUpPhotos" type="success">图片发布</el-button>
     </el-row>
   </div>
 </template>
 
 <script>
 import { toRefs, reactive, computed, defineComponent } from "vue";
+import { BASEURL, upBlogPhotos } from "@/http/api";
+import { getStorage } from "@/util/Storage";
+import { ElMessage } from "element-plus";
 import { useRoute } from "vue-router";
 export default defineComponent({
   name: "BlogPhotos",
   components: {},
   directives: {},
   setup() {
-    const uploadImg = reactive({
+    //   路由实例
+    const route = useRoute();
+    const uploadPhotos = reactive({
+      photoCon: "",
+      photosList: [],
       dialogImageUrl: "",
       dialogVisible: false,
       disabled: false,
     });
+    // 上传
+    const onUpPhotos = () => {
+      upBlogPhotos({
+        admin_id: getStorage("adminInfo").admin_id,
+        brief: uploadPhotos.photoCon,
+        imgsrc: JSON.stringify(uploadPhotos.photosList),
+      })
+        .then((res) => {
+          console.log(res);
+          if (res.data.code == 200) {
+            ElMessage.success({
+              message: "上传成功",
+              type: "success",
+            });
+            setTimeout(() => {
+              location.reload(route.path);
+            }, 1000);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    };
+
+    // 上传成功回调
+    const onSuccess = (response) => {
+      if (response.code == 200) {
+        uploadPhotos.photosList.push(response.file.url);
+      }
+    };
+    //文件状态改变时触发
+    const handleChange = () => {
+      console.log();
+    };
     const handleRemove = (file) => {
       console.log(file);
     };
@@ -85,21 +98,18 @@ export default defineComponent({
       this.dialogImageUrl = file.url;
       this.dialogVisible = true;
     };
-    const handleDownload = (file) => {
-      console.log(file);
-    };
     // 计算属性
-    computed(() => {
-      return function articleImageUpload() {
-        return `${useRoute.state.baseURL}/admin/uploadCover`;
-      };
+    const PhotosUpload = computed(() => {
+      return `${BASEURL}/photo/uploadPhotos`;
     });
     return {
-      ...toRefs(uploadImg),
+      ...toRefs(uploadPhotos),
       handleRemove,
       handlePictureCardPreview,
-      handleDownload,
-      computed,
+      PhotosUpload,
+      onSuccess,
+      handleChange,
+      onUpPhotos,
     };
   },
   data() {
