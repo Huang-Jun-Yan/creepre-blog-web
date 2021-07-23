@@ -4,7 +4,10 @@
       <div class="leftNav">
         <el-row style="height: 97.6%">
           <el-col style="height: 97.6%" :span="24">
-            <h2 class="navTitle">creepreの后台</h2>
+            <h2 class="navTitle">
+              <i @click="backIndex" class="iconfont icon-zuojiantou"></i
+              >creepreの后台
+            </h2>
             <el-menu
               style="height: 97.6%"
               :uniqueOpened="true"
@@ -119,6 +122,29 @@ export default defineComponent({
           });
         });
     };
+    // 返回首页
+    const backIndex = () => {
+      ElMessageBox.confirm("是否返回首页？", "给小主的提示", {
+        confirmButtonText: "我要回去",
+        cancelButtonText: "我不回去",
+        type: "warning",
+      })
+        .then(() => {
+          ElMessage({
+            type: "success",
+            message: "确定返回,在1秒后返回",
+          });
+          setTimeout(() => {
+            router.replace("/");
+          }, 1000);
+        })
+        .catch(() => {
+          ElMessage({
+            type: "info",
+            message: "已取消",
+          });
+        });
+    };
     const handleOpen = (key, keyPath) => {
       console.log(key, keyPath);
     };
@@ -130,6 +156,7 @@ export default defineComponent({
       handleClose,
       onMounted,
       outAdminClick,
+      backIndex,
     };
   },
   data() {
@@ -167,6 +194,15 @@ export default defineComponent({
         font-size: 0.16rem;
         background: rgb(84, 92, 100);
         color: white;
+        i {
+          vertical-align: middle;
+          font-size: 0.3rem;
+          color: cornflowerblue;
+          &:hover {
+            color: orange;
+            cursor: pointer;
+          }
+        }
       }
     }
     .rightCon {

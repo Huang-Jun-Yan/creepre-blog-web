@@ -280,24 +280,23 @@ export default defineComponent({
       return false;
     };
     // 跳转至后台管理
-    const toAdmin = () => {
+    const toAdmin = async () => {
       // 先判断是否登录
-      isAdminLogin().then((res) => {
-        if (res) {
-          router.replace("/creepreBlog/admin");
-          return;
-        }
-      });
-      // 上面没有返回true，执行下面去登录
-      const { username } = getStorage("blogUserInfo");
-      if (username.username == "admin") {
-        router.replace("/users/admin/adminLogin");
+      const res = await isAdminLogin();
+      if (res) {
+        router.replace("/creepreBlog/admin");
       } else {
-        ElMessage.warning({
-          message: "您还不是管理员哦！",
-          type: "warning",
-        });
-        return false;
+        // 上面没有返回true，执行下面去登录
+        const { username } = getStorage("blogUserInfo");
+        if (username.username == "admin") {
+          router.replace("/users/admin/adminLogin");
+        } else {
+          ElMessage.warning({
+            message: "您还不是管理员哦！",
+            type: "warning",
+          });
+          return false;
+        }
       }
     };
     // 用户修改信息页面
@@ -311,10 +310,6 @@ export default defineComponent({
       toAdmin,
     };
   },
-  data() {
-    return {};
-  },
-  methods: {},
 });
 </script>
 <style lang="scss" scoped>
@@ -501,7 +496,7 @@ export default defineComponent({
           }
         }
         .rightBody {
-          height: 6.52rem;
+          height: 6.53rem;
           overflow: hidden;
         }
       }

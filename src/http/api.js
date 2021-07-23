@@ -22,6 +22,11 @@ export const blogAdminLogin = val => post('/blogApi/admin/adminUserCheck', val);
  */
 export const adminIsLogined = val => post('/blogApi/admin/adminIsLogined', val);
 /**
+ * @method 获取管理员账号
+ * @param {Object} 无
+ */
+export const getAdminAcc = val => get('/blogApi/getAdminAccount', val);
+/**
  * @method 退出管理
  * @param {Object} 
  */

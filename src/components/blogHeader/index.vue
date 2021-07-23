@@ -50,7 +50,7 @@ export default defineComponent({
       /* 子接收父组件传递的值 */
       const routerInfo = inject("routerInfo");
       routerInfoArr.value.push(routerInfo.children);
-      if (routerInfoArr.value[0].length == 6) {
+      if (routerInfoArr.value[0].length >= 6) {
         routerInfoArr.value[0].splice(5, routerInfoArr.value[0].length - 5);
       }
     };

@@ -72,9 +72,7 @@ export default defineComponent({
           getVideo.total = res.data.count;
           getVideo.videoList = res.data.data;
         }
-        
       });
-
     // currentPage 改变时会触发
     const handleChange = (val) => {
       console.log(val);

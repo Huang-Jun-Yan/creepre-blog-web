@@ -5,15 +5,15 @@
       </header> -->
     <h2 style="">相册内容</h2>
     <div id="container">
-      <div class="card" v-for="(item, index) in PhotoList" :key="index">
-        <el-image
-          style="display: block"
-          :src="item"
-          :preview-src-list="PhotoList"
-        ></el-image>
-        <p style=""></p>
-        <p style=""></p>
-      </div>
+        <div class="card" v-for="(item, index) in PhotoList" :key="index">
+          <el-image
+            style="display: block"
+            :src="item"
+            :preview-src-list="PhotoList"
+          ></el-image>
+          <p style=""></p>
+          <p style=""></p>
+        </div>
     </div>
   </div>
 </template>
@@ -80,26 +80,28 @@ export default defineComponent({
   min-height: 95vh;
   position: relative;
   transition: all 1s;
+  background: #eeeeee;
   h2 {
-    margin-left: 0.15rem;
-    margin-bottom: 0.25rem;
+    height: 0.5rem;
+    line-height: 0.5rem;
+    color: #000;
+    letter-spacing: 0.01rem;
+    user-select: none;
+    padding-left: 0.1rem;
   }
   #container {
     width: 100%;
-    min-height: 6.52rem;
-    height: 100%;
-    column-count: 3;
+    min-height: 3rem;
+    padding: 0.05rem;
+    columns: 4;
+    column-gap: .1rem;
     .card {
+      width: 100%;
+      margin: 0 0 .1rem;
       background: #cccccc;
       overflow: hidden;
       break-inside: avoid;
       border-radius: 0.04rem;
-      // padding: .04rem;
-      // box-shadow: 0 .01rem 0.01rem .02rem #ccc;
-      margin-bottom: 0.08rem;
-      p:nth-child(2) {
-        color: orange;
-      }
     }
   }
   @media screen and (max-width: 1500px) {
