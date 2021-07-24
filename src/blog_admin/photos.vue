@@ -1,6 +1,6 @@
 <template>
   <div id="photos">
-    <h2 class="uploadImg">上传图片</h2>
+    <h2 class="uploadImg">上传图片<i class="iconfont icon-tupian"></i></h2>
 
     <el-row style="margin: 0.3rem 0">
       <el-input
@@ -129,6 +129,10 @@ export default defineComponent({
     font-weight: bold;
     letter-spacing: 0.02rem;
     margin: 0.2rem 0;
+      i{
+      margin: 0 .05rem;
+      font-size: .2rem;
+    }
   }
 }
 </style>

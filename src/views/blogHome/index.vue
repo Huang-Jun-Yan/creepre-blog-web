@@ -34,7 +34,7 @@
               <el-scrollbar style="width: 100%" :noresize="true">
                 <li
                   class="article_item"
-                  v-for="articleItem in recommendedArticleArr"
+                  v-for="articleItem in newArticleArr"
                   :key="articleItem.id"
                 >
                   <el-row class="articleImg">
@@ -134,8 +134,8 @@ export default defineComponent({
       require("../../assets/images/banner/3.jpg"),
       require("../../assets/images/banner/4.jpg"),
     ]);
-    // 文章列表参数
-    const recommendedArticleArr = reactive([
+    // 最新文章列表参数
+    const newArticleArr = reactive([
       {
         articleId: 1,
         articleTitle: "css的基础理论",
@@ -228,11 +228,12 @@ export default defineComponent({
     };
     // 挂载阶段
     onMounted(() => {
+      // 获取相册
       getBlogPhotos(BlogPhotosList.page);
     });
     return {
       imgList,
-      recommendedArticleArr,
+      newArticleArr,
       recVideo,
       ...toRefs(BlogPhotosList),
     };

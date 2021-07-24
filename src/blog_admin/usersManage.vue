@@ -1,6 +1,6 @@
 <template>
   <div id="userAdminManage">
-    <h2 class="userManageTitle">后台用户管理界面</h2>
+    <h2 class="userManageTitle">后台用户管理界面<i class="iconfont icon-yonghu2"></i></h2>
     <el-table :data="tableData" border style="width: 100%">
       <el-table-column prop="username" label="用户名" width="100">
       </el-table-column>
@@ -57,7 +57,7 @@ export default defineComponent({
         type: "warning",
       })
         .then(() => {
-          deleteUser({username: username})
+          deleteUser({ username: username })
             .then((res) => {
               if (res.data.code == 200) {
                 ElMessage({
@@ -98,6 +98,10 @@ export default defineComponent({
     color: #000;
     letter-spacing: 0.01rem;
     user-select: none;
+      i{
+      margin: 0 .05rem;
+      font-size: .2rem;
+    }
   }
 }
 </style>

@@ -120,3 +120,36 @@ export const getBlogMusic = val => post('/blogApi/music/getMusic', val);
  * @param {string} avatar   ---------------管理员头像
  */
 export const upArticle = val => post('/blogApi/article/articlePublish', val);
+/**
+ * @method 获取文章
+ * @param {number} page ---------------管理员id
+ * @param {number} pageSize ---------------管理员id
+ */
+export const getAllArticle = val => get('/blogApi/article/getArticle', val);
+/**
+ * @method 删除文章
+ * @param {number} article_id ---------------文章id
+ */
+export const deleteArticle = val => post('/blogApi/article/deleteMessage', val);
+/**
+ * @method 获取此id的文章
+ * @param {number} article_id ---------------文章id
+ */
+export const byIdGetArticle = val => get('/blogApi/article/getArticleByid', val);
+/**
+ * @method 获取近期的文章
+ * @param {number} 无
+ */
+export const getRecentArticle = val => get('/blogApi/article/getRecentArticle', val);
+/**
+ * @method 更新文章
+ * @param {number} admin_id ---------------管理员id
+ * @param {string} title    ---------------文章标题
+ * @param {string} brief    ---------------文章简介
+ * @param {string} category ---------------分类
+ * @param {object} img      ---------------文章封面
+ * @param {string} label    ---------------标签
+ * @param {string} content  ---------------内容
+ * @param {number} article_id  ---------------文章id
+ */
+export const updateArticle = val => post('/blogApi/article/articleUpdate', val);

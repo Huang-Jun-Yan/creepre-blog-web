@@ -1,5 +1,5 @@
 <template>
-  <div id="articleAdminPublish">
+  <div id="articleAdminEdit">
     <ul class="publishArticleBody">
       <el-scrollbar height="6.5rem">
         <!-- 文章标题 -->
@@ -70,7 +70,7 @@
             class="iconfont icon-shangchuan4"
             @click="publish"
             type="success"
-            >发布文章</el-button
+            >编辑文章</el-button
           >
         </li>
       </el-scrollbar>
@@ -91,22 +91,21 @@ import {
 } from "vue";
 import WangEditor from "wangeditor";
 import { ElMessage } from "element-plus";
-import { BASEURL, upArticle } from "@/http/api";
-import { getStorage } from "@/util/Storage";
-import { useRouter } from "vue-router";
+import { BASEURL, byIdGetArticle, updateArticle } from "@/http/api";
+import { useRoute, useRouter } from "vue-router";
 export default defineComponent({
-  name: "articleAdminPublish",
+  name: "articleAdminEdit",
   components: {},
   setup() {
     //   路由实例
     const router = useRouter();
+    const route = useRoute();
     const content = reactive({
-      // html: "",
-      // text: "",
+      article_id: route.params.id,
     });
     const editor = ref(null);
     // 上传的参数
-    const upArticleObj = reactive({
+    const editArticleObj = reactive({
       admin_id: "", //管理员id
       title: "", //文章标题
       brief: "", //文章简介
@@ -114,39 +113,54 @@ export default defineComponent({
       img: "", //文章封面
       label: "", //标签
       content: "", //内容
-      name: "", //管理员name
-      avatar: "", //管理员头像
       dialogVisible: false,
     });
-    // 执行发布
+    // 先拿到这个id的参数
+    const getSelfArticle = (article_id) => {
+      byIdGetArticle({ article_id: article_id })
+        .then((res) => {
+          if (res.data.code == 200) {
+            const { data } = res.data;
+            (editArticleObj.admin_id = data.admin_id),
+              (editArticleObj.title = data.title),
+              (editArticleObj.brief = data.brief),
+              (editArticleObj.category = data.category),
+              (editArticleObj.img = data.img),
+              (editArticleObj.label = data.label)
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    };
+    getSelfArticle(content.article_id);
+    // 编辑
     const publish = () => {
       if (
-        !upArticleObj.title ||
-        !upArticleObj.brief ||
-        !upArticleObj.category ||
-        !upArticleObj.img ||
-        !upArticleObj.label
+        !editArticleObj.title ||
+        !editArticleObj.brief ||
+        !editArticleObj.category ||
+        !editArticleObj.img ||
+        !editArticleObj.label
       )
         return ElMessage.warning("请输入完整的文章信息");
-      upArticleObj.content = instance.txt.html();
-      console.log(upArticleObj.content, "这是我");
-      if (upArticleObj.content) {
-        upArticle({
-          admin_id: getStorage("adminInfo").admin_id,
-          title: upArticleObj.title,
-          brief: upArticleObj.brief,
-          category: upArticleObj.category,
-          img: upArticleObj.img,
-          label: upArticleObj.label,
-          content: upArticleObj.content,
-          name: getStorage("blogUserInfo").username.name,
-          avatar: getStorage("blogUserInfo").username.avatar,
+      editArticleObj.content = instance.txt.html();
+      if (editArticleObj.content) {
+        updateArticle({
+          admin_id: editArticleObj.admin_id,
+          title: editArticleObj.title,
+          brief: editArticleObj.brief,
+          category: editArticleObj.category,
+          img: editArticleObj.img,
+          label: editArticleObj.label,
+          content: editArticleObj.content,
+          article_id: content.article_id
         })
           .then((res) => {
             console.log(res);
             if (res.data.code == 200) {
               ElMessage.success({
-                message: "恭喜你，发布成功",
+                message: "恭喜你，修改成功",
                 type: "success",
               });
               setTimeout(() => {
@@ -164,7 +178,7 @@ export default defineComponent({
     // 上传封面成功回调
     const uploadImgSrc = (res) => {
       if (res.code == 200) {
-        upArticleObj.img = res.file.url;
+        editArticleObj.img = res.file.url;
         ElMessage.success({
           message: "上传成功",
           type: "success",
@@ -186,6 +200,7 @@ export default defineComponent({
           console.log(video);
         },
       });
+
       instance.create();
     });
     nextTick(() => {});
@@ -200,7 +215,7 @@ export default defineComponent({
       return `${BASEURL}/admin/uploadCover`;
     });
     return {
-      ...toRefs(upArticleObj),
+      ...toRefs(editArticleObj),
       uploadImgSrc,
       editor,
       ...toRefs(content),
@@ -212,7 +227,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-#articleAdminPublish {
+#articleAdminEdit {
   // background: red;
   height: 100%;
   .publishArticleBody {

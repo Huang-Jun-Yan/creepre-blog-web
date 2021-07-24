@@ -71,6 +71,15 @@ const routes = [{
                     routerName: "相册详情"
                 },
             },
+            {
+                path: '/creepreBlog/article/articleDetail/:id/users',
+                name: "/articleDetail",
+                component: () =>
+                    import ( /* webpackChunkName: "articleDetail" */ '../components/articleDetail'), //articlePublish
+                meta: {
+                    routerName: "文章详情"
+                },
+            },
         ]
     },
     {
@@ -98,6 +107,15 @@ const routes = [{
                     import ( /* webpackChunkName: "articleManage" */ '@/blog_admin/articleManage.vue'), //articlePublish
                 meta: {
                     routerName: "文章管理"
+                },
+            },
+            {
+                path: '/admin/article/editArticle/:id',
+                name: "/editArticle",
+                component: () =>
+                    import ( /* webpackChunkName: "editArticle" */ '@/blog_admin/adminComponents/editArticle.vue'), //articlePublish
+                meta: {
+                    routerName: "文章编辑"
                 },
             },
             {

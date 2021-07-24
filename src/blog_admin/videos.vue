@@ -1,6 +1,6 @@
 <template>
   <div id="photos">
-    <h2 class="uploadImg">上传视频</h2>
+    <h2 class="uploadImg">上传视频<i class="iconfont icon-shipin1"></i></h2>
     <!-- 视频描述 -->
     <el-row style="margin: 0.3rem 0">
       <el-input
@@ -153,6 +153,10 @@ export default {
     color: #000;
     letter-spacing: 0.01rem;
     user-select: none;
+    i{
+      margin: 0 .05rem;
+      font-size: .2rem;
+    }
   }
 }
 </style>

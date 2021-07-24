@@ -27,8 +27,9 @@
               v-for="(routerItem, index) in routerInfoArr[0]"
               :index="routerItem.path"
               :key="index"
-              >{{ routerItem.meta.routerName }}</el-menu-item
             >
+              {{ routerItem.meta.routerName }}
+            </el-menu-item>
           </el-menu>
         </el-row>
       </div>
@@ -54,13 +55,22 @@ export default defineComponent({
         routerInfoArr.value[0].splice(5, routerInfoArr.value[0].length - 5);
       }
     };
+    // 动态匹配activeIndex
+    const activeIndexArr = ref([
+      "/creepreBlog/blogHome",
+      "/creepreBlog/blogArticle",
+      "/creepreBlog/blogPhoto",
+      "/creepreBlog/blogDemo",
+    ]);
     // 挂载阶段
     onMounted(() => {
       // 动态导航
       dynNav();
     });
+    let index;
     const handleSelect = (key) => {
-      console.log(key);
+      index = activeIndexArr.value.findIndex((val) => val == key);
+      activeIndex.value = index + 1 + "";
     };
     return {
       handleSelect,

@@ -51,40 +51,19 @@
               </h2>
               <ul v-if="true" class="blog_SuggestList_item">
                 <el-scrollbar>
-                  <li class="nav_item">
-                    <router-link class="title" to=""
-                      >CSS3 - 盒子阴影</router-link
+                  <li
+                    class="nav_item"
+                    v-for="(item, index) in articleRec"
+                    :key="index"
+                  >
+                    <a
+                      class="title"
+                      @click="toArticleDetail(item.article_id)"
+                      >{{ item.title }}</a
                     >
                     <div class="content">
-                      <p>box-shadow属性用于向盒子添加一个阴影效果</p>
-                      <h4>2021/7-14:20</h4>
-                    </div>
-                  </li>
-                  <li class="nav_item">
-                    <router-link class="title" to=""
-                      >CSS3 - 盒子阴影</router-link
-                    >
-                    <div class="content">
-                      <p>box-shadow属性用于向盒子添加一个阴影效果</p>
-                      <h4>2021/7-14:20</h4>
-                    </div>
-                  </li>
-                  <li class="nav_item">
-                    <router-link class="title" to=""
-                      >CSS3 - 盒子阴影</router-link
-                    >
-                    <div class="content">
-                      <p>box-shadow属性用于向盒子添加一个阴影效果</p>
-                      <h4>2021/7-14:20</h4>
-                    </div>
-                  </li>
-                  <li class="nav_item">
-                    <router-link class="title" to=""
-                      >CSS3 - 盒子阴影</router-link
-                    >
-                    <div class="content">
-                      <p>box-shadow属性用于向盒子添加一个阴影效果</p>
-                      <h4>2021/7-14:20</h4>
+                      <p>{{ item.brief }}</p>
+                      <h4>{{ item.create_time }}</h4>
                     </div>
                   </li>
                 </el-scrollbar>
@@ -197,13 +176,21 @@
 </template>
 
 <script>
-import blogHeaders from "../../components/blogHeader";
+import blogHeaders from "@/components/blogHeader";
 // import blogFooters from "../../components/blogFooter";
 import { useRouter } from "vue-router";
-import { defineComponent, onMounted, provide, reactive, toRefs } from "vue";
+import {
+  defineComponent,
+  onMounted,
+  provide,
+  reactive,
+  toRefs,
+  ref,
+} from "vue";
 import { getStorage } from "@/util/Storage";
 import { ElMessage } from "element-plus";
-import { getuserInfo, adminIsLogined } from "../../http/api";
+import { getuserInfo, getRecentArticle } from "@/http/api";
+import { getDate } from "@/util/date";
 export default defineComponent({
   name: "blogIndex",
   components: {
@@ -221,8 +208,29 @@ export default defineComponent({
     });
     /* 父向子传值 */
     provide("routerInfo", router.options.routes[0]);
+    // 推荐文章数组
+    const articleRec = ref([]);
+    // 推荐文章
+    const recentArticle = () => {
+      getRecentArticle().then((res) => {
+        if (res.data.code == 200) {
+          const { data } = res.data;
+          data.map((item) => {
+            item.create_time = getDate(item.create_time);
+          });
+          articleRec.value = data;
+          // console.log(articleRec.value);
+        }
+      });
+    };
+    // 根据id跳转对应文章详情
+    const toArticleDetail = (article_id) => {
+      router.replace(`/creepreBlog/article/articleDetail/${article_id}/users`);
+    };
     /* 挂载阶段钩子 */
     onMounted(() => {
+      // 获取近期文章
+      recentArticle();
       // 用户登录
       userLogin();
     });
@@ -268,35 +276,41 @@ export default defineComponent({
       router.push("/users/blogLogin");
     };
     // 管理员是否登录
-    const isAdminLogin = async () => {
-      const admin_id = getStorage("adminInfo").admin_id
-        ? getStorage("adminInfo").admin_id
-        : null;
-      if (admin_id == null) return false;
-      const res = await adminIsLogined({ admin_id: admin_id });
-      if (res.data.code == 200) {
-        return true;
-      }
-      return false;
-    };
+    // const isAdminLogin = async () => {
+    //   let admin_id;
+    //   if (!getStorage("adminInfo").admin_id) {
+    //     ElMessage.warning({
+    //       message: "警告，管理未登录",
+    //       type: "warning",
+    //     });
+    //     return false;
+    //   } else {
+    //     admin_id = getStorage("adminInfo").admin_id;
+    //   }
+    //   const res = await adminIsLogined({ admin_id: admin_id });
+    //   if (res.data.code == 200) {
+    //     return true;
+    //   }
+    //   return false;
+    // };
     // 跳转至后台管理
     const toAdmin = async () => {
       // 先判断是否登录
-      const res = await isAdminLogin();
-      if (res) {
-        router.replace("/creepreBlog/admin");
+      // const res = await isAdminLogin();
+      // if (res) {
+      //   router.replace("/creepreBlog/admin");
+      // } else {
+      // 上面没有返回true，执行下面去登录
+      const { username } = getStorage("blogUserInfo");
+      if (username.username == "admin") {
+        router.replace("/users/admin/adminLogin");
       } else {
-        // 上面没有返回true，执行下面去登录
-        const { username } = getStorage("blogUserInfo");
-        if (username.username == "admin") {
-          router.replace("/users/admin/adminLogin");
-        } else {
-          ElMessage.warning({
-            message: "您还不是管理员哦！",
-            type: "warning",
-          });
-          return false;
-        }
+        ElMessage.warning({
+          message: "您还不是管理员哦！",
+          type: "warning",
+        });
+        return false;
+        // }
       }
     };
     // 用户修改信息页面
@@ -308,6 +322,8 @@ export default defineComponent({
       editAvatar,
       toUserLogin,
       toAdmin,
+      articleRec,
+      toArticleDetail,
     };
   },
 });
@@ -411,8 +427,10 @@ export default defineComponent({
             }
             .blog_SuggestList_item {
               height: 100%;
+              width: 100%;
               .nav_item {
                 height: 0.5rem;
+                width: 100%;
                 margin-bottom: 0.03rem;
                 line-height: 0.17rem;
                 padding-left: 0.02rem;

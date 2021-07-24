@@ -5,15 +5,15 @@
       </header> -->
     <h2 style="">相册内容</h2>
     <div id="container">
-        <div class="card" v-for="(item, index) in PhotoList" :key="index">
-          <el-image
-            style="display: block"
-            :src="item"
-            :preview-src-list="PhotoList"
-          ></el-image>
-          <p style=""></p>
-          <p style=""></p>
-        </div>
+      <div class="card" v-for="(item, index) in PhotoList" :key="index">
+        <el-image
+          style="display: block"
+          :src="item"
+          :preview-src-list="PhotoList"
+        ></el-image>
+        <p style=""></p>
+        <p style=""></p>
+      </div>
     </div>
   </div>
 </template>
@@ -45,8 +45,6 @@ export default defineComponent({
           if (res.data.code == 200) {
             const { data } = res.data;
             photoDetail.PhotoList = JSON.parse(data.imgsrc);
-
-            console.log(photoDetail.PhotoList);
           }
         })
         .catch((err) => {
@@ -94,10 +92,10 @@ export default defineComponent({
     min-height: 3rem;
     padding: 0.05rem;
     columns: 4;
-    column-gap: .1rem;
+    column-gap: 0.1rem;
     .card {
       width: 100%;
-      margin: 0 0 .1rem;
+      margin: 0 0 0.1rem;
       background: #cccccc;
       overflow: hidden;
       break-inside: avoid;
