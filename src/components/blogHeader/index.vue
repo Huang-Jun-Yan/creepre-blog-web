@@ -59,8 +59,8 @@ export default defineComponent({
       // 动态导航
       dynNav();
     });
-    const handleSelect = (key, keyPath) => {
-      console.log(key, keyPath);
+    const handleSelect = (key) => {
+      console.log(key);
     };
     return {
       handleSelect,
@@ -77,13 +77,13 @@ export default defineComponent({
 <style lang="scss" scoped>
 #blogHeader {
   width: 100%;
-  height: 0.7rem;
+  height: 0.6rem;
   z-index: 999;
   .blogHeaderBox {
     position: fixed;
     top: 0;
     left: 0;
-    height: 0.7rem;
+    height: 0.6rem;
     width: 100%;
     background: white;
     z-index: 999;
@@ -95,10 +95,10 @@ export default defineComponent({
       user-select: none;
       .blog_logo {
         height: 100%;
-        line-height: 0.7rem;
+        line-height: 0.6rem;
         img {
-          width: 0.65rem;
-          height: 0.65rem;
+          width: 0.55rem;
+          height: 0.55rem;
           margin: 0 0.2rem;
           float: left;
         }

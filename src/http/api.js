@@ -107,3 +107,16 @@ export const editUserInfo = val => post('/blogApi/users/editUser', val);
  * @param {number} id
  */
 export const getBlogMusic = val => post('/blogApi/music/getMusic', val);
+/**
+ * @method 上传文章
+ * @param {number} admin_id ---------------管理员id
+ * @param {string} title    ---------------文章标题
+ * @param {string} brief    ---------------文章简介
+ * @param {string} category ---------------分类
+ * @param {object} img      ---------------文章封面
+ * @param {string} label    ---------------标签
+ * @param {string} content  ---------------内容
+ * @param {string} name     ---------------管理员name
+ * @param {string} avatar   ---------------管理员头像
+ */
+export const upArticle = val => post('/blogApi/article/articlePublish', val);

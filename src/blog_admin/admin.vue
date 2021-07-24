@@ -207,8 +207,8 @@ export default defineComponent({
     }
     .rightCon {
       margin-left: 2.2rem;
-      height: 100%;
-      padding: 0 0.3rem;
+      height: 7.22rem;
+      padding: 0 .2rem;
       background: url("../assets/images/2.jpg") no-repeat 100%;
       opacity: 0.7;
       overflow: hidden;

@@ -8,12 +8,14 @@
             <el-carousel
               direction="vertical"
               :autoplay="true"
-              :interval="1000"
+              :interval="3000"
               height="2rem"
               style="width: 100%"
             >
               <el-carousel-item
-                v-for="(imgSrcItem, imgSrcIndex) in imgList"
+                v-for="(imgSrcItem, imgSrcIndex) in PhotoList
+                  ? PhotoList
+                  : imgList"
                 :key="imgSrcIndex"
               >
                 <img class="blog_banner_img" :src="imgSrcItem" alt="" />
@@ -104,8 +106,9 @@
 </template>
 
 <script>
-import { defineComponent, ref, reactive, onMounted } from "vue";
+import { defineComponent, ref, reactive, onMounted, toRefs } from "vue";
 import { useStore } from "vuex";
+import { getPhotos } from "../../http/api";
 export default defineComponent({
   name: "blogWebHome",
   components: {},
@@ -116,6 +119,16 @@ export default defineComponent({
     // 推荐视频
     let recVideo = reactive([]);
     recVideo = store.state.video.recVideoArr;
+    // 获取最新的相册展示在轮播图
+    // 相册参数
+    const BlogPhotosList = reactive({
+      // 页数
+      page: 1,
+      // 每页数量
+      pageSize: 1,
+      // 获取的数组
+      PhotoList: [],
+    });
     const imgList = ref([
       require("../../assets/images/banner/2.jpg"),
       require("../../assets/images/banner/3.jpg"),
@@ -194,12 +207,34 @@ export default defineComponent({
           "https://img0.baidu.com/it/u=2443950855,1530352950&fm=26&fmt=auto&gp=0.jpg",
       },
     ]);
+    // 获取相册
+    const getBlogPhotos = async (page) => {
+      await getPhotos({
+        page: page,
+        pageSize: BlogPhotosList.pageSize,
+      })
+        .then((res) => {
+          if (res.data.code == 200) {
+            const { data } = res.data;
+            data.map((item) => {
+              item.imgsrc = JSON.parse(item.imgsrc);
+            });
+            BlogPhotosList.PhotoList = data[0].imgsrc;
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    };
     // 挂载阶段
-    onMounted(() => {});
+    onMounted(() => {
+      getBlogPhotos(BlogPhotosList.page);
+    });
     return {
       imgList,
       recommendedArticleArr,
       recVideo,
+      ...toRefs(BlogPhotosList),
     };
   },
   data() {
