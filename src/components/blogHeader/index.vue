@@ -10,7 +10,41 @@
       </div>
       <!-- 博客导航 -->
       <div class="right">
-        <el-row class="blogMusicDome"> 音乐dome </el-row>
+        <el-row class="blogMusicDome">
+          <el-col
+            style="display: flex; align-items: center; justify-content: center"
+            :span="6"
+          >
+            <div class="grid-content bg-purple">
+              <el-avatar fit="fit" :size="55" src="">未上传</el-avatar>
+            </div>
+          </el-col>
+          <el-col :span="18" style="padding: 0.01rem 0">
+            <div class="grid-content bg-purple">
+
+              <p class="songTitle">
+                一叶知秋<i
+                  style="font-size: 0.1rem; color: coral"
+                  class="iconfont icon-icon-test"
+                ></i>
+              </p>
+              <div class="musicControl">
+                <div
+                  style="font-size: 0.26rem; color: #cccccc"
+                  class="controlRight iconfont icon-youjiantou"
+                ></div>
+                <div
+                  style="font-size: 0.26rem; color: #cccccc"
+                  class="controlMiddle iconfont icon-bofang"
+                ></div>
+                <div
+                  style="font-size: 0.26rem; color: #cccccc"
+                  class="controlLeft iconfont icon-zuojiantou1"
+                ></div>
+              </div>
+            </div>
+          </el-col>
+        </el-row>
         <el-row class="navMenu">
           <el-menu
             :default-active="activeIndex"
@@ -55,6 +89,11 @@ export default defineComponent({
         routerInfoArr.value[0].splice(4, routerInfoArr.value[0].length - 4);
       }
     };
+    //
+    const arr = (val) => {
+      console.log(val)
+      // return val / 100;
+    };
     // 动态匹配activeIndex
     const activeIndexArr = ref([
       "/creepreBlog/blogHome",
@@ -76,6 +115,7 @@ export default defineComponent({
       handleSelect,
       activeIndex,
       routerInfoArr,
+      arr
     };
   },
   data() {
@@ -122,14 +162,22 @@ export default defineComponent({
       }
     }
     .right {
-      // background: burlywood;
       height: 100%;
       margin: 0;
       overflow: hidden;
       display: flex;
       .blogMusicDome {
-        width: 4.5rem;
-        padding: 0 0.5rem 0 1rem;
+        width: 3rem;
+        margin: 0 0.5rem 0 1rem;
+        // background: chartreuse;
+        .musicControl {
+          display: inline-block;
+          display: flex;
+          justify-content: space-between;
+          width: 1rem;
+          margin-left: 0.1rem;
+          margin-top: 0.07rem;
+        }
       }
       .navMenu {
         height: 100%;

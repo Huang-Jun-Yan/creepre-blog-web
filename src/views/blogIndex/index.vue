@@ -330,7 +330,7 @@ export default defineComponent({
 </script>
 <style lang="scss" scoped>
 #index {
-  min-height: calc(100% - 0.7rem);
+  min-height: calc(100% - 0.6rem);
   height: calc(100% - 0.8rem);
   .el-container {
     width: 100%;
