@@ -1,5 +1,5 @@
 <template>
-  <div id="photos">
+  <div id="videos">
     <h2 class="uploadImg">上传视频<i class="iconfont icon-shipin1"></i></h2>
     <!-- 视频描述 -->
     <el-row style="margin: 0.3rem 0">
@@ -54,7 +54,7 @@ import { toRefs, reactive, computed } from "vue";
 import { useRoute } from "vue-router";
 import { BASEURL, upBlogVideo } from "../http/api";
 import { ElMessage } from "element-plus";
-import { getStorage } from "../util/Storage";
+import { getStorage } from "@/util/Storage";
 export default {
   name: "BlogPhotos",
   components: {},
@@ -146,7 +146,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-#photos {
+#videos {
   .uploadImg {
     height: 0.8rem;
     line-height: 1.6rem;

@@ -145,6 +145,15 @@ const routes = [{
                     routerName: "视频管理"
                 },
             },
+            {
+                path: '/admin/musics',
+                name: "/musics",
+                component: () =>
+                    import ( /* webpackChunkName: "musics.vue" */ '@/blog_admin/musics.vue'), //articlePublish
+                meta: {
+                    routerName: "音乐管理"
+                },
+            },
         ]
     },
     {

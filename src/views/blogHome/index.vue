@@ -13,9 +13,7 @@
               style="width: 100%"
             >
               <el-carousel-item
-                v-for="(imgSrcItem, imgSrcIndex) in PhotoList
-                  ? PhotoList
-                  : imgList"
+                v-for="(imgSrcItem, imgSrcIndex) in PhotoList"
                 :key="imgSrcIndex"
               >
                 <img class="blog_banner_img" :src="imgSrcItem" alt="" />
@@ -31,36 +29,44 @@
               <i class="iconfont icon-xin"></i>最新文章
             </h2>
             <ul class="blog_articleBody">
-              <el-scrollbar style="width: 100%" :noresize="true">
+              <el-empty
+                v-if="!newArticleList.length"
+                description="暂时没有文章，过几天再来吧"
+              ></el-empty>
+              <el-scrollbar
+                v-if="newArticleList.length"
+                style="width: 100%"
+                :noresize="true"
+              >
                 <li
                   class="article_item"
-                  v-for="articleItem in newArticleArr"
-                  :key="articleItem.id"
+                  v-for="(articleItem, index) in newArticleList"
+                  :key="index"
                 >
                   <el-row class="articleImg">
-                    <img :src="articleItem.articleCircleUrl" alt="" />
+                    <img :src="articleItem.img" alt="" />
                   </el-row>
                   <div class="articleCon">
                     <div class="articleTitle">
-                      <router-link to="/">{{
-                        articleItem.articleTitle
-                      }}</router-link>
+                      <a @click="toArticleDetail(articleItem.article_id)">{{
+                        articleItem.title
+                      }}</a>
                       <i class="iconfont icon-wenzhang1"></i>
                     </div>
                     <div class="article">
-                      <p>{{ articleItem.articleContent }}</p>
+                      <p>{{ articleItem.brief }}</p>
                     </div>
                     <div class="article_contenter_tag">
                       <p class="article_contenter_tag_left clearfix">
                         <!-- 文章标签 -->
                         <span class="article_contenter_label">
                           <i class="iconfont icon-biaoqian1"></i>
-                          <span class="">{{ articleItem.articleTag }}</span>
+                          <span class="">{{ articleItem.label }}</span>
                         </span>
                         <!-- 文章的发表时间 -->
                         <span class="article_contenter_time">
                           <i class="iconfont icon-shijian1"></i>
-                          <span>{{ articleItem.articleTime }}</span>
+                          <span>{{ getDate(articleItem.create_time) }}</span>
                         </span>
                       </p>
                       <p class="article_contenter_tag_right clearfix">
@@ -72,7 +78,7 @@
                         <!-- 点赞次数 -->
                         <span class="article_contenter_likes">
                           <i class="iconfont icon-zan"></i>
-                          <span>999</span>
+                          <span>{{ articleItem.like_Star }}</span>
                         </span>
                       </p>
                     </div>
@@ -106,9 +112,11 @@
 </template>
 
 <script>
-import { defineComponent, ref, reactive, onMounted, toRefs } from "vue";
+import { defineComponent, reactive, onMounted, toRefs } from "vue";
 import { useStore } from "vuex";
-import { getPhotos } from "../../http/api";
+import { getPhotos, getAllArticle } from "@/http/api";
+import { getDate } from "@/util/date";
+import { useRouter } from "vue-router";
 export default defineComponent({
   name: "blogWebHome",
   components: {},
@@ -116,6 +124,8 @@ export default defineComponent({
   setup() {
     // store 实例
     const store = useStore();
+    // 路由实例
+    const router = useRouter();
     // 推荐视频
     let recVideo = reactive([]);
     recVideo = store.state.video.recVideoArr;
@@ -129,84 +139,35 @@ export default defineComponent({
       // 获取的数组
       PhotoList: [],
     });
-    const imgList = ref([
-      require("../../assets/images/banner/2.jpg"),
-      require("../../assets/images/banner/3.jpg"),
-      require("../../assets/images/banner/4.jpg"),
-    ]);
     // 最新文章列表参数
-    const newArticleArr = reactive([
-      {
-        articleId: 1,
-        articleTitle: "css的基础理论",
-        articleContent:
-          "好久不见，给大家推荐一款远控软件，让我们在疫情影响下还能轻松办公！马上就要迎来618年中庆，对于各大平台上等待业绩爆发的掌柜们来讲，熟练使用一些工具类软件可以让大促时候工作事半功倍。这个时候就,好久不见，给大家推荐一款远控软件，让我们在疫情影响下还能轻松办公！马上就要迎来618年中庆，对于各大平台上等待业绩爆发的掌柜们来讲，熟练使用一些工具类软件可以让大促时候工作事半功倍。这个时候就",
-        articleTime: "2020-6-26 11:13",
-        articleTag: "BLOG文章",
-        articleCircleUrl:
-          "https://img0.baidu.com/it/u=2013609626,3082626527&fm=26&fmt=auto&gp=0.jpg",
-      },
-      {
-        articleId: 2,
-        articleTitle: "MySQL初学",
-        articleContent:
-          "好久不见，给大家推荐一款远控软件，让我们在疫情影响下还能轻松办公！马上就要迎来618年中庆，对于各大平台上等待业绩爆发的掌柜们来讲，熟练使用一些工具类软件可以让大促时候工作事半功倍。这个时候就",
-        articleTime: "2020-6-26 11:13",
-        articleTag: "BLOG文章",
-        articleCircleUrl:
-          "https://img0.baidu.com/it/u=2592042537,1864064944&fm=26&fmt=auto&gp=0.jpg",
-      },
-      {
-        articleId: 3,
-        articleTitle: "node深入教学",
-        articleContent:
-          "好久不见，给大家推荐一款远控软件，让我们在疫情影响下还能轻松办公！马上就要迎来618年中庆，对于各大平台上等待业绩爆发的掌柜们来讲，熟练使用一些工具类软件可以让大促时候工作事半功倍。这个时候就",
-        articleTime: "2020-6-26 11:13",
-        articleTag: "BLOG文章",
-        articleCircleUrl:
-          "https://img2.baidu.com/it/u=1704219071,3761829583&fm=26&fmt=auto&gp=0.jpg",
-      },
-      {
-        articleId: 4,
-        articleTitle: "富婆的基本修养",
-        articleContent:
-          "好久不见，给大家推荐一款远控软件，让我们在疫情影响下还能轻松办公！马上就要迎来618年中庆，对于各大平台上等待业绩爆发的掌柜们来讲，熟练使用一些工具类软件可以让大促时候工作事半功倍。这个时候就",
-        articleTime: "2020-6-26 11:13",
-        articleTag: "BLOG文章",
-        articleCircleUrl:
-          "https://img1.baidu.com/it/u=335183132,539509064&fm=26&fmt=auto&gp=0.jpg",
-      },
-      {
-        articleId: 5,
-        articleTitle: "最新富婆通讯录",
-        articleContent:
-          "好久不见，给大家推荐一款远控软件，让我们在疫情影响下还能轻松办公！马上就要迎来618年中庆，对于各大平台上等待业绩爆发的掌柜们来讲，熟练使用一些工具类软件可以让大促时候工作事半功倍。这个时候就",
-        articleTime: "2020-6-26 11:13",
-        articleTag: "BLOG文章",
-        articleCircleUrl:
-          "https://img1.baidu.com/it/u=3326470141,2162636233&fm=26&fmt=auto&gp=0.jpg",
-      },
-      {
-        articleId: 6,
-        articleTitle: "JS的深入学习",
-        articleContent:
-          "好久不见，给大家推荐一款远控软件，让我们在疫情影响下还能轻松办公！马上就要迎来618年中庆，对于各大平台上等待业绩爆发的掌柜们来讲，熟练使用一些工具类软件可以让大促时候工作事半功倍。这个时候就",
-        articleTime: "2020-6-26 11:13",
-        articleTag: "BLOG文章",
-        articleCircleUrl:
-          "https://img1.baidu.com/it/u=748834325,174015308&fm=11&fmt=auto&gp=0.jpg",
-      },
-      {
-        articleId: 7,
-        articleTitle: "Vue3原理的解读",
-        articleContent:
-          "好久不见，给大家推荐一款远控软件，让我们在疫情影响下还能轻松办公！马上就要迎来618年中庆，对于各大平台上等待业绩爆发的掌柜们来讲，熟练使用一些工具类软件可以让大促时候工作事半功倍。这个时候就",
-        articleTime: "2020-6-26 11:13",
-        articleTag: "BLOG文章",
-        articleCircleUrl:
-          "https://img0.baidu.com/it/u=2443950855,1530352950&fm=26&fmt=auto&gp=0.jpg",
-      },
-    ]);
+    const newArticleObj = reactive({
+      // 页数
+      page: 1,
+      // 每页数量
+      pageSize: 10,
+      // 获取的数组
+      newArticleList: [],
+    });
+    // 获取文章
+    const getBlogArticle = (page) => {
+      getAllArticle({
+        page: page,
+        pageSize: newArticleObj.pageSize,
+      })
+        .then((res) => {
+          if (res.data.code == 200) {
+            const { data } = res.data.data;
+            newArticleObj.newArticleList = data;
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    };
+    // 根据id跳转对应文章详情
+    const toArticleDetail = (article_id) => {
+      router.replace(`/creepreBlog/article/articleDetail/${article_id}/users`);
+    };
     // 获取相册
     const getBlogPhotos = async (page) => {
       await getPhotos({
@@ -228,23 +189,19 @@ export default defineComponent({
     };
     // 挂载阶段
     onMounted(() => {
+      // 获取文章
+      getBlogArticle(newArticleObj.page);
       // 获取相册
       getBlogPhotos(BlogPhotosList.page);
     });
     return {
-      imgList,
-      newArticleArr,
+      ...toRefs(newArticleObj),
       recVideo,
       ...toRefs(BlogPhotosList),
+      getDate,
+      toArticleDetail,
     };
   },
-  data() {
-    return {};
-  },
-
-  mounted() {},
-
-  methods: {},
 });
 </script>
 

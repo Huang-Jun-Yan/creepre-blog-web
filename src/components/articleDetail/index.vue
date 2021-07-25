@@ -1,45 +1,65 @@
 <template>
   <div id="articleDetail">
     <el-empty
-      v-if="false"
+      v-if="!selfArticleObj"
       description="暂时没有文章，过几天再来吧"
       :image-size="200"
     ></el-empty>
-    <el-scrollbar height="6.5rem">
-    <div class="articleTitle">
-      <h2>{{ selfArticleObj.title }}</h2>
-    </div>
-    <div class="articleCategory">
-      <div style="min-width: 0.6rem">作者:{{ selfArticleObj.name }}</div>
-      <div class="articleTime">
-        <span>发布时间:{{ getDate(selfArticleObj.create_time) }}</span>
-        <span>更新时间:{{ getDate(selfArticleObj.update_time) }}</span>
-      </div>
-      <div class="categoryAntlabel">
-        <p>
-          <span>文章分类:</span
-          ><el-tag
-            style="margin: 0 0.05rem; cursor: pointer"
-            type="success"
-            size="mini"
-            >{{ selfArticleObj.category }}</el-tag
-          >
-          <span>文章标签:</span>
-          <el-tag
-            style="margin: 0 0.05rem; cursor: pointer"
-            type="warning"
-            size="mini"
-            >{{ selfArticleObj.label }}</el-tag
-          >
-        </p>
-      </div>
-    </div>
-    <div class="articleBrief">
-      <h3>文章简介:</h3>
-      <p style="box-shadow: inset 0 0 0.03rem 0.02rem #cccccc;padding: .05rem .1rem;">{{ selfArticleObj.brief }}</p>
-    </div>
-    <div class="container" v-html="selfArticleObj.content"></div>
-    </el-scrollbar>
+    <el-row :gutter="20" style="margin: 0.1rem 0; min-height: 6.5rem">
+      <el-col :span="24">
+        <div
+          class="grid-content bg-purple"
+          style="min-height: 6.4rem; padding: 0.05rem 0.05rem"
+        >
+          <el-scrollbar style="width: 100%" height="6.4rem">
+            <div class="articleDetailTitle">
+              <h2>
+                {{ selfArticleObj.title }}
+              <i class="iconfont icon-biaoti-xianxing"></i>
+              </h2>
+            </div>
+            <div class="articleDetailLabel">
+              <div class="top">
+                <div class="author">
+                  <p>
+                    作者:<span>{{ selfArticleObj.name }}</span>
+                  </p>
+                </div>
+                <div class="createTime">
+                  <p>
+                    发布时间:<span>{{ getDate(selfArticleObj.create_time) }}</span>
+                  </p>
+                </div>
+                <div class="Label">
+                  <p>
+                    文章标签:
+                    <el-tag size="mini" type="success">{{
+                      selfArticleObj.label
+                    }}</el-tag>
+                  </p>
+                  <p>
+                    文章分类:
+                    <el-tag size="mini" type="warning">{{
+                      selfArticleObj.category
+                    }}</el-tag>
+                  </p>
+                </div>
+              </div>
+              <div class="bottom">
+                {{ selfArticleObj.brief }}ˋωˊ
+                <p>
+                  更新时间:<span>{{ getDate(selfArticleObj.update_time) }}</span>
+                </p>
+              </div>
+            </div>
+            <div
+              class="articleDetailContent"
+              v-html="selfArticleObj.content"
+            ></div>
+          </el-scrollbar>
+        </div>
+      </el-col>
+    </el-row>
   </div>
 </template>
 
@@ -86,45 +106,74 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 #articleDetail {
-  min-height: 6.5rem;
   background: #eeeeee;
-  .articleTitle {
-    padding-left: 0.3rem;
-    user-select: none;
-    h2 {
-      height: 0.6rem;
-      line-height: 0.6rem;
-    }
-  }
-  .articleCategory {
-    height: 0.5rem;
-    background: #eeeeee;
-    padding: 0 0.1rem;
-    display: flex;
-    align-items: center;
-    box-shadow: inset 0 0 0.03rem 0.02rem #cccccc;
-    margin-bottom: 0.1rem;
-    .categoryAntlabel {
-      margin-left: 0.1rem;
-      p {
-        span {
-          font-size: 0.13rem;
+  height: 100%;
+  .el-row {
+    .el-col {
+      border-radius: 4px;
+      .grid-content {
+        border-radius: 4px;
+        min-height: 36px;
+        display: flex;
+        align-items: center;
+        .Label {
+          font-weight: bold;
+          user-select: none;
+        }
+        .articleDetailTitle {
+          min-height: 0.3rem;
+          background: white;
+          line-height: 0.4rem;
+          letter-spacing: 0.01rem;
+          margin-bottom: 0.05rem;
+        }
+        .articleDetailLabel {
+          height: 0.5rem;
+          margin-bottom: 0.05rem;
+          background: white;
+          .top {
+            height: 50%;
+            display: flex;
+            align-items: center;
+            .author {
+              min-width: 1.1rem;
+              font-size: 0.14rem;
+              font-weight: bold;
+              span {
+                margin-left: 0.05rem;
+              }
+            }
+            .createTime {
+            }
+            .Label {
+              display: flex;
+              margin: 0 0.1rem;
+              p {
+                font-size: 0.14rem;
+                margin-right: 0.2rem;
+              }
+            }
+          }
+          .bottom {
+            height: 50%;
+            display: flex;
+            align-items: center;
+            p {
+              min-width: 1.7rem;
+              margin: 0 0.1rem;
+              span {
+                margin-left: 0.05rem;
+              }
+            }
+          }
+        }
+        .articleDetailContent {
+          min-height: 5.24rem;
+          background: white;
+          padding: 0.05rem 0.05rem;
         }
       }
     }
-  }
-  .articleBrief {
-    min-height: 0.4rem;
-    margin-bottom: .1rem;
-    h3 {
-      margin-bottom: 0.05rem;
-      user-select: none;
-    }
-  }
-  .container {
-    min-height: 4.75rem;
-    border-radius: 0.05rem;
-    margin: 0 0.1rem;
   }
 }
 </style>

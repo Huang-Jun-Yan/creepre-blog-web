@@ -1,8 +1,5 @@
 <template>
   <div id="photos">
-    <!-- <header :style="{color: Color}"> 
-      当前位置: <router-link style="cursor:pointer" tag="span" to="/">首页</router-link> > 云相册
-      </header> -->
     <h2 style="">相册内容</h2>
     <div id="container">
       <div class="card" v-for="(item, index) in PhotoList" :key="index">

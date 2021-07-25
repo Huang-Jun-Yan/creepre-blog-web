@@ -106,7 +106,14 @@ export const editUserInfo = val => post('/blogApi/users/editUser', val);
  * @method 获取音乐
  * @param {number} id
  */
-export const getBlogMusic = val => post('/blogApi/music/getMusic', val);
+export const getBlogMusic = val => get('/blogApi/music/getMusic', val);
+/**
+ * @method 上传音乐
+ * @param {string} singer_name ---------------歌手名
+ * @param {string} music_img   ---------------歌曲封面
+ * @param {string} music_url   ---------------歌曲url
+ */
+export const sendMusics = val => post('/blogApi/music/sendMusics', val);
 /**
  * @method 上传文章
  * @param {number} admin_id ---------------管理员id
@@ -153,3 +160,27 @@ export const getRecentArticle = val => get('/blogApi/article/getRecentArticle', 
  * @param {number} article_id  ---------------文章id
  */
 export const updateArticle = val => post('/blogApi/article/articleUpdate', val);
+/**
+ * @method 获取文章标签
+ * @param {number}  ---------------无
+ */
+export const getLable = val => get('/blogApi/article/getLable', val);
+/**
+ * @method 通过文章标签获取文章
+ * @param {string} label  ---------------标签
+ * @param {number} page  ---------------页数
+ * @param {number} pageSize  ---------------一页多少条
+ */
+export const ByLabelGetArticle = val => post('/blogApi/article/getArticleByLabel', val);
+/**
+ * @method 获取文章分类
+ * @param {number}  ---------------无
+ */
+export const getCategory = val => get('/blogApi/article/getCategory', val);
+/**
+ * @method 通过文章分类获取文章
+ * @param {string} category  ---------------标签
+ * @param {number} page  ---------------页数
+ * @param {number} pageSize  ---------------一页多少条
+ */
+export const ByCategoryGetArticle = val => post('/blogApi/article/getArticleByCategory', val);

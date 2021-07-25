@@ -50,6 +50,26 @@
             clearable
           >
           </el-input>
+          <el-dropdown
+            style="margin: 0 0.1rem"
+            placement="top"
+            @command="handleCommandLabel"
+            v-if="blogArticleLabel.length"
+          >
+            <el-button type="warning">
+              选择已有标签<i class="el-icon-collection-tag el-icon--right"></i>
+            </el-button>
+            <template #dropdown>
+              <el-dropdown-menu slots="dropdown">
+                <el-dropdown-item
+                  v-for="(lableItem, index) in blogArticleLabel"
+                  :key="index"
+                  :command="lableItem.label"
+                  >{{ lableItem.label }}</el-dropdown-item
+                >
+              </el-dropdown-menu>
+            </template>
+          </el-dropdown>
         </li>
         <!-- 分类 -->
         <li class="articleCategory">
@@ -61,6 +81,26 @@
             clearable
           >
           </el-input>
+          <el-dropdown
+            style="margin: 0 0.1rem"
+            placement="top"
+            @command="handleCommandCategory"
+            v-if="blogArticleCategory.length"
+          >
+            <el-button type="success">
+              选择已有分类<i class="el-icon-news el-icon--right"></i>
+            </el-button>
+            <template #dropdown>
+              <el-dropdown-menu slots="dropdown">
+                <el-dropdown-item
+                  v-for="(categoryItem, index) in blogArticleCategory"
+                  :key="index"
+                  :command="categoryItem.category"
+                  >{{ categoryItem.category }}</el-dropdown-item
+                >
+              </el-dropdown-menu>
+            </template>
+          </el-dropdown>
         </li>
         <!-- 文章主题内容 -->
         <li ref="editor" id="articleContent"></li>
@@ -91,13 +131,17 @@ import {
 } from "vue";
 import WangEditor from "wangeditor";
 import { ElMessage } from "element-plus";
-import { BASEURL, upArticle } from "@/http/api";
+import { BASEURL, upArticle, getLable, getCategory } from "@/http/api";
 import { getStorage } from "@/util/Storage";
 import { useRouter } from "vue-router";
 export default defineComponent({
   name: "articleAdminPublish",
   components: {},
   setup() {
+    // 标签
+    const blogArticleLabel = ref([]);
+    // 分类
+    const blogArticleCategory = ref([]);
     //   路由实例
     const router = useRouter();
     const content = reactive({
@@ -171,10 +215,33 @@ export default defineComponent({
         });
       }
     };
+    // 获取文章标签和分类
+    const getArticleLableOrCategory = async () => {
+      const res = await Promise.all([getLable(), getCategory()]);
+      if (!res) return;
+      if (res[0].data.code == 200) {
+        const { data } = res[0].data;
+        blogArticleLabel.value = data;
+      }
+      if (res[1].data.code == 200) {
+        const { data } = res[1].data;
+        blogArticleCategory.value = data;
+      }
+    };
+    //el-dropdown 标签
+    const handleCommandLabel = (value) => {
+      console.log(value);
+      upArticleObj.label = value;
+    };
+    //el-dropdown 分类
+    const handleCommandCategory = (value) => {
+      console.log(value);
+      upArticleObj.category = value;
+    };
     // console.log(instance.txt.html());
     // 挂载阶段
     let instance;
-    onMounted(() => {
+    onMounted(async () => {
       instance = new WangEditor(editor.value);
       Object.assign(instance.config, {
         onchange() {},
@@ -187,6 +254,7 @@ export default defineComponent({
         },
       });
       instance.create();
+      await getArticleLableOrCategory();
     });
     nextTick(() => {});
     // 销毁阶段
@@ -194,7 +262,6 @@ export default defineComponent({
       instance.destroy();
       instance = null;
     });
-    // 计算属性
     // 计算属性
     const uplArticleUrl = computed(() => {
       return `${BASEURL}/admin/uploadCover`;
@@ -206,6 +273,10 @@ export default defineComponent({
       ...toRefs(content),
       publish,
       uplArticleUrl,
+      handleCommandLabel,
+      handleCommandCategory,
+      blogArticleLabel,
+      blogArticleCategory,
     };
   },
 });
