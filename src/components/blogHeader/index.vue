@@ -21,27 +21,37 @@
           </el-col>
           <el-col :span="18" style="padding: 0.01rem 0">
             <div class="grid-content bg-purple">
-
-              <p class="songTitle">
-                一叶知秋<i
-                  style="font-size: 0.1rem; color: coral"
-                  class="iconfont icon-icon-test"
-                ></i>
-              </p>
-              <div class="musicControl">
-                <div
-                  style="font-size: 0.26rem; color: #cccccc"
-                  class="controlRight iconfont icon-youjiantou"
-                ></div>
-                <div
-                  style="font-size: 0.26rem; color: #cccccc"
-                  class="controlMiddle iconfont icon-bofang"
-                ></div>
-                <div
-                  style="font-size: 0.26rem; color: #cccccc"
-                  class="controlLeft iconfont icon-zuojiantou1"
-                ></div>
-              </div>
+              <el-col :span="16" style="margin-right: .2rem;">
+                <p class="songTitle">
+                  一叶知秋<i
+                    style="font-size: 0.1rem; color: coral"
+                    class="iconfont icon-icon-test"
+                  ></i>
+                </p>
+                <div class="musicControl">
+                  <div
+                    style="font-size: 0.26rem; color: #cccccc"
+                    class="controlRight iconfont icon-youjiantou"
+                  ></div>
+                  <div
+                    style="font-size: 0.26rem; color: #cccccc"
+                    class="controlMiddle iconfont icon-bofang"
+                  ></div>
+                  <div
+                    style="font-size: 0.26rem; color: #cccccc"
+                    class="controlLeft iconfont icon-zuojiantou1"
+                  ></div>
+                </div>
+              </el-col>
+              <el-col :span="8" style="padding-top: 0.02rem">
+                <el-slider
+                  v-model="volumeValue"
+                  :show-tooltip="false"
+                  vertical
+                  height=".45rem"
+                >
+                </el-slider>
+              </el-col>
             </div>
           </el-col>
         </el-row>
@@ -80,6 +90,7 @@ export default defineComponent({
   setup() {
     const routerInfoArr = ref([]);
     const activeIndex = ref("1");
+    const volumeValue = ref(100);
     // 动态导航
     const dynNav = () => {
       /* 子接收父组件传递的值 */
@@ -91,7 +102,7 @@ export default defineComponent({
     };
     //
     const arr = (val) => {
-      console.log(val)
+      console.log(val);
       // return val / 100;
     };
     // 动态匹配activeIndex
@@ -115,7 +126,8 @@ export default defineComponent({
       handleSelect,
       activeIndex,
       routerInfoArr,
-      arr
+      arr,
+      volumeValue,
     };
   },
   data() {
