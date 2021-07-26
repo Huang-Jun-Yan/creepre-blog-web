@@ -49,25 +49,27 @@
               <h2 class="suggestTitle">
                 推荐文章<i class="iconfont icon-tuijian1"></i>
               </h2>
-              <ul v-if="true" class="blog_SuggestList_item">
-                <el-scrollbar>
-                  <li
-                    class="nav_item"
-                    v-for="(item, index) in articleRec"
-                    :key="index"
-                  >
-                    <a
-                      class="title"
-                      @click="toArticleDetail(item.article_id)"
-                      >{{ item.title }}</a
+              <transition name="el-fade-in">
+                <ul v-if="true" class="blog_SuggestList_item">
+                  <el-scrollbar>
+                    <li
+                      class="nav_item"
+                      v-for="(item, index) in articleRec"
+                      :key="index"
                     >
-                    <div class="content">
-                      <p>{{ item.brief }}</p>
-                      <h4>{{ item.create_time }}</h4>
-                    </div>
-                  </li>
-                </el-scrollbar>
-              </ul>
+                      <a
+                        class="title"
+                        @click="toArticleDetail(item.article_id)"
+                        >{{ item.title }}</a
+                      >
+                      <div class="content">
+                        <p>{{ item.brief }}</p>
+                        <h4>{{ item.create_time }}</h4>
+                      </div>
+                    </li>
+                  </el-scrollbar>
+                </ul>
+              </transition>
               <div v-if="false" class="noContent">
                 <el-empty
                   :image-size="80"
@@ -164,8 +166,13 @@
               </ul>
             </div>
           </div>
+
           <div class="rightBody">
-            <router-view />
+            <router-view v-slot="{ Component }">
+              <transition name="el-zoom-in-center">
+                <component :is="Component" />
+              </transition>
+            </router-view>
           </div>
         </div>
       </el-main>

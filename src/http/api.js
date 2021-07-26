@@ -106,7 +106,7 @@ export const editUserInfo = val => post('/blogApi/users/editUser', val);
  * @method 获取音乐
  * @param {number} id
  */
-export const getBlogMusic = val => get('/blogApi/music/getMusic', val);
+export const getBlogMusic = val => get('/blogApi/music/getAllMusic', val);
 /**
  * @method 上传音乐
  * @param {string} singer_name ---------------歌手名

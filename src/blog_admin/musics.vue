@@ -1,17 +1,6 @@
 <template>
   <div id="upMusics">
     <h2 class="title">上传音乐<i class="iconfont icon-yinle"></i></h2>
-    <!-- 视频描述 -->
-    <el-row style="margin: 0.3rem 0">
-      <el-input
-        style="width: 50%"
-        type="textarea"
-        :autosize="{ minRows: 2, maxRows: 4 }"
-        placeholder="输入音乐的名字"
-        v-model="music_name"
-      >
-      </el-input>
-    </el-row>
     <!-- 上传图片 -->
     <el-row style="margin: 0.1rem 0">
       <el-upload
@@ -51,10 +40,14 @@
 <script>
 import { defineComponent, computed, toRefs, reactive } from "vue";
 import { BASEURL, sendMusics } from "@/http/api"; // sendMusics
+import { useRoute } from "vue-router";
+import { ElMessage } from "element-plus";
 export default defineComponent({
   name: "CreepreBlogWebMusics",
   components: {},
   setup() {
+    //   路由实例
+    const route = useRoute();
     //   封面图片
     const uploadBlogMusic = reactive({
       music_name: "",
@@ -63,13 +56,19 @@ export default defineComponent({
       dialogVisible: false,
     });
     // 上传
-    const clickUploadMusic = () => {
-      sendMusics({
+    const clickUploadMusic = async () => {
+      await sendMusics({
         singer_name: uploadBlogMusic.music_name,
         music_img: uploadBlogMusic.music_img,
         music_url: uploadBlogMusic.music_url,
       }).then((res) => {
-        console.log(res);
+        if (res.data.code == 200) {
+          ElMessage.success({
+            message: "音乐上传成功",
+            type: "success",
+          });
+          location.reload(route.path);
+        }
       });
     };
     // 上传成功回调
@@ -78,6 +77,7 @@ export default defineComponent({
     };
     // 上传成功回调
     const uploadMusic = (res) => {
+      uploadBlogMusic.music_name = res.file.originalname.split(".")[0];
       uploadBlogMusic.music_url = res.file.url;
     };
     // 计算属性

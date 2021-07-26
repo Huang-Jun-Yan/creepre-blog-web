@@ -33,58 +33,60 @@
                 v-if="!newArticleList.length"
                 description="暂时没有文章，过几天再来吧"
               ></el-empty>
-              <el-scrollbar
-                v-if="newArticleList.length"
-                style="width: 100%"
-                :noresize="true"
-              >
-                <li
-                  class="article_item"
-                  v-for="(articleItem, index) in newArticleList"
-                  :key="index"
+              <transition name="el-zoom-in-top">
+                <el-scrollbar
+                  v-if="newArticleList.length"
+                  style="width: 100%"
+                  :noresize="true"
                 >
-                  <el-row class="articleImg">
-                    <img :src="articleItem.img" alt="" />
-                  </el-row>
-                  <div class="articleCon">
-                    <div class="articleTitle">
-                      <a @click="toArticleDetail(articleItem.article_id)">{{
-                        articleItem.title
-                      }}</a>
-                      <i class="iconfont icon-wenzhang1"></i>
+                  <li
+                    class="article_item"
+                    v-for="(articleItem, index) in newArticleList"
+                    :key="index"
+                  >
+                    <el-row class="articleImg">
+                      <img :src="articleItem.img" alt="" />
+                    </el-row>
+                    <div class="articleCon">
+                      <div class="articleTitle">
+                        <a @click="toArticleDetail(articleItem.article_id)">{{
+                          articleItem.title
+                        }}</a>
+                        <i class="iconfont icon-wenzhang1"></i>
+                      </div>
+                      <div class="article">
+                        <p>{{ articleItem.brief }}</p>
+                      </div>
+                      <div class="article_contenter_tag">
+                        <p class="article_contenter_tag_left clearfix">
+                          <!-- 文章标签 -->
+                          <span class="article_contenter_label">
+                            <i class="iconfont icon-biaoqian1"></i>
+                            <span class="">{{ articleItem.label }}</span>
+                          </span>
+                          <!-- 文章的发表时间 -->
+                          <span class="article_contenter_time">
+                            <i class="iconfont icon-shijian1"></i>
+                            <span>{{ getDate(articleItem.create_time) }}</span>
+                          </span>
+                        </p>
+                        <p class="article_contenter_tag_right clearfix">
+                          <!-- 浏览次数 -->
+                          <span class="article_contenter_views">
+                            <i class="iconfont icon-liulan"></i>
+                            <span>999</span>
+                          </span>
+                          <!-- 点赞次数 -->
+                          <span class="article_contenter_likes">
+                            <i class="iconfont icon-zan"></i>
+                            <span>{{ articleItem.like_Star }}</span>
+                          </span>
+                        </p>
+                      </div>
                     </div>
-                    <div class="article">
-                      <p>{{ articleItem.brief }}</p>
-                    </div>
-                    <div class="article_contenter_tag">
-                      <p class="article_contenter_tag_left clearfix">
-                        <!-- 文章标签 -->
-                        <span class="article_contenter_label">
-                          <i class="iconfont icon-biaoqian1"></i>
-                          <span class="">{{ articleItem.label }}</span>
-                        </span>
-                        <!-- 文章的发表时间 -->
-                        <span class="article_contenter_time">
-                          <i class="iconfont icon-shijian1"></i>
-                          <span>{{ getDate(articleItem.create_time) }}</span>
-                        </span>
-                      </p>
-                      <p class="article_contenter_tag_right clearfix">
-                        <!-- 浏览次数 -->
-                        <span class="article_contenter_views">
-                          <i class="iconfont icon-liulan"></i>
-                          <span>999</span>
-                        </span>
-                        <!-- 点赞次数 -->
-                        <span class="article_contenter_likes">
-                          <i class="iconfont icon-zan"></i>
-                          <span>{{ articleItem.like_Star }}</span>
-                        </span>
-                      </p>
-                    </div>
-                  </div>
-                </li>
-              </el-scrollbar>
+                  </li>
+                </el-scrollbar>
+              </transition>
             </ul>
           </el-row>
           <div class="right">

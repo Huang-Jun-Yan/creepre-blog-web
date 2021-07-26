@@ -5,7 +5,7 @@
       <div class="left clearfix">
         <div class="blog_logo">
           <img src="../../assets/images/bloglogo.png" alt="" />
-          <h2>creepre の 博客</h2>
+          <h2 class="blogName">creepre の 博客</h2>
         </div>
       </div>
       <!-- 博客导航 -->
@@ -16,41 +16,68 @@
             :span="6"
           >
             <div class="grid-content bg-purple">
-              <el-avatar fit="fit" :size="55" src="">未上传</el-avatar>
+              <el-progress
+                type="circle"
+                :width="60"
+                :percentage="0"
+                status="success"
+                :color="[
+                  { color: '#f56c6c', percentage: 20 },
+                  { color: '#e6a23c', percentage: 40 },
+                  { color: '#5cb87a', percentage: 60 },
+                  { color: '#1989fa', percentage: 80 },
+                  { color: '#6f7ad3', percentage: 100 },
+                ]"
+              >
+                <el-avatar
+                  :class="ifSongImgRotate"
+                  fit="fit"
+                  :size="48"
+                  :src="musicItem.music_img"
+                  >未上传</el-avatar
+                >
+              </el-progress>
             </div>
           </el-col>
           <el-col :span="18" style="padding: 0.01rem 0">
             <div class="grid-content bg-purple">
-              <el-col :span="16" style="margin-right: .2rem;">
-                <p class="songTitle">
-                  一叶知秋<i
-                    style="font-size: 0.1rem; color: coral"
-                    class="iconfont icon-icon-test"
-                  ></i>
-                </p>
+              <el-col :span="16" style="margin-right: 0.2rem">
+                <transition name="el-fade-in">
+                  <p class="songTitle">
+                    {{ musicItem.singer_name }}
+                    <i
+                      style="font-size: 0.1rem; color: coral"
+                      class="iconfont icon-icon-test"
+                    ></i>
+                  </p>
+                </transition>
                 <div class="musicControl">
                   <div
-                    style="font-size: 0.26rem; color: #cccccc"
+                    style="font-size: 0.2rem; color: #cccccc"
                     class="controlRight iconfont icon-youjiantou"
+                    @click="onPreviousMusic"
                   ></div>
                   <div
-                    style="font-size: 0.26rem; color: #cccccc"
-                    class="controlMiddle iconfont icon-bofang"
+                    style="font-size: 0.2rem; color: #cccccc"
+                    class="controlMiddle iconfont"
+                    :class="isPlay"
+                    @click="onPauseMusic"
                   ></div>
                   <div
-                    style="font-size: 0.26rem; color: #cccccc"
+                    style="font-size: 0.2rem; color: #cccccc"
                     class="controlLeft iconfont icon-zuojiantou1"
+                    @click="onNextMusic"
                   ></div>
                 </div>
               </el-col>
               <el-col :span="8" style="padding-top: 0.02rem">
-                <el-slider
+                <!-- <el-slider
                   v-model="volumeValue"
                   :show-tooltip="false"
                   vertical
                   height=".45rem"
                 >
-                </el-slider>
+                </el-slider> -->
               </el-col>
             </div>
           </el-col>
@@ -78,12 +105,31 @@
         </el-row>
       </div>
     </div>
+    <!-- 音乐播放 -->
+    <audio
+      id="Audio"
+      ref="audio"
+      :preload="true"
+      :autoplay="false"
+      :src="musicItem.music_url"
+      @play="onPlay"
+      @pause="onPause"
+      @timeupdate="timeUpDate"
+    ></audio>
   </div>
 </template>
 
 <script>
-import { defineComponent, ref, inject, onMounted } from "vue";
-// import { getBlogMusic } from "../../http/api";
+import {
+  defineComponent,
+  ref,
+  inject,
+  onMounted,
+  reactive,
+  toRefs,
+  watch,
+} from "vue";
+import { getBlogMusic } from "@/http/api";
 export default defineComponent({
   name: "headers",
   components: {},
@@ -91,6 +137,14 @@ export default defineComponent({
     const routerInfoArr = ref([]);
     const activeIndex = ref("1");
     const volumeValue = ref(100);
+    const musicListObj = reactive({
+      musicLength: null,
+      audio: "",
+      ifSongImgRotate: "", // songImg
+      isPlay: "icon-bofang", //icon-zantingtingzhi 暂停 icon-bofang 播放
+      index: 0,
+      musicItem: {},
+    });
     // 动态导航
     const dynNav = () => {
       /* 子接收父组件传递的值 */
@@ -100,10 +154,66 @@ export default defineComponent({
         routerInfoArr.value[0].splice(4, routerInfoArr.value[0].length - 4);
       }
     };
-    //
-    const arr = (val) => {
-      console.log(val);
-      // return val / 100;
+    // 获取音乐
+    const getMusic = (index) => {
+      getBlogMusic()
+        .then((res) => {
+          if (res.data.code == 200) {
+            const { data } = res.data;
+            musicListObj.musicLength = data.length;
+            musicListObj.musicItem = data[index];
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    };
+    // 播放中的回调
+    const onPlay = (e) => {
+      musicListObj.audio = e.path[0];
+      musicListObj.ifSongImgRotate = "songImg";
+    };
+    // 暂停的回调
+    const onPause = () => {};
+    // 点击暂停及播放
+    const onPauseMusic = () => {
+      let { audio } = musicListObj;
+      // 为false的时候是播放状态
+      if (!audio.paused) {
+        audio.pause();
+        musicListObj.isPlay = "icon-bofang";
+        musicListObj.ifSongImgRotate = "";
+      } else if (audio.paused) {
+        audio.play();
+        musicListObj.isPlay = "icon-zantingtingzhi";
+        musicListObj.ifSongImgRotate = "songImg";
+      }
+    };
+    // 点击下一首
+    const onNextMusic = () => {
+      let { audio } = musicListObj;
+      audio.pause();
+      musicListObj.ifSongImgRotate = "";
+      musicListObj.isPlay = "icon-bofang";
+      musicListObj.index++;
+      if (musicListObj.index == musicListObj.musicLength) {
+        musicListObj.index = 0;
+      }
+    };
+    // 点击上一首
+    const onPreviousMusic = () => {
+      let { audio } = musicListObj;
+      audio.pause();
+      musicListObj.ifSongImgRotate = "";
+      musicListObj.isPlay = "icon-bofang";
+      if (musicListObj.index == 0) {
+        musicListObj.index = musicListObj.musicLength;
+      }
+      musicListObj.index--;
+    };
+    // 播放时间
+    const timeUpDate = (e)=>{
+      console.log(e.timeStamp / 100)
     };
     // 动态匹配activeIndex
     const activeIndexArr = ref([
@@ -112,10 +222,19 @@ export default defineComponent({
       "/creepreBlog/blogPhoto",
       "/creepreBlog/blogDemo",
     ]);
+    // 监听
+    watch(
+      () => musicListObj.index,
+      () => {
+        getMusic(musicListObj.index);
+      }
+    );
     // 挂载阶段
-    onMounted(() => {
+    onMounted(async () => {
       // 动态导航
       dynNav();
+      // 获取音乐
+      await getMusic(musicListObj.index);
     });
     let index;
     const handleSelect = (key) => {
@@ -126,8 +245,14 @@ export default defineComponent({
       handleSelect,
       activeIndex,
       routerInfoArr,
-      arr,
       volumeValue,
+      ...toRefs(musicListObj),
+      onPlay,
+      onPause,
+      onPauseMusic,
+      onNextMusic,
+      onPreviousMusic,
+      timeUpDate
     };
   },
   data() {
@@ -187,8 +312,29 @@ export default defineComponent({
           display: flex;
           justify-content: space-between;
           width: 1rem;
-          margin-left: 0.1rem;
           margin-top: 0.07rem;
+
+          .controlRight {
+            &:hover {
+              color: orange !important;
+              cursor: pointer;
+            }
+          }
+          .controlMiddle {
+            &:hover {
+              color: orange !important;
+              cursor: pointer;
+            }
+          }
+          .controlLeft {
+            &:hover {
+              color: orange !important;
+              cursor: pointer;
+            }
+          }
+        }
+        .songImg {
+          animation: avatarRotate 3s linear infinite;
         }
       }
       .navMenu {
@@ -203,6 +349,19 @@ export default defineComponent({
         }
       }
     }
+  }
+}
+@keyframes avatarRotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+@media screen and (max-width: 1500px) {
+  .blogName {
+    visibility: hidden;
   }
 }
 </style>
