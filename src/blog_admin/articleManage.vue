@@ -76,7 +76,6 @@ export default defineComponent({
         pageSize: ArticlePage.pageSize,
       })
         .then((res) => {
-          console.log(res)
           if (res.data.code == 200) {
             ArticlePage.total = res.data.data.count;
             const { data } = res.data.data;

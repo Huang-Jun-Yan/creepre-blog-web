@@ -58,7 +58,8 @@ export default defineComponent({
       })
         .then((res) => {
           if (res.data.code == 200) {
-            setStorage("adminInfo", res.data.data);
+            console.log(res.data.data)
+            setStorage("admin_id", res.data.data.admin_id);
             router.replace("/creepreBlog/admin");
             ElMessage.success({
               message: res.data.msg,

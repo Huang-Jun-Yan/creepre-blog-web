@@ -137,9 +137,7 @@ export default defineComponent({
             .then((res) => {
               const { code } = res.data;
               if (code == 200) {
-                console.log(res);
-                setStorage("blogUserInfo", { username: res.data.username });
-                setStorage("blogUserToken", { userToken: res.data.token, });
+                setStorage("blogUserToken",res.data.token);
                 ElMessage.success({
                   message: "注册成功，即将去首页",
                   type: "success",

@@ -57,13 +57,22 @@
                   <i class="el-icon-paperclip"></i>
                   <span>其他内容</span>
                 </template>
-                <el-menu-item @click="$router.push('/admin/photos')" index="3-1">
+                <el-menu-item
+                  @click="$router.push('/admin/photos')"
+                  index="3-1"
+                >
                   上传图片
                 </el-menu-item>
-                <el-menu-item @click="$router.push('/admin/videos')" index="3-2">
+                <el-menu-item
+                  @click="$router.push('/admin/videos')"
+                  index="3-2"
+                >
                   上传视频
                 </el-menu-item>
-                <el-menu-item @click="$router.push('/admin/musics')" index="3-3">
+                <el-menu-item
+                  @click="$router.push('/admin/musics')"
+                  index="3-3"
+                >
                   上传音乐
                 </el-menu-item>
               </el-submenu>
@@ -113,7 +122,7 @@ export default defineComponent({
                 type: "success",
                 message: "退出成功!",
               });
-              setStorage("adminInfo", {});
+              setStorage("admin_id", "");
               router.replace("/");
             }
           });
@@ -211,7 +220,7 @@ export default defineComponent({
     .rightCon {
       margin-left: 2.2rem;
       height: 7.215rem;
-      padding: 0 .2rem;
+      padding: 0 0.2rem;
       background: url("../assets/images/2.jpg") no-repeat 100%;
       opacity: 0.7;
       overflow: hidden;

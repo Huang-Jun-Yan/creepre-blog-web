@@ -1,4 +1,6 @@
-import { createRouter, createWebHashHistory } from 'vue-router'
+import { createRouter, createWebHashHistory } from 'vue-router';
+import { getStorage } from "../util/Storage";
+import { ElMessage } from 'element-plus';
 
 const routes = [{
         path: '/',
@@ -41,7 +43,7 @@ const routes = [{
                 component: () =>
                     import ( /* webpackChunkName: "blogDemo" */ '@/views/blogDemo'),
                 meta: {
-                    routerName: "个人Demo"
+                    routerName: "私人视频"
                 },
             },
             {
@@ -182,6 +184,14 @@ const routes = [{
         meta: {
             routerName: "Blog注册"
         }
+    }, {
+        path: '/:pathMatch(.*)*',
+        name: "404",
+        component: () =>
+            import ( /* webpackChunkName: "blogRegister" */ '@/views/NoFind'),
+        meta: {
+            routerName: "404页面"
+        }
     }
 ]
 
@@ -192,6 +202,17 @@ const router = createRouter({
 
 // 路由拦截
 router.beforeEach((to, from, next) => {
+    if (to.path == "/admin/articlePublish" && "/admin/articleManage" && "/admin/usersManage" && "/admin/photos" && "/admin/videos" && "/admin/musics") {
+        if (!getStorage("admin_id")) {
+            ElMessage.warning({
+                message: '你还不是管理员，不要乱跑哦⊙﹏⊙‖',
+                type: 'warning'
+            });
+            next({
+                path: '/',
+            })
+        }
+    }
     next()
 });
 

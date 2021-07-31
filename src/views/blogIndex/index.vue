@@ -30,18 +30,9 @@
                   >
                 </div>
               </el-row>
-              <!-- 浏览次数 -->
+              <!-- 用户介绍 -->
               <el-row class="blog_readNumber">
-                <ul>
-                  <li>
-                    <span><b>浏览次数</b>999</span>
-                    <i class="iconfont icon-liulan"></i>
-                  </li>
-                  <li>
-                    <span><b>收藏数量</b>999</span>
-                    <i class="iconfont icon-shoucang"></i>
-                  </li>
-                </ul>
+                {{ introduction }}
               </el-row>
             </el-row>
             <!-- 推荐列表 -->
@@ -169,7 +160,7 @@
 
           <div class="rightBody">
             <router-view v-slot="{ Component }">
-              <transition name="el-zoom-in-center">
+              <transition name="el-fade-in-linear">
                 <component :is="Component" />
               </transition>
             </router-view>
@@ -196,7 +187,7 @@ import {
 } from "vue";
 import { getStorage } from "@/util/Storage";
 import { ElMessage } from "element-plus";
-import { getuserInfo, getRecentArticle } from "@/http/api";
+import { getRecentArticle } from "@/http/api";
 import { getDate } from "@/util/date";
 export default defineComponent({
   name: "blogIndex",
@@ -243,39 +234,17 @@ export default defineComponent({
     });
     // 用户登录
     const userLogin = () => {
-      // 获取token
-      const { userToken } = getStorage("blogUserToken")
-        ? getStorage("blogUserToken")
-        : {};
-      if (!userToken) {
+      if (!getStorage("blogUserInfo")) {
         ElMessage.warning({
-          message: "您还没有登录注册哦!",
+          message: "欢迎来到creepre的博客，但是你还没有登录哦˙ω˙",
           type: "warning",
         });
-        return false;
       } else {
-        const userInfo = getStorage("blogUserInfo");
-        // 用token查询用户信息
-        getuserInfo({ token: userToken })
-          .then((res) => {
-            if (res.data.code == 200) {
-              blogUserInfo.username = res.data.Info.username
-                ? userInfo.username.name
-                : res.data.Info.username;
-              blogUserInfo.introduction = res.data.Info.introduction;
-              blogUserInfo.circleUrl = res.data.Info.avatar;
-            } else if (res.data.code == 401) {
-              localStorage.removeItem("userInfo");
-              ElMessage.error(res.data.msg);
-              return false;
-            } else if (res.data.code == 400) {
-              ElMessage.error("您还没有登录哦！");
-              return false;
-            }
-          })
-          .catch((err) => {
-            console.log(err);
-          });
+        blogUserInfo.username = getStorage("blogUserInfo").name
+          ? getStorage("blogUserInfo").name
+          : getStorage("blogUserInfo").username;
+        blogUserInfo.introduction = getStorage("blogUserInfo").introduction;
+        blogUserInfo.circleUrl = getStorage("blogUserInfo").avatar;
       }
     };
     // 跳转至登录页
@@ -309,7 +278,7 @@ export default defineComponent({
       // } else {
       // 上面没有返回true，执行下面去登录
       const { username } = getStorage("blogUserInfo");
-      if (username.username == "admin") {
+      if (username == "admin") {
         router.replace("/users/admin/adminLogin");
       } else {
         ElMessage.warning({
@@ -362,27 +331,11 @@ export default defineComponent({
             border-bottom: 0.01rem solid #dddddd;
             .blog_readNumber {
               width: 100%;
-              height: 0.3rem;
+              min-height: 0.3rem;
+              padding: 0 0.05rem;
+              line-height: 0.14rem;
               user-select: none;
-              ul {
-                height: 100%;
-                width: 100%;
-                display: flex;
-                justify-content: space-evenly;
-                align-items: center;
-                li {
-                  span {
-                    b {
-                      font-weight: bold;
-                      margin: 0 0.02rem;
-                    }
-                  }
-                  i {
-                    margin: 0 0.02rem;
-                    vertical-align: middle;
-                  }
-                }
-              }
+              font-size: 0.08rem;
             }
             .userAvatar {
               margin-top: 0.05rem;

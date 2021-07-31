@@ -63,7 +63,15 @@ export default defineComponent({
       })
         .then((res) => {
           if (res.data.code == 200) {
-            setStorage("blogUserInfo", { username: res.data.data });
+            console.log(res.data.data);
+            setStorage("blogUserInfo", {
+              avatar: res.data.data.avatar,
+              email: res.data.data.email,
+              introduction: res.data.data.introduction,
+              name: res.data.data.name,
+              register_time: res.data.data.register_time,
+              username: res.data.data.username,
+            });
             setStorage("blogUserToken", { userToken: res.data.token });
             ElMessage.success({
               message: "登陆成功，即将前往首页",
@@ -78,7 +86,6 @@ export default defineComponent({
               type: "error",
             });
           }
-          console.log(res);
         })
         .catch((err) => {
           console.log(err);

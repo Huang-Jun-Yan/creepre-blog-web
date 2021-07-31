@@ -78,10 +78,9 @@ export default defineComponent({
     });
     // 获取当前用户信息
     const getUserInfo = () => {
-      const { username } = getStorage("blogUserInfo");
-      userInfo.username = username.name;
-      userInfo.introduction = username.introduction;
-      userInfo.circleUrl = username.avatar;
+      userInfo.username = getStorage("blogUserInfo").name;
+      userInfo.introduction = getStorage("blogUserInfo").introduction;
+      userInfo.circleUrl = getStorage("blogUserInfo").avatar;
     };
     // 计算属性
     const ImageUpload = computed(() => {
@@ -136,6 +135,7 @@ export default defineComponent({
     };
     // 提交修改
     const subEdit = () => {
+      console.log("222");
       if (userInfo.username.length > 12)
         return ElMessage.warning("昵称长度不能大于6个");
       editUserInfo({
@@ -146,7 +146,15 @@ export default defineComponent({
       })
         .then((res) => {
           if (res.data.code == 200) {
-            setStorage("blogUserInfo", { username: res.data.data });
+            console.log(res.data.data);
+            setStorage("blogUserInfo", {
+              avatar: res.data.data.avatar,
+              email: res.data.data.email,
+              introduction: res.data.data.introduction,
+              name: res.data.data.name,
+              register_time: res.data.data.register_time,
+              username: res.data.data.username,
+            });
             ElMessage.success({
               message: "小主您的信息修改成功啦ヾ(≧▽≦*)o!",
               type: "success",

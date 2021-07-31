@@ -19,8 +19,9 @@
               <el-progress
                 type="circle"
                 :width="60"
-                :percentage="0"
+                :percentage="percentage ? percentage : 0"
                 status="success"
+                :stroke-width="2"
                 :color="[
                   { color: '#f56c6c', percentage: 20 },
                   { color: '#e6a23c', percentage: 40 },
@@ -32,7 +33,7 @@
                 <el-avatar
                   :class="ifSongImgRotate"
                   fit="fit"
-                  :size="48"
+                  :size="56"
                   :src="musicItem.music_img"
                   >未上传</el-avatar
                 >
@@ -112,9 +113,11 @@
       :preload="true"
       :autoplay="false"
       :src="musicItem.music_url"
+      :volume="0.1"
       @play="onPlay"
       @pause="onPause"
       @timeupdate="timeUpDate"
+      @ended="musicEnded"
     ></audio>
   </div>
 </template>
@@ -144,6 +147,7 @@ export default defineComponent({
       isPlay: "icon-bofang", //icon-zantingtingzhi 暂停 icon-bofang 播放
       index: 0,
       musicItem: {},
+      percentage: null,
     });
     // 动态导航
     const dynNav = () => {
@@ -193,27 +197,55 @@ export default defineComponent({
     const onNextMusic = () => {
       let { audio } = musicListObj;
       audio.pause();
-      musicListObj.ifSongImgRotate = "";
-      musicListObj.isPlay = "icon-bofang";
       musicListObj.index++;
       if (musicListObj.index == musicListObj.musicLength) {
         musicListObj.index = 0;
+      }
+      // 为false的时候是播放状态
+      if (audio.paused) {
+        setTimeout(() => {
+          audio.play();
+        }, 500);
       }
     };
     // 点击上一首
     const onPreviousMusic = () => {
       let { audio } = musicListObj;
       audio.pause();
-      musicListObj.ifSongImgRotate = "";
-      musicListObj.isPlay = "icon-bofang";
       if (musicListObj.index == 0) {
         musicListObj.index = musicListObj.musicLength;
       }
       musicListObj.index--;
+      // 为false的时候是播放状态
+      if (audio.paused) {
+        setTimeout(() => {
+          audio.play();
+        }, 500);
+      }
+    };
+    // 播放结束
+    const musicEnded = () => {
+      let { audio } = musicListObj;
+      audio.pause();
+      musicListObj.index++;
+      if (musicListObj.index == musicListObj.musicLength) {
+        musicListObj.index = 0;
+      }
+      // 为false的时候是播放状态
+      if (audio.paused) {
+        setTimeout(() => {
+          audio.play();
+          musicListObj.isPlay = "icon-zantingtingzhi";
+          musicListObj.ifSongImgRotate = "songImg";
+        }, 500);
+      }
     };
     // 播放时间
-    const timeUpDate = (e)=>{
-      console.log(e.timeStamp / 100)
+    const timeUpDate = () => {
+      //获取当前播放的百分比  当前进度/总进度
+      let percent =
+        musicListObj.audio.currentTime / musicListObj.audio.duration;
+      musicListObj.percentage = Number((percent * 100).toFixed(0));
     };
     // 动态匹配activeIndex
     const activeIndexArr = ref([
@@ -252,7 +284,8 @@ export default defineComponent({
       onPauseMusic,
       onNextMusic,
       onPreviousMusic,
-      timeUpDate
+      timeUpDate,
+      musicEnded,
     };
   },
   data() {

@@ -20,7 +20,23 @@
               </el-carousel-item>
             </el-carousel>
           </el-row>
-          <el-row class="right"></el-row>
+          <div class="right">
+            <p class="jokeTiele">每日娱乐</p>
+            <p class="jokeContent">
+              <el-empty
+                :image-size="50"
+                v-if="!joke.text"
+                description="今日没有笑话哦"
+              ></el-empty>
+              <el-scrollbar v-if="joke.text" height="1.4rem">
+                <span>{{ joke.text }}</span>
+              </el-scrollbar>
+            </p>
+            <div class="jokeSwitch">
+              <span @click="previousJoke">上一个</span>
+              <span @click="nextJoke">下一个</span>
+            </div>
+          </div>
         </div>
         <!-- 最新文章 -->
         <div class="blog_newArticle">
@@ -91,19 +107,15 @@
           </el-row>
           <div class="right">
             <ul class="recommendDemo">
-              <li
-                class="recommendDemoItem"
-                v-for="(item, index) in recVideo"
-                :key="index"
-              >
+              <li class="recommendDemoItem">
                 <video
                   id="rec_video"
                   style="width: 100%; height: calc(100% - 0.25rem)"
                   controls
-                  :poster="item.video_pic"
-                  :src="item.video_url"
+                  poster=""
+                  src=""
                 ></video>
-                <h2 class="videoIntroduction">{{ item.brief }}</h2>
+                <h2 class="videoIntroduction"></h2>
               </li>
             </ul>
           </div>
@@ -114,8 +126,9 @@
 </template>
 
 <script>
-import { defineComponent, reactive, onMounted, toRefs } from "vue";
-import { useStore } from "vuex";
+import { defineComponent, reactive, onMounted, toRefs, watch } from "vue";
+// import { useStore } from "vuex";
+import axios from "axios";
 import { getPhotos, getAllArticle } from "@/http/api";
 import { getDate } from "@/util/date";
 import { useRouter } from "vue-router";
@@ -125,12 +138,9 @@ export default defineComponent({
   directives: {},
   setup() {
     // store 实例
-    const store = useStore();
+    // const store = useStore();
     // 路由实例
     const router = useRouter();
-    // 推荐视频
-    let recVideo = reactive([]);
-    recVideo = store.state.video.recVideoArr;
     // 获取最新的相册展示在轮播图
     // 相册参数
     const BlogPhotosList = reactive({
@@ -166,6 +176,13 @@ export default defineComponent({
           console.log(err);
         });
     };
+    // 笑话参数
+    const jokeobj = reactive({
+      // 页数
+      page: Math.floor(Math.random() * 870),
+      // 获取的数组
+      joke: {},
+    });
     // 根据id跳转对应文章详情
     const toArticleDetail = (article_id) => {
       router.replace(`/creepreBlog/article/articleDetail/${article_id}/users`);
@@ -189,8 +206,49 @@ export default defineComponent({
           console.log(err);
         });
     };
+    // 获取笑话
+    const getJokeRes = async (page) => {
+      const res = await axios.get("https://api.apiopen.top/getJoke", {
+        params: {
+          page: page,
+          count: 1,
+          type: "text",
+        },
+      });
+      if (res.data.code == 200) {
+        const { result } = res.data;
+        jokeobj.joke = result[0];
+      } else {
+        console.log("请求失败");
+      }
+    };
+    // 下一个笑话
+    const nextJoke = () => {
+      jokeobj.page++;
+      if (jokeobj.page == 870) {
+        jokeobj.page = Math.floor(Math.random() * 870);
+      }
+    };
+    // 上一个笑话
+    const previousJoke = () => {
+      if (jokeobj.page == 1) {
+        jokeobj.page = Math.floor(Math.random() * 870);
+      }
+      jokeobj.page--;
+    };
+    // 监听
+    watch(
+      () => jokeobj.page,
+      () => {
+        getJokeRes(jokeobj.page);
+      }
+    );
     // 挂载阶段
     onMounted(() => {
+      // 段子视频
+      // getShortVideo(shortVideoObj.page);
+      // 获取笑话
+      getJokeRes(jokeobj.page);
       // 获取文章
       getBlogArticle(newArticleObj.page);
       // 获取相册
@@ -198,10 +256,12 @@ export default defineComponent({
     });
     return {
       ...toRefs(newArticleObj),
-      recVideo,
       ...toRefs(BlogPhotosList),
+      ...toRefs(jokeobj),
       getDate,
       toArticleDetail,
+      nextJoke,
+      previousJoke,
     };
   },
 });
@@ -224,7 +284,36 @@ export default defineComponent({
     .right {
       overflow: hidden;
       height: 100%;
-      background: blue;
+      box-shadow: inset 0 0 0.05rem 0.02rem #cccccc;
+      user-select: none;
+      .jokeTiele {
+        text-align: center;
+        width: 100%;
+        height: 0.3rem;
+        line-height: 0.3rem;
+        letter-spacing: 0.01rem;
+        font-size: 0.16rem;
+        font-weight: bold;
+      }
+      .jokeContent {
+        min-height: 1.4rem;
+        padding: 0 0.2rem;
+        line-height: 0.17rem;
+      }
+      .jokeSwitch {
+        height: 0.25rem;
+        width: 100%;
+        display: flex;
+        justify-content: space-evenly;
+        align-items: center;
+        &:hover span {
+          cursor: pointer;
+        }
+        span:active {
+          transform: scale(1.1);
+          user-select: none;
+        }
+      }
     }
     .blog_banner_img {
       width: 100%;
