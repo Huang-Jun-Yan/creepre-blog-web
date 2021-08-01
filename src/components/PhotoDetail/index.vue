@@ -1,16 +1,34 @@
 <template>
   <div id="photos">
-    <h2 style="">相册内容</h2>
-    <div id="container">
-      <div class="card" v-for="(item, index) in PhotoList" :key="index">
-        <el-image
-          style="display: block"
-          :src="item"
-          :preview-src-list="PhotoList"
-        ></el-image>
-        <p style=""></p>
-        <p style=""></p>
-      </div>
+    <h2>相册内容</h2>
+    <div class="photosBox">
+      <el-scrollbar height="5.5rem">
+        <div id="container">
+          <div class="card" v-for="(item, index) in PhotoList" :key="index">
+            <el-image
+              style="display: block; transition: all 0.5s"
+              :src="item"
+              :preview-src-list="PhotoList"
+            ></el-image>
+          </div>
+        </div>
+      </el-scrollbar>
+    </div>
+    <div class="pagination">
+      <el-pagination
+        style="
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          height: 100%;
+        "
+        background
+        layout="prev, pager, next"
+        total=""
+        page-size=""
+        @current-change="handleChange"
+      >
+      </el-pagination>
     </div>
   </div>
 </template>
@@ -52,6 +70,10 @@ export default defineComponent({
     onMounted(() => {
       getPhotoDetails();
     });
+    // currentPage 改变时会触发
+    const handleChange = (val) => {
+      console.log(val);
+    };
     // 监听
     watch(
       () => route.params.id,
@@ -61,6 +83,7 @@ export default defineComponent({
     );
     return {
       ...toRefs(photoDetail),
+      handleChange,
     };
   },
 });
@@ -84,21 +107,28 @@ export default defineComponent({
     user-select: none;
     padding-left: 0.1rem;
   }
-  #container {
-    width: 100%;
-    min-height: 3rem;
-    padding: 0.05rem;
-    columns: 4;
-    column-gap: 0.1rem;
-    .card {
-      width: 100%;
-      margin: 0 0 0.1rem;
-      background: #cccccc;
-      overflow: hidden;
-      break-inside: avoid;
-      border-radius: 0.04rem;
+  .photosBox {
+    min-height: 5.5rem;
+    #container {
+      padding: 0.05rem;
+      columns: 4;
+      column-gap: 0.02rem;
+      .card {
+        width: 100%;
+        margin: 0 0 0.1rem;
+        background: #cccccc;
+        overflow: hidden;
+        break-inside: avoid;
+        border-radius: 0.04rem;
+      }
     }
   }
+  .pagination {
+    height: 0.6rem;
+    line-height: 0.6rem;
+    background: #eeeeee;
+  }
+
   @media screen and (max-width: 1500px) {
     #container {
       column-count: 2;
@@ -112,13 +142,6 @@ export default defineComponent({
   @media screen and (max-width: 900px) {
     #container {
       column-count: 2;
-    }
-  }
-  header {
-    padding-bottom: 2rem;
-    position: relative;
-    span:hover {
-      color: lightblue;
     }
   }
 }

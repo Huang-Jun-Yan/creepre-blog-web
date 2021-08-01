@@ -108,6 +108,7 @@
           <div class="right">
             <ul class="recommendDemo">
               <li class="recommendDemoItem">
+                <!-- <img src="" alt=""> -->
                 <video
                   id="rec_video"
                   style="width: 100%; height: calc(100% - 0.25rem)"
@@ -196,10 +197,10 @@ export default defineComponent({
         .then((res) => {
           if (res.data.code == 200) {
             const { data } = res.data;
-            data.map((item) => {
+            data.data.map((item) => {
               item.imgsrc = JSON.parse(item.imgsrc);
             });
-            BlogPhotosList.PhotoList = data[0].imgsrc;
+            BlogPhotosList.PhotoList = data.data[0].imgsrc;
           }
         })
         .catch((err) => {
@@ -245,8 +246,6 @@ export default defineComponent({
     );
     // 挂载阶段
     onMounted(() => {
-      // 段子视频
-      // getShortVideo(shortVideoObj.page);
       // 获取笑话
       getJokeRes(jokeobj.page);
       // 获取文章
@@ -447,6 +446,9 @@ export default defineComponent({
                   }
                   span {
                     color: rgb(123, 124, 103);
+                  }
+                  &:hover i{
+                    cursor: pointer;
                   }
                 }
               }

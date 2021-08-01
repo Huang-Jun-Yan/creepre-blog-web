@@ -101,10 +101,11 @@ export default {
         return ElMessage.warning("封面，视频，简介为必传，而你没有上传！");
       // 调用接口
       upBlogVideo({
-        admin_id: getStorage("adminInfo").admin_id,
+        admin_id: getStorage("admin_id"),
         video_url: uploadBlogDemo.video_url,
         video_pic: uploadBlogDemo.video_pic,
         brief: uploadBlogDemo.viedioIntroduction,
+        username: getStorage("blogUserInfo").username,
       })
         .then((res) => {
           if (res.data.code == 200) {
@@ -153,9 +154,9 @@ export default {
     color: #000;
     letter-spacing: 0.01rem;
     user-select: none;
-    i{
-      margin: 0 .05rem;
-      font-size: .2rem;
+    i {
+      margin: 0 0.05rem;
+      font-size: 0.2rem;
     }
   }
 }

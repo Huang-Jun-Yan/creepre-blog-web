@@ -168,14 +168,11 @@
         </div>
       </el-main>
     </el-container>
-    <!-- 页脚 -->
-    <!-- <blogFooters></blogFooters> -->
   </div>
 </template>
 
 <script>
 import blogHeaders from "@/components/blogHeader";
-// import blogFooters from "../../components/blogFooter";
 import { useRouter } from "vue-router";
 import {
   defineComponent,
@@ -187,13 +184,13 @@ import {
 } from "vue";
 import { getStorage } from "@/util/Storage";
 import { ElMessage } from "element-plus";
-import { getRecentArticle } from "@/http/api";
+import { getRecentArticle, adminIsLogined } from "@/http/api";
 import { getDate } from "@/util/date";
+import axios from "axios";
 export default defineComponent({
   name: "blogIndex",
   components: {
     blogHeaders,
-    // blogFooters,
   },
   setup() {
     // 路由实例
@@ -225,6 +222,14 @@ export default defineComponent({
     const toArticleDetail = (article_id) => {
       router.replace(`/creepreBlog/article/articleDetail/${article_id}/users`);
     };
+    axios
+      .get("https://api.apiopen.top/todayVideo", {})
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
     /* 挂载阶段钩子 */
     onMounted(() => {
       // 获取近期文章
@@ -251,47 +256,23 @@ export default defineComponent({
     const toUserLogin = () => {
       router.push("/users/blogLogin");
     };
-    // 管理员是否登录
-    // const isAdminLogin = async () => {
-    //   let admin_id;
-    //   if (!getStorage("adminInfo").admin_id) {
-    //     ElMessage.warning({
-    //       message: "警告，管理未登录",
-    //       type: "warning",
-    //     });
-    //     return false;
-    //   } else {
-    //     admin_id = getStorage("adminInfo").admin_id;
-    //   }
-    //   const res = await adminIsLogined({ admin_id: admin_id });
-    //   if (res.data.code == 200) {
-    //     return true;
-    //   }
-    //   return false;
-    // };
     // 跳转至后台管理
     const toAdmin = async () => {
-      // 先判断是否登录
-      // const res = await isAdminLogin();
-      // if (res) {
-      //   router.replace("/creepreBlog/admin");
-      // } else {
-      // 上面没有返回true，执行下面去登录
-      const { username } = getStorage("blogUserInfo");
-      if (username == "admin") {
-        router.replace("/users/admin/adminLogin");
+      const res = await adminIsLogined();
+      if (res.data.code == 200) {
+        router.replace("/creepreBlog/admin");
       } else {
-        ElMessage.warning({
-          message: "您还不是管理员哦！",
-          type: "warning",
-        });
-        return false;
-        // }
+        router.replace("/users/admin/adminLogin");
+        ElMessage("亲爱的管理员，你还没登录哦ㄟ≥◇≤ㄏ");
       }
     };
     // 用户修改信息页面
     const editAvatar = async () => {
-      router.push("/creepreBlog/editInfo");
+      if (getStorage("blogUserInfo")) {
+        router.push("/creepreBlog/editInfo");
+      } else {
+        ElMessage.warning("你还未登录，不能编辑自己的信息╮╯▽╰╭");
+      }
     };
     return {
       ...toRefs(blogUserInfo),

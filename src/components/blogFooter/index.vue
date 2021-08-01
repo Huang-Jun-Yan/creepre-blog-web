@@ -24,6 +24,7 @@ export default {
 <style lang="scss" scoped>
 #blogFooterBox {
   position: relative;
+  width: 100vw;
   bottom: 0;
   left: 0;
   height: .8rem;

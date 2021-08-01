@@ -24,7 +24,7 @@
               <el-submenu index="1">
                 <template #title>
                   <i class="el-icon-tickets"></i>
-                  <span>内容管理</span>
+                  <span>文章管理</span>
                 </template>
                 <el-menu-item
                   @click="$router.push('/admin/articlePublish')"
@@ -50,34 +50,54 @@
                   >用户列表管理</el-menu-item
                 >
               </el-submenu>
-
               <!-- 图文管理 -->
               <el-submenu index="3">
                 <template #title>
                   <i class="el-icon-paperclip"></i>
-                  <span>其他内容</span>
+                  <span>内容管理</span>
+                </template>
+                <el-menu-item
+                  @click="$router.push('/admin/photosManage')"
+                  index="3-1"
+                >
+                  相册管理
+                </el-menu-item>
+                <el-menu-item
+                  @click="$router.push('/admin/videoManage')"
+                  index="3-2"
+                >
+                  视频管理
+                </el-menu-item>
+              </el-submenu>
+
+              <!-- 图文管理 -->
+              <el-submenu index="4">
+                <template #title>
+                  <i class="el-icon-paperclip"></i>
+                  <span>内容发布</span>
                 </template>
                 <el-menu-item
                   @click="$router.push('/admin/photos')"
-                  index="3-1"
+                  index="4-1"
                 >
                   上传图片
                 </el-menu-item>
                 <el-menu-item
                   @click="$router.push('/admin/videos')"
-                  index="3-2"
+                  index="4-2"
                 >
                   上传视频
                 </el-menu-item>
                 <el-menu-item
                   @click="$router.push('/admin/musics')"
-                  index="3-3"
+                  index="4-3"
                 >
                   上传音乐
                 </el-menu-item>
               </el-submenu>
+
               <!-- 退出管理 -->
-              <el-menu-item @click="outAdminClick" index="4">
+              <el-menu-item @click="outAdminClick" index="5">
                 <i class="el-icon-top"></i>
                 <span>退出管理</span>
               </el-menu-item>

@@ -113,7 +113,7 @@
       :preload="true"
       :autoplay="false"
       :src="musicItem.music_url"
-      :volume="0.1"
+      :volume="0.05"
       @play="onPlay"
       @pause="onPause"
       @timeupdate="timeUpDate"
@@ -144,7 +144,7 @@ export default defineComponent({
       musicLength: null,
       audio: "",
       ifSongImgRotate: "", // songImg
-      isPlay: "icon-bofang", //icon-zantingtingzhi 暂停 icon-bofang 播放
+      isPlay: "icon-zantingtingzhi", //icon-zantingtingzhi 暂停 icon-bofang 播放
       index: 0,
       musicItem: {},
       percentage: null,

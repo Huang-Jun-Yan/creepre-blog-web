@@ -52,8 +52,8 @@ export default defineComponent({
       PhotoList: [],
     });
     // 获取相册
-    const getBlogPhotos = async (page) => {
-      await getPhotos({
+    const getBlogPhotos = (page) => {
+      getPhotos({
         page: page,
         pageSize: BlogPhotosList.pageSize,
       })
@@ -61,10 +61,11 @@ export default defineComponent({
           console.log(res);
           if (res.data.code == 200) {
             const { data } = res.data;
-            data.map((item) => {
+            BlogPhotosList.count = data.count;
+            data.data.map((item) => {
               item.imgsrc = JSON.parse(item.imgsrc);
             });
-            BlogPhotosList.PhotoList = data;
+            BlogPhotosList.PhotoList = data.data;
           }
         })
         .catch((err) => {

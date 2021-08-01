@@ -2,10 +2,10 @@
   <div id="blogDemo">
     <div class="blogDemoShow">
       <ul class="blogDemoBox">
-        <el-scrollbar :noresize="true" height="5.7rem">
+        <el-scrollbar :noresize="true" height="5.9rem">
           <li
             class="blogDemoItem"
-            v-for="(videoItem, index) in getVideo.videoList"
+            v-for="(videoItem, index) in videoList"
             :key="index"
           >
             <div class="blogDemoSelf">
@@ -20,7 +20,7 @@
             </div>
             <div class="blogDemoIntroduction">
               {{ videoItem.brief }}
-              <span class="clearfix">发布时间:{{ videoItem.create_time }}</span>
+              <span class="clearfix">发布时间:{{ getDate(videoItem.create_time) }}</span>
             </div>
           </li>
         </el-scrollbar>
@@ -36,8 +36,8 @@
         "
         background
         layout="prev, pager, next"
-        :total="getVideo.total ? getVideo.total : 100"
-        :page-size="getVideo.pageSize"
+        :total="total ? total : 100"
+        :page-size="pageSize"
         @current-change="handleChange"
       >
       </el-pagination>
@@ -46,42 +46,54 @@
 </template>
 
 <script>
-import { defineComponent, reactive, onMounted } from "vue";
-import { useStore } from "vuex";
+import { defineComponent, reactive, onMounted, toRefs, watch } from "vue";
+import { getBlogVideo } from "@/http/api";
+import { getDate } from "@/util/date";
 export default defineComponent({
   name: "blogWebDemo",
   components: {},
   setup() {
-    // store 实例
-    const store = useStore();
     // 获取的页码
-    const getVideo = reactive({
+    const getVideoobj = reactive({
       videoList: [],
       page: 1,
-      pageSize: 6,
+      pageSize: 1,
       total: null, // 总数
     });
     // 获取Demo
-    store
-      .dispatch("video/getBlogVideoAsunc", {
-        page: getVideo.page,
-        pageSize: getVideo.pageSize,
-      })
-      .then((res) => {
-        if (res.code == 200) {
-          getVideo.total = res.data.count;
-          getVideo.videoList = res.data.data;
+    const getVideo = (page) => {
+      getBlogVideo({
+        page: page,
+        pageSize: getVideoobj.pageSize,
+      }).then((res) => {
+        if (res.data.code == 200) {
+          const { data } = res.data;
+          getVideoobj.total = data.count;
+          getVideoobj.videoList = data.data;
         }
       });
+    };
+
     // currentPage 改变时会触发
     const handleChange = (val) => {
-      console.log(val);
+      getVideoobj.page = val;
     };
+    // 监听
+    watch(
+      () => getVideoobj.page,
+      () => {
+        getVideo(getVideoobj.page);
+      }
+    );
     //  挂载阶段
-    onMounted(() => {});
+    onMounted(() => {
+      // 获取Demo
+      getVideo(getVideoobj.page);
+    });
     return {
-      getVideo,
+      ...toRefs(getVideoobj),
       handleChange,
+      getDate
     };
   },
 });
@@ -92,11 +104,11 @@ export default defineComponent({
   height: calc(100% - 0.2rem);
   padding: 0 0.1rem;
   .blogDemoShow {
-    height: 5.6rem;
+    height: 5.9rem;
     .blogDemoBox {
-      height: 5.5rem;
+      height: 5.8rem;
       .blogDemoItem {
-        height: 3.6rem;
+        height: 5.8rem;
         background: #eeeeee;
         border-radius: 0.05rem;
         .blogDemoSelf {
@@ -120,7 +132,7 @@ export default defineComponent({
           }
         }
         .blogDemoIntroduction {
-          min-height: 0.11rem;
+          min-height: 2.5rem;
           padding: 0.05rem 0.05rem;
           box-shadow: inset 0 0 0.03rem 0.02rem #cccccc;
           span {
@@ -133,7 +145,7 @@ export default defineComponent({
   }
   .pagination {
     height: 0.62rem;
-    margin-top: 0.02rem;
+    margin-top: 0.01rem;
     background: #eeeeee;
   }
 }

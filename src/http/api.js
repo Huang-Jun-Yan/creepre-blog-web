@@ -55,6 +55,11 @@ export const upBlogVideo = val => post('/blogApi/video/sendVideo', val);
  */
 export const getBlogVideo = val => get('/blogApi/video/getVideo', val);
 /**
+ * @method 删除Demo
+ * @param {number} video_id
+ */
+export const deleteVideos = val => post('/blogApi/video/deleteVideos', val);
+/**
  * @method 上传相册
  * @param {Object} admin_id
  * @param {Object} brief
@@ -69,11 +74,16 @@ export const upBlogPhotos = val => post('/blogApi/photo/sendPhotos', val);
  */
 export const getPhotos = val => get('/blogApi/photo/getPhoto', val);
 /**
- * @method 获取相册
+ * @method 获取相册详情
  * @param {Object} page
  * @param {Object} pageSize
  */
 export const getPhotoDetail = val => post('/blogApi/photo/getPhotoById', val);
+/**
+ * @method 删除相册
+ * @param {number} pic_id
+ */
+export const deletePhotos = val => post('/blogApi/photo/deletePhotos', val);
 
 /**
  * @Types  用户

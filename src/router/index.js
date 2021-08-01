@@ -1,6 +1,7 @@
 import { createRouter, createWebHashHistory } from 'vue-router';
-import { getStorage } from "../util/Storage";
 import { ElMessage } from 'element-plus';
+import { getAdminAcc } from "../http/api";
+import { getStorage } from "../util/Storage";
 
 const routes = [{
         path: '/',
@@ -17,7 +18,8 @@ const routes = [{
                 component: () =>
                     import ( /* webpackChunkName: "blogHome" */ '@/views/blogHome'),
                 meta: {
-                    routerName: "Blog首页"
+                    routerName: "Blog首页",
+                    requireAuth: false
                 },
             },
             {
@@ -26,7 +28,8 @@ const routes = [{
                 component: () =>
                     import ( /* webpackChunkName: "blogArticle" */ '@/views/blogArticle'),
                 meta: {
-                    routerName: "Blog文章"
+                    routerName: "Blog文章",
+                    requireAuth: false
                 },
             }, {
                 path: "/creepreBlog/blogPhoto",
@@ -34,7 +37,8 @@ const routes = [{
                 component: () =>
                     import ( /* webpackChunkName: "blogPhoto" */ '@/views/blogPhoto'),
                 meta: {
-                    routerName: "个人相册"
+                    routerName: "个人相册",
+                    requireAuth: false
                 },
             },
             {
@@ -43,7 +47,8 @@ const routes = [{
                 component: () =>
                     import ( /* webpackChunkName: "blogDemo" */ '@/views/blogDemo'),
                 meta: {
-                    routerName: "私人视频"
+                    routerName: "私人视频",
+                    requireAuth: false
                 },
             },
             {
@@ -52,7 +57,8 @@ const routes = [{
                 component: () =>
                     import ( /* webpackChunkName: "blogSpare" */ '@/views/blogSpare'),
                 meta: {
-                    routerName: "备用页面"
+                    routerName: "备用页面",
+                    requireAuth: false
                 },
             },
             {
@@ -61,7 +67,8 @@ const routes = [{
                 component: () =>
                     import ( /* webpackChunkName: "blogSpare" */ '@/components/editUserInfo'),
                 meta: {
-                    routerName: "修改信息"
+                    routerName: "修改信息",
+                    requireAuth: false
                 },
             },
             {
@@ -70,7 +77,8 @@ const routes = [{
                 component: () =>
                     import ( /* webpackChunkName: "PhotoDetail" */ '@/components/PhotoDetail'),
                 meta: {
-                    routerName: "相册详情"
+                    routerName: "相册详情",
+                    requireAuth: false
                 },
             },
             {
@@ -79,7 +87,8 @@ const routes = [{
                 component: () =>
                     import ( /* webpackChunkName: "articleDetail" */ '../components/articleDetail'), //articlePublish
                 meta: {
-                    routerName: "文章详情"
+                    routerName: "文章详情",
+                    requireAuth: false
                 },
             },
         ]
@@ -91,7 +100,8 @@ const routes = [{
             import ( /* webpackChunkName: "admin" */ '@/blog_admin/admin.vue'),
         redirect: "/admin/articleManage",
         meta: {
-            routerName: "管理页面"
+            routerName: "管理页面",
+            requireAuth: true
         },
         children: [{
                 path: '/admin/articlePublish',
@@ -99,7 +109,8 @@ const routes = [{
                 component: () =>
                     import ( /* webpackChunkName: "articlePublish" */ '@/blog_admin/articlePublish.vue'), //articlePublish
                 meta: {
-                    routerName: "文章发布"
+                    routerName: "文章发布",
+                    requireAuth: true
                 },
             },
             {
@@ -108,7 +119,8 @@ const routes = [{
                 component: () =>
                     import ( /* webpackChunkName: "articleManage" */ '@/blog_admin/articleManage.vue'), //articlePublish
                 meta: {
-                    routerName: "文章管理"
+                    routerName: "文章管理",
+                    requireAuth: true
                 },
             },
             {
@@ -117,7 +129,8 @@ const routes = [{
                 component: () =>
                     import ( /* webpackChunkName: "editArticle" */ '@/blog_admin/adminComponents/editArticle.vue'), //articlePublish
                 meta: {
-                    routerName: "文章编辑"
+                    routerName: "文章编辑",
+                    requireAuth: true
                 },
             },
             {
@@ -126,7 +139,28 @@ const routes = [{
                 component: () =>
                     import ( /* webpackChunkName: "usersManage" */ '@/blog_admin/usersManage.vue'), //articlePublish
                 meta: {
-                    routerName: "用户列表管理"
+                    routerName: "用户列表管理",
+                    requireAuth: true
+                },
+            },
+            {
+                path: '/admin/photosManage',
+                name: "/photosManage",
+                component: () =>
+                    import ( /* webpackChunkName: "photosManage" */ '@/blog_admin/photosManage.vue'), //photosManage
+                meta: {
+                    routerName: "相册管理",
+                    requireAuth: true
+                },
+            },
+            {
+                path: '/admin/videoManage',
+                name: "/videoManage",
+                component: () =>
+                    import ( /* webpackChunkName: "videoManage" */ '@/blog_admin/videoManage.vue'), //videoManage
+                meta: {
+                    routerName: "视频管理",
+                    requireAuth: true
                 },
             },
             {
@@ -135,7 +169,8 @@ const routes = [{
                 component: () =>
                     import ( /* webpackChunkName: "photos.vue" */ '@/blog_admin/photos.vue'), //articlePublish
                 meta: {
-                    routerName: "相册管理"
+                    routerName: "相册管理",
+                    requireAuth: true
                 },
             },
             {
@@ -144,7 +179,8 @@ const routes = [{
                 component: () =>
                     import ( /* webpackChunkName: "videos.vue" */ '@/blog_admin/videos.vue'), //articlePublish
                 meta: {
-                    routerName: "视频管理"
+                    routerName: "视频管理",
+                    requireAuth: true
                 },
             },
             {
@@ -153,7 +189,8 @@ const routes = [{
                 component: () =>
                     import ( /* webpackChunkName: "musics.vue" */ '@/blog_admin/musics.vue'), //articlePublish
                 meta: {
-                    routerName: "音乐管理"
+                    routerName: "音乐管理",
+                    requireAuth: true
                 },
             },
         ]
@@ -164,7 +201,8 @@ const routes = [{
         component: () =>
             import ( /* webpackChunkName: "blogLogin" */ '@/views/blogLogin'),
         meta: {
-            routerName: "Blog登录"
+            routerName: "Blog登录",
+            requireAuth: false
         }
     },
     {
@@ -173,7 +211,8 @@ const routes = [{
         component: () =>
             import ( /* webpackChunkName: "adminLogin" */ '@/blog_admin/adminLogin.vue'),
         meta: {
-            routerName: "admin登录"
+            routerName: "admin登录",
+            requireAuth: true
         }
     },
     {
@@ -182,7 +221,8 @@ const routes = [{
         component: () =>
             import ( /* webpackChunkName: "blogRegister" */ '@/views/blogRegister'),
         meta: {
-            routerName: "Blog注册"
+            routerName: "Blog注册",
+            requireAuth: false
         }
     }, {
         path: '/:pathMatch(.*)*',
@@ -190,7 +230,8 @@ const routes = [{
         component: () =>
             import ( /* webpackChunkName: "blogRegister" */ '@/views/NoFind'),
         meta: {
-            routerName: "404页面"
+            routerName: "404页面",
+            requireAuth: false
         }
     }
 ]
@@ -201,19 +242,23 @@ const router = createRouter({
 });
 
 // 路由拦截
-router.beforeEach((to, from, next) => {
-    if (to.path == "/admin/articlePublish" && "/admin/articleManage" && "/admin/usersManage" && "/admin/photos" && "/admin/videos" && "/admin/musics") {
-        if (!getStorage("admin_id")) {
-            ElMessage.warning({
-                message: '你还不是管理员，不要乱跑哦⊙﹏⊙‖',
-                type: 'warning'
-            });
-            next({
-                path: '/',
-            })
-        }
+router.beforeEach(async(to, from, next) => {
+    const res = await getAdminAcc();
+    if (to.matched.some(item => item.meta.requireAuth)) {
+        res.data.list.forEach(item => {
+            if (item.admin_id && item.username == getStorage("blogUserInfo").username) {
+                next()
+            } else {
+                next({
+                    path: "/"
+                })
+                ElMessage.warning('你不是管理员，不要乱跑哦●ω●');
+            }
+        })
+
+    } else {
+        next()
     }
-    next()
 });
 
 export default router;

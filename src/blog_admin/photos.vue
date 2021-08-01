@@ -54,18 +54,19 @@ export default defineComponent({
       photoCon: "",
       photosList: [],
       dialogImageUrl: "",
+      username: "",
       dialogVisible: false,
       disabled: false,
     });
     // 上传
     const onUpPhotos = () => {
       upBlogPhotos({
-        admin_id: getStorage("adminInfo").admin_id,
+        admin_id: getStorage("admin_id"),
         brief: uploadPhotos.photoCon,
+        username: getStorage("blogUserInfo").name || getStorage("blogUserInfo").username,
         imgsrc: JSON.stringify(uploadPhotos.photosList),
       })
         .then((res) => {
-          console.log(res);
           if (res.data.code == 200) {
             ElMessage.success({
               message: "上传成功",
@@ -129,9 +130,9 @@ export default defineComponent({
     font-weight: bold;
     letter-spacing: 0.02rem;
     margin: 0.2rem 0;
-      i{
-      margin: 0 .05rem;
-      font-size: .2rem;
+    i {
+      margin: 0 0.05rem;
+      font-size: 0.2rem;
     }
   }
 }
