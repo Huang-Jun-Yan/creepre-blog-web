@@ -41,6 +41,9 @@
                       }}</el-tag>
                     </p>
                   </div>
+                  <div class="articleLike">
+                     <span><i class="iconfont icon-yidianzan"></i>{{ArticleList.like_Star}}</span>
+                  </div>
                 </div>
                 <div class="bottom">
                   {{ ArticleList.brief }}ˋωˊ
@@ -199,6 +202,15 @@ export default defineComponent({
         .Label {
           font-weight: bold;
           user-select: none;
+        }
+        .articleLike {
+          color: orange;
+          font-size: .16rem;
+          user-select: none;
+          i {
+            color: red;
+            margin: 0rem .03rem;
+          }
         }
         .articleDetailTitle {
           min-height: 0.3rem;

@@ -15,7 +15,7 @@
             <div class="articleDetailTitle">
               <h2>
                 {{ selfArticleObj.title }}
-              <i class="iconfont icon-biaoti-xianxing"></i>
+                <i class="iconfont icon-biaoti-xianxing"></i>
               </h2>
             </div>
             <div class="articleDetailLabel">
@@ -27,7 +27,9 @@
                 </div>
                 <div class="createTime">
                   <p>
-                    发布时间:<span>{{ getDate(selfArticleObj.create_time) }}</span>
+                    发布时间:<span>{{
+                      getDate(selfArticleObj.create_time)
+                    }}</span>
                   </p>
                 </div>
                 <div class="Label">
@@ -44,11 +46,19 @@
                     }}</el-tag>
                   </p>
                 </div>
+                <div class="articleLike">
+                  <span
+                    ><i class="iconfont icon-yidianzan"></i
+                    >{{ selfArticleObj.like_Star }}</span
+                  >
+                </div>
               </div>
               <div class="bottom">
                 {{ selfArticleObj.brief }}ˋωˊ
                 <p>
-                  更新时间:<span>{{ getDate(selfArticleObj.update_time) }}</span>
+                  更新时间:<span>{{
+                    getDate(selfArticleObj.update_time)
+                  }}</span>
                 </p>
               </div>
             </div>
@@ -119,6 +129,15 @@ export default defineComponent({
         .Label {
           font-weight: bold;
           user-select: none;
+        }
+        .articleLike {
+          color: orange;
+          font-size: 0.16rem;
+          user-select: none;
+          i {
+            color: red;
+            margin: 0rem 0.03rem;
+          }
         }
         .articleDetailTitle {
           min-height: 0.3rem;

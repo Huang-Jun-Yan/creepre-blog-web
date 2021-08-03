@@ -184,9 +184,8 @@ import {
 } from "vue";
 import { getStorage } from "@/util/Storage";
 import { ElMessage } from "element-plus";
-import { getRecentArticle, adminIsLogined } from "@/http/api";
+import { getRecentArticle, adminIsLogined, getAdminAcc } from "@/http/api";
 import { getDate } from "@/util/date";
-import axios from "axios";
 export default defineComponent({
   name: "blogIndex",
   components: {
@@ -222,14 +221,6 @@ export default defineComponent({
     const toArticleDetail = (article_id) => {
       router.replace(`/creepreBlog/article/articleDetail/${article_id}/users`);
     };
-    axios
-      .get("https://api.apiopen.top/todayVideo", {})
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
     /* 挂载阶段钩子 */
     onMounted(() => {
       // 获取近期文章
@@ -258,13 +249,19 @@ export default defineComponent({
     };
     // 跳转至后台管理
     const toAdmin = async () => {
-      const res = await adminIsLogined();
-      if (res.data.code == 200) {
-        router.replace("/creepreBlog/admin");
-      } else {
-        router.replace("/users/admin/adminLogin");
-        ElMessage("亲爱的管理员，你还没登录哦ㄟ≥◇≤ㄏ");
-      }
+      const isAdminRes = await adminIsLogined();
+      const getAdminRes = await getAdminAcc();
+      getAdminRes.data.list.forEach((item) => {
+        if (
+          isAdminRes.data.code == 200 &&
+          getStorage("blogUserInfo").username == item.username
+        ) {
+          router.replace("/creepreBlog/admin");
+        } else if (getStorage("blogUserInfo").username == item.username) {
+          router.replace("/users/admin/adminLogin");
+          ElMessage("亲爱的管理员，你还没登录哦ㄟ≥◇≤ㄏ");
+        }
+      });
     };
     // 用户修改信息页面
     const editAvatar = async () => {

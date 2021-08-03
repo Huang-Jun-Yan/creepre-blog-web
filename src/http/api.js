@@ -194,3 +194,14 @@ export const getCategory = val => get('/blogApi/article/getCategory', val);
  * @param {number} pageSize  ---------------一页多少条
  */
 export const ByCategoryGetArticle = val => post('/blogApi/article/getArticleByCategory', val);
+/**
+ * @method 上传文章点赞状态
+ * @param {string} username  ---------------用户名字
+ * @param {number} article_id  ---------------文章id
+ * @param {number} like_Star_status  ---------------状态 1是点赞 0是取消
+ */
+export const addArticleLikeStar = val => post('/blogApi/article/addArticleLikeStar', val);
+/**
+ * @method 获取文章点赞状态
+ */
+export const getLikeStarStatus = val => get('/blogApi/article/getLikeStarStatus', val);

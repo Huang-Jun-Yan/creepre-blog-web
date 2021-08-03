@@ -94,7 +94,11 @@
                           </span>
                           <!-- 点赞次数 -->
                           <span class="article_contenter_likes">
-                            <i class="iconfont icon-zan"></i>
+                            <i
+                              @click="onUserLike(articleItem.article_id)"
+                              class="iconfont icon-zan"
+                              :class="likesIcon"
+                            ></i>
                             <span>{{ articleItem.like_Star }}</span>
                           </span>
                         </p>
@@ -128,18 +132,22 @@
 
 <script>
 import { defineComponent, reactive, onMounted, toRefs, watch } from "vue";
-// import { useStore } from "vuex";
 import axios from "axios";
-import { getPhotos, getAllArticle } from "@/http/api";
+import {
+  getPhotos,
+  getAllArticle,
+  addArticleLikeStar,
+  getLikeStarStatus,
+} from "@/http/api";
 import { getDate } from "@/util/date";
 import { useRouter } from "vue-router";
+import { getStorage } from "@/util/Storage";
+import { ElMessage } from "element-plus";
 export default defineComponent({
   name: "blogWebHome",
   components: {},
   directives: {},
   setup() {
-    // store 实例
-    // const store = useStore();
     // 路由实例
     const router = useRouter();
     // 获取最新的相册展示在轮播图
@@ -160,6 +168,15 @@ export default defineComponent({
       pageSize: 10,
       // 获取的数组
       newArticleList: [],
+      // 点赞的图标
+      likesIcon: "", // icon-yidianzan likes
+    });
+    // 笑话参数
+    const jokeobj = reactive({
+      // 页数
+      page: Math.floor(Math.random() * 870),
+      // 获取的数组
+      joke: {},
     });
     // 获取文章
     const getBlogArticle = (page) => {
@@ -177,13 +194,6 @@ export default defineComponent({
           console.log(err);
         });
     };
-    // 笑话参数
-    const jokeobj = reactive({
-      // 页数
-      page: Math.floor(Math.random() * 870),
-      // 获取的数组
-      joke: {},
-    });
     // 根据id跳转对应文章详情
     const toArticleDetail = (article_id) => {
       router.replace(`/creepreBlog/article/articleDetail/${article_id}/users`);
@@ -237,6 +247,41 @@ export default defineComponent({
       }
       jokeobj.page--;
     };
+    // 点赞
+    const onUserLike = async (article_id) => {
+      /* 上传点赞状态 */
+      try {
+        const res = await getLikeStarStatus({
+          article_id: article_id,
+          username: getStorage("blogUserInfo").username,
+        });
+        if (res.data.code == 200 && res.data.data[0].like_Star_status == 1) {
+          addArticleLikeStar({
+            username: res.data.data[0].username,
+            article_id: res.data.data[0].article_id,
+            like_Star_status: res.data.data[0].like_Star_status,
+          }).then((res) => {
+            if (res.data.code == 200) {
+              ElMessage.warning("你取消点赞,我有点难过 ≥﹏≤");
+              getBlogArticle(newArticleObj.page);
+            }
+          });
+        } else {
+          addArticleLikeStar({
+            username: getStorage("blogUserInfo").username,
+            article_id: article_id,
+            like_Star_status: res.data.data.like_Star_status,
+          }).then((res) => {
+            if (res.data.code == 200) {
+              ElMessage.success("谢谢你的赞同 ≥ω≤");
+              getBlogArticle(newArticleObj.page);
+            }
+          });
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    };
     // 监听
     watch(
       () => jokeobj.page,
@@ -261,6 +306,7 @@ export default defineComponent({
       toArticleDetail,
       nextJoke,
       previousJoke,
+      onUserLike,
     };
   },
 });
@@ -443,11 +489,15 @@ export default defineComponent({
                 .article_contenter_likes {
                   i {
                     color: rgb(202, 23, 10);
+                    &:active {
+                      transform: scale(1.5);
+                      user-select: none;
+                    }
                   }
                   span {
                     color: rgb(123, 124, 103);
                   }
-                  &:hover i{
+                  &:hover i {
                     cursor: pointer;
                   }
                 }
@@ -482,6 +532,12 @@ export default defineComponent({
         }
       }
     }
+  }
+}
+
+@keyframes likes {
+  to {
+    transform: scale(1.05);
   }
 }
 </style>

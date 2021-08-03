@@ -63,7 +63,6 @@ export default defineComponent({
       })
         .then((res) => {
           if (res.data.code == 200) {
-            console.log(res.data.data);
             setStorage("blogUserInfo", {
               avatar: res.data.data.avatar,
               email: res.data.data.email,
