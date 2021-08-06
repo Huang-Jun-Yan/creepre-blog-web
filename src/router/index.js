@@ -85,9 +85,19 @@ const routes = [{
                 path: '/creepreBlog/article/articleDetail/:id/users',
                 name: "/articleDetail",
                 component: () =>
-                    import ( /* webpackChunkName: "articleDetail" */ '../components/articleDetail'), //articlePublish
+                    import ( /* webpackChunkName: "articleDetail" */ '@/components/articleDetail'), //articlePublish
                 meta: {
                     routerName: "文章详情",
+                    requireAuth: false
+                },
+            },
+            {
+                path: '/creepreBlog/messageBoard',
+                name: "/message_board",
+                component: () =>
+                    import ( /* webpackChunkName: "message_board" */ '@/views/message_board'), //articlePublish
+                meta: {
+                    routerName: "留言板",
                     requireAuth: false
                 },
             },

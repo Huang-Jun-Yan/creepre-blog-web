@@ -13,5 +13,5 @@ export const getDate = (timestamp) => {
     if (parseInt(second) < 10) {
         second = '0' + second;
     }
-    return year + "-" + month + "-" + date1 + "-" + hour + ":" + minute + ":" + second;
+    return year + "-" + month + "-" + date1 + "   " + hour + ":" + minute + ":" + second;
 }

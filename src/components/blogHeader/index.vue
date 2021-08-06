@@ -144,7 +144,7 @@ export default defineComponent({
       musicLength: null,
       audio: "",
       ifSongImgRotate: "", // songImg
-      isPlay: "icon-zantingtingzhi", //icon-zantingtingzhi 暂停 icon-bofang 播放
+      isPlay: "icon-bofang", //icon-zantingtingzhi 暂停 icon-bofang 播放
       index: 0,
       musicItem: {},
       percentage: null,

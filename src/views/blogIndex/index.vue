@@ -15,16 +15,16 @@
                 :size="100"
                 fit="contain"
                 @click="editAvatar"
-                :src="circleUrl"
+                :src="userInfo.avatar"
               ></el-avatar>
               <!-- 用户名字及登录注册按钮 -->
               <el-row class="blog_userName">
                 <!-- 用户名字 -->
-                <div class="userName" v-if="username">
-                  <h2 @click="toAdmin">{{ username }}</h2>
+                <div class="userName" v-if="userInfo.username">
+                  <h2 @click="toAdmin">{{ userInfo.username }}</h2>
                 </div>
                 <!-- 登录注册按钮 -->
-                <div class="blogBtn" v-if="!username">
+                <div class="blogBtn" v-if="!userInfo.username">
                   <el-button @click="toUserLogin" type="success"
                     >登录及注册</el-button
                   >
@@ -32,7 +32,7 @@
               </el-row>
               <!-- 用户介绍 -->
               <el-row class="blog_readNumber">
-                {{ introduction }}
+                {{ userInfo.introduction }}
               </el-row>
             </el-row>
             <!-- 推荐列表 -->
@@ -69,95 +69,10 @@
                 ></el-empty>
               </div>
             </el-row>
-            <!-- 联系我 -->
-            <div class="callMe">
-              <p class="callMe_title">联系我:</p>
-              <ul>
-                <li>
-                  <el-tooltip
-                    class="blog_own_link_item_child"
-                    effect="dark"
-                    content="QQ联系:2503705169"
-                    placement="top"
-                  >
-                    <el-button
-                      type="text"
-                      circle
-                      class="iconfont icon-QQ btn"
-                    ></el-button>
-                  </el-tooltip>
-                  <p>微信</p>
-                </li>
-                <li>
-                  <el-tooltip
-                    class="blog_own_link_item_child"
-                    effect="dark"
-                    content="微信联系:Darker-___-"
-                    placement="top"
-                  >
-                    <el-button
-                      type="text"
-                      circle
-                      class="iconfont icon-weixin1 btn"
-                    ></el-button>
-                  </el-tooltip>
-                  <p>QQ</p>
-                </li>
-                <li>
-                  <el-tooltip
-                    class="blog_own_link_item_child"
-                    effect="dark"
-                    content="github:https://github.com/Huang-Jun-Yan"
-                    placement="top"
-                  >
-                    <el-button
-                      type="text"
-                      circle
-                      class="iconfont icon-github btn"
-                    ></el-button>
-                  </el-tooltip>
-                  <p>gitHub</p>
-                </li>
-                <li>
-                  <el-tooltip
-                    class="blog_own_link_item_child"
-                    effect="dark"
-                    content="微博:https://weibo.com/u/7561336645/home"
-                    placement="top"
-                  >
-                    <el-button
-                      type="text"
-                      circle
-                      class="iconfont icon-weibo1 btn"
-                    ></el-button>
-                  </el-tooltip>
-                  <p>微博</p>
-                </li>
-              </ul>
-            </div>
-            <!-- 友情链接 -->
-            <div class="blog_Links">
-              <p class="Links_title">友情链接</p>
-              <ul>
-                <li>
-                  <el-tooltip
-                    class="blog_own_link_item_child"
-                    effect="dark"
-                    content="QQ联系:2503705169"
-                    placement="top"
-                  >
-                    <el-button
-                      type="text"
-                      circle
-                      class="iconfont icon-QQ btn"
-                    ></el-button>
-                  </el-tooltip>
-                  <p>微信</p>
-                </li>
-              </ul>
-            </div>
+            <!-- 其他 -->
+            <messageBoard />
+            <!-- 其他 -->
           </div>
-
           <div class="rightBody">
             <router-view v-slot="{ Component }">
               <transition name="el-fade-in-linear">
@@ -172,6 +87,7 @@
 </template>
 
 <script>
+import messageBoard from "@/components/other/message";
 import blogHeaders from "@/components/blogHeader";
 import { useRouter } from "vue-router";
 import {
@@ -184,21 +100,25 @@ import {
 } from "vue";
 import { getStorage } from "@/util/Storage";
 import { ElMessage } from "element-plus";
-import { getRecentArticle, adminIsLogined, getAdminAcc } from "@/http/api";
+import {
+  getRecentArticle,
+  adminIsLogined,
+  getAdminAcc,
+  getuserInfo,
+} from "@/http/api"; // getuserInfo
 import { getDate } from "@/util/date";
 export default defineComponent({
   name: "blogIndex",
   components: {
     blogHeaders,
+    messageBoard,
   },
   setup() {
     // 路由实例
     const router = useRouter();
     // 用户信息
-    const blogUserInfo = reactive({
-      username: "",
-      introduction: "",
-      circleUrl: "",
+    const blogUserobj = reactive({
+      userInfo: {},
     });
     /* 父向子传值 */
     provide("routerInfo", router.options.routes[0]);
@@ -213,7 +133,6 @@ export default defineComponent({
             item.create_time = getDate(item.create_time);
           });
           articleRec.value = data;
-          // console.log(articleRec.value);
         }
       });
     };
@@ -221,26 +140,20 @@ export default defineComponent({
     const toArticleDetail = (article_id) => {
       router.replace(`/creepreBlog/article/articleDetail/${article_id}/users`);
     };
-    /* 挂载阶段钩子 */
-    onMounted(() => {
-      // 获取近期文章
-      recentArticle();
-      // 用户登录
-      userLogin();
-    });
     // 用户登录
-    const userLogin = () => {
-      if (!getStorage("blogUserInfo")) {
+    const userLogin = async () => {
+      if (getStorage("blogUserInfo")) {
+        const res = await getuserInfo({
+          token: getStorage("blogUserToken").userToken,
+        });
+        if (res.data.code == 200) {
+          Object.assign(blogUserobj.userInfo, res.data.Info);
+        }
+      } else {
         ElMessage.warning({
           message: "欢迎来到creepre的博客，但是你还没有登录哦˙ω˙",
           type: "warning",
         });
-      } else {
-        blogUserInfo.username = getStorage("blogUserInfo").name
-          ? getStorage("blogUserInfo").name
-          : getStorage("blogUserInfo").username;
-        blogUserInfo.introduction = getStorage("blogUserInfo").introduction;
-        blogUserInfo.circleUrl = getStorage("blogUserInfo").avatar;
       }
     };
     // 跳转至登录页
@@ -271,8 +184,15 @@ export default defineComponent({
         ElMessage.warning("你还未登录，不能编辑自己的信息╮╯▽╰╭");
       }
     };
+    /* 挂载阶段钩子 */
+    onMounted(() => {
+      // 获取近期文章
+      recentArticle();
+      // 用户登录
+      userLogin();
+    });
     return {
-      ...toRefs(blogUserInfo),
+      ...toRefs(blogUserobj),
       editAvatar,
       toUserLogin,
       toAdmin,
@@ -344,10 +264,10 @@ export default defineComponent({
             user-select: none;
             overflow: hidden;
             width: 100%;
-            height: 2rem;
+            height: 3.2rem;
             padding: 0.03rem 0;
             box-shadow: inset 0 0 0.03rem 0.02rem #cccccc;
-            margin-bottom: 0.2rem;
+            margin-bottom: 0.1rem;
             .noContent {
               height: calc(100% - 0.22rem);
               width: 100%;
@@ -357,7 +277,7 @@ export default defineComponent({
             }
             .suggestTitle {
               font-weight: bold;
-              margin: 0.05rem 0 0.05rem 0.05rem;
+              margin: 0.05rem 0 0.15rem 0.05rem;
               i {
                 color: orange;
                 margin: 0 0.05rem;
@@ -378,6 +298,7 @@ export default defineComponent({
                   font-weight: bold;
                   &:hover {
                     text-decoration: underline;
+                    cursor: pointer;
                   }
                 }
                 .content {
@@ -395,57 +316,6 @@ export default defineComponent({
                 }
                 &:hover {
                   background: #e6e6e6;
-                }
-              }
-            }
-          }
-          .callMe {
-            height: 1rem;
-            margin-bottom: 0.2rem;
-            .callMe_title {
-              font-size: 0.16rem;
-              padding: 0.05rem 0 0.05rem 0.05rem;
-              letter-spacing: 0.01rem;
-              border-bottom: 0.01rem solid #cccccc;
-            }
-            ul {
-              width: 100%;
-              height: calc(100% - 0.27rem);
-              display: flex;
-              justify-content: space-evenly;
-              align-items: center;
-              li {
-                text-align: center;
-                .btn {
-                  color: black;
-                }
-                p {
-                  user-select: none;
-                }
-              }
-            }
-          }
-          .blog_Links {
-            height: 1rem;
-            .Links_title {
-              font-size: 0.16rem;
-              padding: 0.05rem 0 0.05rem 0.05rem;
-              letter-spacing: 0.01rem;
-              border-bottom: 0.01rem solid #cccccc;
-            }
-            ul {
-              width: 100%;
-              height: calc(100% - 0.27rem);
-              display: flex;
-              justify-content: space-between;
-              align-items: center;
-              li {
-                text-align: center;
-                .btn {
-                  color: black;
-                }
-                p {
-                  user-select: none;
                 }
               }
             }

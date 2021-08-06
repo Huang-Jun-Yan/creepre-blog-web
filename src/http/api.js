@@ -205,3 +205,45 @@ export const addArticleLikeStar = val => post('/blogApi/article/addArticleLikeSt
  * @method 获取文章点赞状态
  */
 export const getLikeStarStatus = val => get('/blogApi/article/getLikeStarStatus', val);
+/**
+ * @method 文章浏览次数
+ * @param {string} username
+ * @param {number} article_id
+ */
+export const articleBrowseViews = val => post('/blogApi/article/articleBrowseViews', val);
+/**
+ * @method 点赞总和
+ */
+export const getAllStarNum = val => get('/blogApi/article/getAllStarNum', val);
+/**
+ * @method 视频总和
+ */
+export const getAllVideo = val => get('/blogApi/video/getAllVideo', val);
+/**
+ * @method 相册总和
+ */
+export const getAllPhoto = val => get('/blogApi/photo/getAllPhoto', val);
+/**
+ * @method 浏览总和
+ */
+export const getAllBrowseViewsNum = val => get('/blogApi/article/getAllBrowseViewsNum', val);
+/**
+ * @method 获取留言板留言
+ * @param {number}  page --------------->第几页
+ * @param {number}  pageSize --------------->多少条
+ */
+export const getMessage = val => get('/blogApi/message/getMessage', val);
+/**
+ * @method 留言板留言
+ * @param {string}  content --------------->留言内容
+ * @param {string}  token --------------->用户token
+ */
+export const leaveMessage = val => post('/blogApi/message/leaveMessage', val);
+/**
+ * @method 留言板回复
+ * @param {string}  content --------------->留言内容
+ * @param {string}  token --------------->用户token
+ * @param {number}  message_id --------------->留言的id
+ * @param {number}  reply_id --------------->回复的id
+ */
+export const messageReply = val => post('/blogApi/message/messageReply', val);

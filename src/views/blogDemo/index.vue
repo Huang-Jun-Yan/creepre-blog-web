@@ -36,7 +36,7 @@
         "
         background
         layout="prev, pager, next"
-        :total="total ? total : 100"
+        :total="total"
         :page-size="pageSize"
         @current-change="handleChange"
       >
@@ -58,7 +58,7 @@ export default defineComponent({
       videoList: [],
       page: 1,
       pageSize: 1,
-      total: null, // 总数
+      total: 0, // 总数
     });
     // 获取Demo
     const getVideo = (page) => {
@@ -120,8 +120,8 @@ export default defineComponent({
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: inset 0 0 0.04rem 0.03rem #cccccc;
-            border-radius: 0.05rem;
+            // box-shadow: inset 0 0 0.04rem 0.03rem #cccccc;
+            // border-radius: 0.05rem;
             height: 100%;
             width: 6.1rem;
             video {

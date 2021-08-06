@@ -16,7 +16,14 @@
                 v-for="(imgSrcItem, imgSrcIndex) in PhotoList"
                 :key="imgSrcIndex"
               >
-                <img class="blog_banner_img" :src="imgSrcItem" alt="" />
+                <!-- <img class="blog_banner_img" :src="imgSrcItem" alt="" /> -->
+                <el-image fit="fill" :src="imgSrcItem" class="blog_banner_img">
+                  <template #error>
+                    <div class="image-slot">
+                      <i class="el-icon-picture-outline"></i>
+                    </div>
+                  </template>
+                </el-image>
               </el-carousel-item>
             </el-carousel>
           </el-row>
@@ -61,7 +68,13 @@
                     :key="index"
                   >
                     <el-row class="articleImg">
-                      <img :src="articleItem.img" alt="" />
+                      <!-- <img :src="articleItem.img" alt="" /> -->
+                      <el-image
+                        style="width: 100%; height: 100%"
+                        :src="articleItem.img"
+                        fit="cover"
+                      >
+                      </el-image>
                     </el-row>
                     <div class="articleCon">
                       <div class="articleTitle">
@@ -78,7 +91,15 @@
                           <!-- 文章标签 -->
                           <span class="article_contenter_label">
                             <i class="iconfont icon-biaoqian1"></i>
-                            <span class="">{{ articleItem.label }}</span>
+                            <span
+                              @click="
+                                router.replace(
+                                  `/creepreBlog/article/articleDetail/${articleItem.article_id}/users`
+                                )
+                              "
+                              class=""
+                              >{{ articleItem.label }}</span
+                            >
                           </span>
                           <!-- 文章的发表时间 -->
                           <span class="article_contenter_time">
@@ -90,7 +111,7 @@
                           <!-- 浏览次数 -->
                           <span class="article_contenter_views">
                             <i class="iconfont icon-liulan"></i>
-                            <span>999</span>
+                            <span>{{ articleItem.browse_num || 0 }}</span>
                           </span>
                           <!-- 点赞次数 -->
                           <span class="article_contenter_likes">
@@ -105,24 +126,60 @@
                       </div>
                     </div>
                   </li>
+                  <div class="pagination">
+                    <el-pagination
+                      style="
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        height: 100%;
+                      "
+                      background
+                      layout="prev, pager, next"
+                      :total="total"
+                      :page-size="pageSize"
+                      @current-change="handleChange"
+                    >
+                    </el-pagination>
+                  </div>
                 </el-scrollbar>
               </transition>
             </ul>
           </el-row>
           <div class="right">
-            <ul class="recommendDemo">
-              <li class="recommendDemoItem">
-                <!-- <img src="" alt=""> -->
-                <video
-                  id="rec_video"
-                  style="width: 100%; height: calc(100% - 0.25rem)"
-                  controls
-                  poster=""
-                  src=""
-                ></video>
-                <h2 class="videoIntroduction"></h2>
-              </li>
-            </ul>
+            <div class="blogInfo">
+              <h3 class="title">博客信息</h3>
+              <ul>
+                <li>
+                  <i class="iconfont icon-wenzhang"></i>
+                  <span>文章数量:</span>
+                  <i class="clearfix num">{{ total }}</i>
+                </li>
+                <li>
+                  <i class="iconfont icon-zan"></i>
+                  <span>点赞数量:</span>
+                  <i class="clearfix num">{{ likeStar_num }}</i>
+                </li>
+                <li>
+                  <i class="iconfont icon-liulan"></i>
+                  <span>浏览数量:</span>
+                  <i class="clearfix num">{{ browseViews_num }}</i>
+                </li>
+                <li>
+                  <i class="iconfont icon-xiangce"></i>
+                  <span>相册数量:</span>
+                  <i class="clearfix num">{{ photo_num }}</i>
+                </li>
+                <li>
+                  <i class="iconfont icon-shipin"></i>
+                  <span>视频数量:</span>
+                  <i class="clearfix num">{{ video_num }}</i>
+                </li>
+              </ul>
+            </div>
+            <!-- 联系 -->
+            <callMe />
+            <!-- 联系 -->
           </div>
         </div>
       </el-main>
@@ -131,6 +188,7 @@
 </template>
 
 <script>
+import callMe from "@/components/call_me";
 import { defineComponent, reactive, onMounted, toRefs, watch } from "vue";
 import axios from "axios";
 import {
@@ -138,6 +196,10 @@ import {
   getAllArticle,
   addArticleLikeStar,
   getLikeStarStatus,
+  getAllStarNum,
+  getAllVideo,
+  getAllPhoto,
+  getAllBrowseViewsNum,
 } from "@/http/api";
 import { getDate } from "@/util/date";
 import { useRouter } from "vue-router";
@@ -145,8 +207,9 @@ import { getStorage } from "@/util/Storage";
 import { ElMessage } from "element-plus";
 export default defineComponent({
   name: "blogWebHome",
-  components: {},
-  directives: {},
+  components: {
+    callMe,
+  },
   setup() {
     // 路由实例
     const router = useRouter();
@@ -165,11 +228,20 @@ export default defineComponent({
       // 页数
       page: 1,
       // 每页数量
-      pageSize: 10,
+      pageSize: 5,
+      // 总数
+      total: 0,
       // 获取的数组
       newArticleList: [],
       // 点赞的图标
       likesIcon: "", // icon-yidianzan likes
+    });
+    // 博客信息
+    const blogInfoObj = reactive({
+      likeStar_num: 0,
+      browseViews_num: 0,
+      video_num: 0,
+      photo_num: 0,
     });
     // 笑话参数
     const jokeobj = reactive({
@@ -187,12 +259,17 @@ export default defineComponent({
         .then((res) => {
           if (res.data.code == 200) {
             const { data } = res.data.data;
+            newArticleObj.total = res.data.data.count;
             newArticleObj.newArticleList = data;
           }
         })
         .catch((err) => {
           console.log(err);
         });
+    };
+    // 改变时触发
+    const handleChange = (val) => {
+      newArticleObj.page = val;
     };
     // 根据id跳转对应文章详情
     const toArticleDetail = (article_id) => {
@@ -208,7 +285,10 @@ export default defineComponent({
           if (res.data.code == 200) {
             const { data } = res.data;
             data.data.map((item) => {
-              item.imgsrc = JSON.parse(item.imgsrc);
+              item.imgsrc = JSON.parse(item.imgsrc).splice(
+                5,
+                JSON.parse(item.imgsrc).length - 5
+              );
             });
             BlogPhotosList.PhotoList = data.data[0].imgsrc;
           }
@@ -282,6 +362,23 @@ export default defineComponent({
         console.log(err);
       }
     };
+    /* 博客信息 */
+    const blogInfo = async () => {
+      try {
+        const res = await Promise.all([
+          getAllStarNum(),
+          getAllVideo(),
+          getAllPhoto(),
+          getAllBrowseViewsNum(),
+        ]);
+        blogInfoObj.likeStar_num = res[0].data.data.likeStar;
+        blogInfoObj.video_num = res[1].data.data.video_num;
+        blogInfoObj.photo_num = res[2].data.data.photo_num;
+        blogInfoObj.browseViews_num = res[3].data.data.browseViews;
+      } catch (err) {
+        console.log(err);
+      }
+    };
     // 监听
     watch(
       () => jokeobj.page,
@@ -289,8 +386,16 @@ export default defineComponent({
         getJokeRes(jokeobj.page);
       }
     );
+    watch(
+      () => newArticleObj.page,
+      () => {
+        getBlogArticle(newArticleObj.page);
+      }
+    );
     // 挂载阶段
     onMounted(() => {
+      // 博客信息
+      blogInfo();
       // 获取笑话
       getJokeRes(jokeobj.page);
       // 获取文章
@@ -302,11 +407,14 @@ export default defineComponent({
       ...toRefs(newArticleObj),
       ...toRefs(BlogPhotosList),
       ...toRefs(jokeobj),
+      ...toRefs(blogInfoObj),
       getDate,
       toArticleDetail,
       nextJoke,
       previousJoke,
       onUserLike,
+      router,
+      handleChange,
     };
   },
 });
@@ -369,7 +477,7 @@ export default defineComponent({
     height: 4.28rem;
     .newArticle_left {
       height: 100%;
-      width: 7rem;
+      width: 7.5rem;
       float: left;
       margin-right: 0.1rem;
       overflow: hidden;
@@ -430,6 +538,10 @@ export default defineComponent({
                 vertical-align: middle;
                 &:hover {
                   text-decoration: underline;
+                  cursor: pointer;
+                }
+                &:active {
+                  transform: scale(1.1);
                 }
               }
               i {
@@ -463,6 +575,7 @@ export default defineComponent({
                     color: rgb(78, 160, 40);
                     &:hover {
                       text-decoration: underline;
+                      cursor: pointer;
                     }
                   }
                 }
@@ -505,6 +618,11 @@ export default defineComponent({
             }
           }
         }
+        .pagination {
+          height: 0.3rem;
+          margin-top: 0.01rem;
+          background: #eeeeee;
+        }
       }
     }
     .right {
@@ -513,21 +631,32 @@ export default defineComponent({
       padding: 0.05rem;
       border-radius: 0.05rem;
       box-shadow: inset 0 0 0.05rem 0.02rem #cccccc;
-      .recommendDemo {
-        // height: 100%;
-        width: 100%;
-        .recommendDemoItem {
-          border-radius: 0.05rem;
-          height: 2.1rem;
-          width: 100%;
-          margin-bottom: 0.11rem;
-          overflow: hidden;
-          .videoIntroduction {
-            font-size: 0.12rem;
-            display: -webkit-box;
-            -webkit-box-orient: vertical;
-            -webkit-line-clamp: 1;
-            overflow: hidden;
+      user-select: none;
+      .blogInfo {
+        .title {
+          border-bottom: 0.02rem solid #cccccc;
+          padding: 0.077rem 0;
+          letter-spacing: 0.02rem;
+        }
+        ul {
+          li {
+            margin: 0.1rem 0;
+            border-bottom: 0.01rem solid #cccccccc;
+            padding: 0.05rem 0.01rem;
+            span {
+              display: inline-block;
+              width: 0.65rem;
+              text-align: right;
+              font-weight: bold;
+            }
+            .num {
+              float: right;
+              margin-right: 0.1rem;
+            }
+            .iconfont {
+              font-size: 0.12rem;
+              color: aquamarine;
+            }
           }
         }
       }

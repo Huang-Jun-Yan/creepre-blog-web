@@ -48,9 +48,13 @@
                 </div>
                 <div class="articleLike">
                   <span
-                    ><i class="iconfont icon-yidianzan"></i
-                    >{{ selfArticleObj.like_Star }}</span
-                  >
+                    ><i class="iconfont icon-liulan"></i>
+                    {{ selfArticleObj.browse_num }}
+                  </span>
+                  <span
+                    ><i class="iconfont icon-yidianzan"></i>
+                    {{ selfArticleObj.like_Star }}
+                  </span>
                 </div>
               </div>
               <div class="bottom">
@@ -76,8 +80,9 @@
 <script>
 import { defineComponent, reactive, toRefs, onMounted, watch } from "vue";
 import { useRoute } from "vue-router";
-import { byIdGetArticle } from "@/http/api";
+import { byIdGetArticle, articleBrowseViews } from "@/http/api";
 import { getDate } from "@/util/date";
+import { getStorage } from "@/util/Storage";
 export default defineComponent({
   name: "CreepreBlogWebArticleDetail",
   components: {},
@@ -89,12 +94,18 @@ export default defineComponent({
     });
     // 通过传递的id获取
     const getArticle = async (article_id) => {
+      // 浏览次数
+      await articleBrowseViews({
+        article_id: article_id,
+        username: getStorage("blogUserInfo").username,
+      });
       const res = await byIdGetArticle({ article_id: article_id });
       if (res.data.code == 200) {
         const { data } = res.data;
         Object.assign(selfArticle.selfArticleObj, data);
       }
     };
+
     // 监听
     watch(
       () => route.params.id,
@@ -134,9 +145,21 @@ export default defineComponent({
           color: orange;
           font-size: 0.16rem;
           user-select: none;
-          i {
-            color: red;
-            margin: 0rem 0.03rem;
+          span:nth-child(1) {
+            color: rgb(123, 124, 103);
+            font-size: 0.15rem;
+            i {
+              color: rgb(180, 150, 15);
+              margin: 0rem 0.03rem;
+            }
+          }
+          span:nth-child(2) {
+            color: rgb(123, 124, 103);
+            font-size: 0.15rem;
+            i {
+              color: red;
+              margin: 0rem 0.03rem;
+            }
           }
         }
         .articleDetailTitle {

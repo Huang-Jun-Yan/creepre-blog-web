@@ -1,65 +1,70 @@
 <template>
   <div id="blogArticle">
-      <el-row :gutter="20" style="margin: 0.1rem 0; min-height: 5.8rem">
-        <el-col :span="24">
-          <div
-            class="grid-content bg-purple"
-            style="min-height: 5.4rem; padding: 0.05rem 0.05rem"
-          >
-            <el-scrollbar style="width: 100%" height="5.4rem">
-              <div class="articleDetailTitle">
-                <h2>
-                  {{ ArticleList.title
-                  }}<i class="iconfont icon-biaoti-xianxing"></i>
-                </h2>
-              </div>
-              <div class="articleDetailLabel">
-                <div class="top">
-                  <div class="author">
-                    <p>
-                      作者:<span>{{ ArticleList.name }}</span>
-                    </p>
-                  </div>
-                  <div class="createTime">
-                    <p>
-                      发布时间:<span>{{
-                        getDate(ArticleList.create_time)
-                      }}</span>
-                    </p>
-                  </div>
-                  <div class="Label">
-                    <p>
-                      文章标签:
-                      <el-tag size="mini" type="success">{{
-                        ArticleList.label
-                      }}</el-tag>
-                    </p>
-                    <p>
-                      文章分类:
-                      <el-tag size="mini" type="warning">{{
-                        ArticleList.category
-                      }}</el-tag>
-                    </p>
-                  </div>
-                  <div class="articleLike">
-                     <span><i class="iconfont icon-yidianzan"></i>{{ArticleList.like_Star}}</span>
-                  </div>
-                </div>
-                <div class="bottom">
-                  {{ ArticleList.brief }}ˋωˊ
+    <el-row :gutter="20" style="margin: 0.1rem 0; min-height: 5.8rem">
+      <el-col :span="24">
+        <div
+          class="grid-content bg-purple"
+          style="min-height: 5.4rem; padding: 0.05rem 0.05rem"
+        >
+          <el-scrollbar style="width: 100%" height="5.4rem">
+            <div class="articleDetailTitle">
+              <h2>
+                {{ ArticleList.title
+                }}<i class="iconfont icon-biaoti-xianxing"></i>
+              </h2>
+            </div>
+            <div class="articleDetailLabel">
+              <div class="top">
+                <div class="author">
                   <p>
-                    更新时间:<span>{{ getDate(ArticleList.update_time) }}</span>
+                    作者:<span>{{ ArticleList.name }}</span>
                   </p>
                 </div>
+                <div class="createTime">
+                  <p>
+                    发布时间:<span>{{ getDate(ArticleList.create_time) }}</span>
+                  </p>
+                </div>
+                <div class="Label">
+                  <p>
+                    文章标签:
+                    <el-tag size="mini" type="success">{{
+                      ArticleList.label
+                    }}</el-tag>
+                  </p>
+                  <p>
+                    文章分类:
+                    <el-tag size="mini" type="warning">{{
+                      ArticleList.category
+                    }}</el-tag>
+                  </p>
+                </div>
+                <div class="articleLike">
+                  <span
+                    ><i class="iconfont icon-liulan"></i>
+                    {{ ArticleList.browse_num || 0 }}
+                  </span>
+                  <span
+                    ><i class="iconfont icon-yidianzan"></i
+                    >{{ ArticleList.like_Star }}</span
+                  >
+                </div>
               </div>
-              <div
-                class="articleDetailContent"
-                v-html="ArticleList.content"
-              ></div>
-            </el-scrollbar>
-          </div>
-        </el-col>
-      </el-row>
+              <div class="bottom">
+                {{ ArticleList.brief }}ˋωˊ
+                <p>
+                  更新时间:<span>{{ getDate(ArticleList.update_time) }}</span>
+                </p>
+              </div>
+            </div>
+            <div
+              class="articleDetailContent"
+              v-html="ArticleList.content"
+            ></div>
+          </el-scrollbar>
+        </div>
+      </el-col>
+    </el-row>
     <div class="pagination">
       <div>
         <el-dropdown
@@ -104,8 +109,14 @@
 
 <script>
 import { defineComponent, onMounted, ref, reactive, toRefs, watch } from "vue";
-import { getLable, getCategory, ByCategoryGetArticle } from "@/http/api";
+import {
+  getLable,
+  getCategory,
+  ByCategoryGetArticle,
+  articleBrowseViews,
+} from "@/http/api";
 import { getDate } from "@/util/date";
+import { getStorage } from "../../util/Storage";
 export default defineComponent({
   name: "blogWebArticle",
   components: {},
@@ -144,12 +155,16 @@ export default defineComponent({
         category: category,
         page: page,
         pageSize: getArticleObj.pageSize,
-      }).then((res) => {
+      }).then(async (res) => {
         if (res.data.code == 200) {
+          console.log(res.data.data);
           const { data } = res.data.data;
-          console.log(data);
-          getArticleObj.ArticleList = data[0];
           getArticleObj.count = res.data.data.count;
+          await articleBrowseViews({
+            article_id: data[0].article_id,
+            username: getStorage("blogUserInfo").username,
+          });
+          getArticleObj.ArticleList = data[0];
         }
       });
     };
@@ -205,11 +220,23 @@ export default defineComponent({
         }
         .articleLike {
           color: orange;
-          font-size: .16rem;
+          font-size: 0.16rem;
           user-select: none;
-          i {
-            color: red;
-            margin: 0rem .03rem;
+          span:nth-child(1) {
+            color: rgb(123, 124, 103);
+            font-size: 0.15rem;
+            i {
+              color: rgb(180, 150, 15);
+              margin: 0rem 0.03rem;
+            }
+          }
+          span:nth-child(2) {
+            color: rgb(123, 124, 103);
+            font-size: 0.15rem;
+            i {
+              color: red;
+              margin: 0rem 0.03rem;
+            }
           }
         }
         .articleDetailTitle {
