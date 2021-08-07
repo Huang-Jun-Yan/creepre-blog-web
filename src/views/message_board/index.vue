@@ -13,7 +13,10 @@
       /></el-button>
     </div>
     <div class="messageBody">
-      <el-empty v-if="!MessageArr.length" description="还没有发表评论哦∪△∪"></el-empty>
+      <el-empty
+        v-if="!MessageArr.length"
+        description="还没有发表评论哦∪△∪"
+      ></el-empty>
       <transition v-if="MessageArr.length" name="el-zoom-in-top">
         <el-scrollbar height="5.51rem">
           <div
@@ -36,7 +39,10 @@
               </div>
               <!-- 留言内容 -->
               <div class="messageDetail">
-                <span class="name">{{ item.name }}</span>
+                <span class="name"
+                  >{{ item.name }}
+                  <b v-show="item.username === 'admin'">老博主</b>
+                </span>
                 <p class="content">{{ item.content }}</p>
                 <span class="time">
                   {{ getDate(item.create_time) }}
@@ -63,8 +69,16 @@
               </div>
               <!-- 回复内容 -->
               <div class="messageDetail">
-                <span class="name">{{ itemReply.name }}</span>
-                <p class="content">{{ itemReply.content }}</p>
+                <span class="name"
+                  >{{ itemReply.name
+                  }}<b v-show="itemReply.username === 'admin'">老博主</b></span
+                >
+                <p class="content">
+                  <span
+                    >回复<i>@{{ itemReply.reply_name }}</i></span
+                  >
+                  {{ itemReply.content }}
+                </p>
                 <span class="time">
                   {{ getDate(itemReply.datetime) }}
                   <i @click="onReplyChild(itemReply.id)">回复</i>
@@ -262,6 +276,16 @@ export default defineComponent({
           font-size: 0.14rem;
           font-weight: bold;
           letter-spacing: 0.01rem;
+          b {
+            color: orangered;
+            margin: 0 0.05rem;
+            user-select: none;
+          }
+          // i {
+          //   font-weight: 400;
+          //   font-size: .13rem;
+          //   user-select: none;
+          // }
         }
         .content {
           min-height: 0.25rem;
@@ -279,6 +303,8 @@ export default defineComponent({
           i {
             color: cornflowerblue;
             letter-spacing: 0.01rem;
+            font-weight: bold;
+            margin: 0 0.05rem;
             &:active {
               transform: scale(1.05);
             }
@@ -305,18 +331,33 @@ export default defineComponent({
           font-size: 0.14rem;
           font-weight: bold;
           letter-spacing: 0.01rem;
+          b {
+            color: orangered;
+            margin: 0 0.05rem;
+            user-select: none;
+          }
         }
         .content {
           min-height: 0.25rem;
           padding-top: 0.05rem;
           margin: 0.02rem 0;
           font-size: 0.16rem;
+          span {
+            font-size: 0.12rem;
+            user-select: none;
+            i {
+              color: green;
+              margin: 0 0.05rem;
+            }
+          }
         }
         .time {
           user-select: none;
           i {
             color: cornflowerblue;
             letter-spacing: 0.01rem;
+            font-weight: bold;
+            margin: 0 0.05rem;
             &:active {
               transform: scale(1.05);
             }

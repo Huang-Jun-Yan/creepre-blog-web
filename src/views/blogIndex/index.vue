@@ -20,11 +20,11 @@
               <!-- 用户名字及登录注册按钮 -->
               <el-row class="blog_userName">
                 <!-- 用户名字 -->
-                <div class="userName" v-if="userInfo.username">
-                  <h2 @click="toAdmin">{{ userInfo.username }}</h2>
+                <div class="userName" v-if="userInfo.name">
+                  <h2 @click="toAdmin">{{ userInfo.name }}</h2>
                 </div>
                 <!-- 登录注册按钮 -->
-                <div class="blogBtn" v-if="!userInfo.username">
+                <div class="blogBtn" v-if="!userInfo.name">
                   <el-button @click="toUserLogin" type="success"
                     >登录及注册</el-button
                   >
@@ -142,12 +142,15 @@ export default defineComponent({
     };
     // 用户登录
     const userLogin = async () => {
-      if (getStorage("blogUserInfo")) {
+      if (getStorage("blogUserToken")) {
         const res = await getuserInfo({
           token: getStorage("blogUserToken").userToken,
         });
         if (res.data.code == 200) {
           Object.assign(blogUserobj.userInfo, res.data.Info);
+        } else {
+          ElMessage.warning(res.data.msg);
+          localStorage.removeItem("userInfo");
         }
       } else {
         ElMessage.warning({
@@ -173,6 +176,8 @@ export default defineComponent({
         } else if (getStorage("blogUserInfo").username == item.username) {
           router.replace("/users/admin/adminLogin");
           ElMessage("亲爱的管理员，你还没登录哦ㄟ≥◇≤ㄏ");
+        }else {
+           ElMessage.warning('你不是管理员，不要乱跑哦');
         }
       });
     };
