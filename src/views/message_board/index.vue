@@ -241,6 +241,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 #messageBoard {
   height: 100%;
+  background: $my-theme-background;
   .messageTip {
     text-align: center;
     font-weight: bold;
@@ -261,7 +262,7 @@ export default defineComponent({
     .message {
       min-height: 0.65rem;
       padding: 0 0.1rem;
-      border-bottom: 0.01rem solid #eeeeee;
+      border-bottom: 0.01rem solid $my-theme-border;
       margin-bottom: 0.1rem;
       .avatar {
         width: 0.5rem;
@@ -281,11 +282,6 @@ export default defineComponent({
             margin: 0 0.05rem;
             user-select: none;
           }
-          // i {
-          //   font-weight: 400;
-          //   font-size: .13rem;
-          //   user-select: none;
-          // }
         }
         .content {
           min-height: 0.25rem;
@@ -316,7 +312,7 @@ export default defineComponent({
       min-height: 0.65rem;
       padding: 0 0.1rem;
       margin-left: 0.7rem;
-      border-bottom: 0.01rem solid #eeeeee;
+      border-bottom: 0.01rem solid $my-theme-border;
       margin-bottom: 0.1rem;
       .avatar {
         width: 0.5rem;

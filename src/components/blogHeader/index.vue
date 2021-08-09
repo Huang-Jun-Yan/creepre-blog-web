@@ -54,18 +54,18 @@
                 </transition>
                 <div class="musicControl">
                   <div
-                    style="font-size: 0.2rem; color: #cccccc"
+                    style="font-size: 0.2rem;"
                     class="controlRight iconfont icon-youjiantou"
                     @click="onPreviousMusic"
                   ></div>
                   <div
-                    style="font-size: 0.2rem; color: #cccccc"
+                    style="font-size: 0.2rem;"
                     class="controlMiddle iconfont"
                     :class="isPlay"
                     @click="onPauseMusic"
                   ></div>
                   <div
-                    style="font-size: 0.2rem; color: #cccccc"
+                    style="font-size: 0.2rem;"
                     class="controlLeft iconfont icon-zuojiantou1"
                     @click="onNextMusic"
                   ></div>
@@ -83,27 +83,24 @@
             </div>
           </el-col>
         </el-row>
-        <el-row class="navMenu">
-          <el-menu
-            :default-active="activeIndex"
-            class="el-menu-demo"
-            mode="horizontal"
-            menu-trigger="click"
-            background-color="white"
-            @select="handleSelect"
-            text-color="#090909"
-            active-text-color="#ffcc66"
-            router
-          >
-            <el-menu-item
+        <div class="navMenu">
+          <ul>
+            <li
               v-for="(routerItem, index) in routerInfoArr[0]"
-              :index="routerItem.path"
               :key="index"
+              :class="{ active: activeIndex == index }"
             >
-              {{ routerItem.meta.routerName }}
-            </el-menu-item>
-          </el-menu>
-        </el-row>
+              <i class="iconfont" :class="routerItem.meta.icon"></i>
+              <router-link
+                tag="span"
+                :to="routerItem.path"
+                @click.enter="jump(index)"
+              >
+                {{ routerItem.meta.routerName }}
+              </router-link>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
     <!-- 音乐播放 -->
@@ -133,12 +130,22 @@ import {
   watch,
 } from "vue";
 import { getBlogMusic } from "@/http/api";
+import { useRoute } from "vue-router";
 export default defineComponent({
   name: "headers",
   components: {},
   setup() {
+    /* 路由实例 */
+    const route = useRoute();
     const routerInfoArr = ref([]);
-    const activeIndex = ref("1");
+    const activeIndex = ref(0);
+    // 当前路由
+    const currentRoute = ref([
+      "/creepreBlog/blogHome",
+      "/creepreBlog/blogArticle",
+      "/creepreBlog/blogPhoto",
+      "/creepreBlog/blogDemo",
+    ]);
     const volumeValue = ref(100);
     const musicListObj = reactive({
       musicLength: null,
@@ -157,6 +164,14 @@ export default defineComponent({
       if (routerInfoArr.value[0].length >= 5) {
         routerInfoArr.value[0].splice(4, routerInfoArr.value[0].length - 4);
       }
+    };
+    // 跳转
+    const jump = (index) => {
+      activeIndex.value = index;
+    };
+    // 匹配相应路由
+    const matchRoute = () => {
+      activeIndex.value = currentRoute.value.indexOf(route.path);
     };
     // 获取音乐
     const getMusic = (index) => {
@@ -247,13 +262,6 @@ export default defineComponent({
         musicListObj.audio.currentTime / musicListObj.audio.duration;
       musicListObj.percentage = Number((percent * 100).toFixed(0));
     };
-    // 动态匹配activeIndex
-    const activeIndexArr = ref([
-      "/creepreBlog/blogHome",
-      "/creepreBlog/blogArticle",
-      "/creepreBlog/blogPhoto",
-      "/creepreBlog/blogDemo",
-    ]);
     // 监听
     watch(
       () => musicListObj.index,
@@ -263,18 +271,13 @@ export default defineComponent({
     );
     // 挂载阶段
     onMounted(async () => {
+      matchRoute();
       // 动态导航
       dynNav();
       // 获取音乐
       await getMusic(musicListObj.index);
     });
-    let index;
-    const handleSelect = (key) => {
-      index = activeIndexArr.value.findIndex((val) => val == key);
-      activeIndex.value = index + 1 + "";
-    };
     return {
-      handleSelect,
       activeIndex,
       routerInfoArr,
       volumeValue,
@@ -286,6 +289,7 @@ export default defineComponent({
       onPreviousMusic,
       timeUpDate,
       musicEnded,
+      jump,
     };
   },
   data() {
@@ -299,13 +303,14 @@ export default defineComponent({
   width: 100%;
   height: 0.6rem;
   z-index: 999;
+  margin-bottom: 0.08rem;
   .blogHeaderBox {
     position: fixed;
     top: 0;
     left: 0;
     height: 0.6rem;
     width: 100%;
-    background: white;
+    background: $my-theme-background;
     z-index: 999;
     .left {
       width: calc(100% - 80% - 0.31rem);
@@ -339,14 +344,15 @@ export default defineComponent({
       .blogMusicDome {
         width: 3rem;
         margin: 0 0.5rem 0 1rem;
-        // background: chartreuse;
         .musicControl {
           display: inline-block;
           display: flex;
-          justify-content: space-between;
+          justify-content: space-evenly;
           width: 1rem;
           margin-top: 0.07rem;
-
+            div {
+              color: $my-theme-border;
+            }
           .controlRight {
             &:hover {
               color: orange !important;
@@ -372,12 +378,34 @@ export default defineComponent({
       }
       .navMenu {
         height: 100%;
-        margin-left: 1rem;
-        background: #8a8a8ae6;
-        .el-menu-demo {
+        margin-left: 0.09rem;
+        ul {
           height: 100%;
-          .el-menu-item {
-            height: calc(100% - 10%);
+          display: flex;
+          li {
+            height: calc(100% - 0.03rem);
+            line-height: 0.6rem;
+            letter-spacing: 0.01rem;
+            font-size: 0.16rem;
+            user-select: none;
+            margin: 0 0.1rem;
+            padding: 0 0.1rem;
+            transition: 0.5s all;
+            &:hover {
+              background: rgba(247, 247, 247, 0.5);
+            }
+            i {
+              font-size: 0.18rem;
+              margin: 0 0.02rem;
+            }
+            &:hover i,
+            span {
+              cursor: pointer;
+            }
+          }
+          .active {
+            border-bottom: 0.03rem solid $my-tabbar;
+            background: rgba(247, 247, 247, 0.5);
           }
         }
       }

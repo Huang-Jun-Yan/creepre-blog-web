@@ -1,5 +1,8 @@
 <template>
   <div id="index">
+    <blogDusk v-show="!backgroundTab" />
+    <clearSky v-show="backgroundTab" />
+    <highlight />
     <!-- 页头 -->
     <blogHeaders></blogHeaders>
     <el-container style="height: 100%">
@@ -89,6 +92,9 @@
 <script>
 import messageBoard from "@/components/other/message";
 import blogHeaders from "@/components/blogHeader";
+import blogDusk from "@/components/dusk";
+import clearSky from "@/components/clearSky";
+import highlight from "@/components/highlight";
 import { useRouter } from "vue-router";
 import {
   defineComponent,
@@ -97,6 +103,7 @@ import {
   reactive,
   toRefs,
   ref,
+  computed,
 } from "vue";
 import { getStorage } from "@/util/Storage";
 import { ElMessage } from "element-plus";
@@ -107,15 +114,21 @@ import {
   getuserInfo,
 } from "@/http/api"; // getuserInfo
 import { getDate } from "@/util/date";
+import { useStore } from "vuex";
 export default defineComponent({
   name: "blogIndex",
   components: {
     blogHeaders,
     messageBoard,
+    blogDusk,
+    clearSky,
+    highlight,
   },
   setup() {
     // 路由实例
     const router = useRouter();
+    // vuex
+    const store = useStore();
     // 用户信息
     const blogUserobj = reactive({
       userInfo: {},
@@ -176,14 +189,14 @@ export default defineComponent({
         } else if (getStorage("blogUserInfo").username == item.username) {
           router.replace("/users/admin/adminLogin");
           ElMessage("亲爱的管理员，你还没登录哦ㄟ≥◇≤ㄏ");
-        }else {
-           ElMessage.warning('你不是管理员，不要乱跑哦');
+        } else {
+          ElMessage.warning("你不是管理员，不要乱跑哦");
         }
       });
     };
     // 用户修改信息页面
     const editAvatar = async () => {
-      if (getStorage("blogUserInfo")) {
+      if (getStorage("blogUserToken")) {
         router.push("/creepreBlog/editInfo");
       } else {
         ElMessage.warning("你还未登录，不能编辑自己的信息╮╯▽╰╭");
@@ -196,6 +209,11 @@ export default defineComponent({
       // 用户登录
       userLogin();
     });
+    // 计算属性
+    const backgroundTab = computed(() => {
+      return store.state.globalConfig.backgroundTab;
+    });
+    console.log(backgroundTab,"backgroundTab")
     return {
       ...toRefs(blogUserobj),
       editAvatar,
@@ -203,14 +221,14 @@ export default defineComponent({
       toAdmin,
       articleRec,
       toArticleDetail,
+      backgroundTab
     };
   },
 });
 </script>
 <style lang="scss" scoped>
 #index {
-  min-height: calc(100% - 0.6rem);
-  height: calc(100% - 0.8rem);
+  min-height: calc(100% - 0.4rem);
   .el-container {
     width: 100%;
     .el-main {
@@ -223,21 +241,19 @@ export default defineComponent({
         .leftAside {
           height: 6.52rem;
           width: 2.3rem;
-          background: #eeeeee;
+          background: $my-theme-background;
           float: left;
           margin-right: 0.1rem;
           .blog_userAvatar {
             display: flex;
             justify-content: center;
             height: 2.1rem;
-            // background: red;
             border-bottom: 0.01rem solid #dddddd;
             .blog_readNumber {
               width: 100%;
               min-height: 0.3rem;
               padding: 0 0.05rem;
               line-height: 0.14rem;
-              user-select: none;
               font-size: 0.08rem;
             }
             .userAvatar {
@@ -245,6 +261,7 @@ export default defineComponent({
               transition: 1s all;
               &:hover {
                 transform: rotate(360deg);
+                cursor: pointer;
               }
             }
             .blog_userName {
@@ -258,6 +275,9 @@ export default defineComponent({
                 text-align: center;
                 user-select: none;
                 cursor: pointer;
+                &:hover {
+                  animation: ShiftUp 0.5s;
+                }
               }
               .blogBtn {
                 width: 100%;
@@ -271,7 +291,7 @@ export default defineComponent({
             width: 100%;
             height: 3.2rem;
             padding: 0.03rem 0;
-            box-shadow: inset 0 0 0.03rem 0.02rem #cccccc;
+            box-shadow: inset 0 0 0.01rem 0rem #cccccc;
             margin-bottom: 0.1rem;
             .noContent {
               height: calc(100% - 0.22rem);
@@ -286,6 +306,7 @@ export default defineComponent({
               i {
                 color: orange;
                 margin: 0 0.05rem;
+                animation: rotateZoom 1s infinite ease-in-out;
               }
             }
             .blog_SuggestList_item {
@@ -297,7 +318,7 @@ export default defineComponent({
                 margin-bottom: 0.03rem;
                 line-height: 0.17rem;
                 padding-left: 0.02rem;
-                border-bottom: 0.01rem solid #cccccc;
+                border-bottom: 0.01rem solid $my-theme-border;
                 .title {
                   font-size: 0.13rem;
                   font-weight: bold;
@@ -320,7 +341,8 @@ export default defineComponent({
                   }
                 }
                 &:hover {
-                  background: #e6e6e6;
+                  background: $my-theme-background;
+                  cursor: pointer;
                 }
               }
             }
@@ -332,6 +354,22 @@ export default defineComponent({
         }
       }
     }
+  }
+}
+@keyframes rotateZoom {
+  0% {
+    transform: scale(1.05);
+  }
+  50% {
+    transform: scale(0.9);
+  }
+  100% {
+    transform: scale(1.05);
+  }
+}
+@keyframes ShiftUp {
+  to {
+    transform: translateY(-0.05rem);
   }
 }
 </style>

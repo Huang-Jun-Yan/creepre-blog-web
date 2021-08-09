@@ -6,7 +6,7 @@
           class="grid-content bg-purple"
           style="min-height: 5.4rem; padding: 0.05rem 0.05rem"
         >
-          <el-scrollbar style="width: 100%" height="5.4rem">
+          <el-scrollbar style="width: 100%" height="5.5rem">
             <div class="articleDetailTitle">
               <h2>
                 {{ ArticleList.title
@@ -157,7 +157,6 @@ export default defineComponent({
         pageSize: getArticleObj.pageSize,
       }).then(async (res) => {
         if (res.data.code == 200) {
-          console.log(res.data.data);
           const { data } = res.data.data;
           getArticleObj.count = res.data.data.count;
           await articleBrowseViews({
@@ -204,7 +203,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 #blogArticle {
-  background: #eeeeee;
+  background: $my-theme-background;
   height: 100%;
   .el-row {
     .el-col {
@@ -241,7 +240,6 @@ export default defineComponent({
         }
         .articleDetailTitle {
           min-height: 0.3rem;
-          background: white;
           line-height: 0.4rem;
           letter-spacing: 0.01rem;
           margin-bottom: 0.05rem;
@@ -249,7 +247,6 @@ export default defineComponent({
         .articleDetailLabel {
           height: 0.5rem;
           margin-bottom: 0.05rem;
-          background: white;
           .top {
             height: 50%;
             display: flex;
@@ -261,8 +258,6 @@ export default defineComponent({
               span {
                 margin-left: 0.05rem;
               }
-            }
-            .createTime {
             }
             .Label {
               display: flex;
@@ -288,7 +283,6 @@ export default defineComponent({
         }
         .articleDetailContent {
           min-height: 4.3rem;
-          background: white;
           padding: 0.05rem 0.05rem;
         }
       }
@@ -299,7 +293,6 @@ export default defineComponent({
     align-items: center;
     justify-content: space-between;
     height: 0.5rem;
-    background: #eeeeee;
   }
 }
 </style>

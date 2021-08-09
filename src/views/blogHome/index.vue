@@ -217,9 +217,9 @@ export default defineComponent({
     // 相册参数
     const BlogPhotosList = reactive({
       // 页数
-      page: 1,
+      PhotosPage: 1,
       // 每页数量
-      pageSize: 1,
+      PhotosPageSize: 1,
       // 获取的数组
       PhotoList: [],
     });
@@ -279,7 +279,7 @@ export default defineComponent({
     const getBlogPhotos = async (page) => {
       await getPhotos({
         page: page,
-        pageSize: BlogPhotosList.pageSize,
+        pageSize: BlogPhotosList.PhotosPageSize,
       })
         .then((res) => {
           if (res.data.code == 200) {
@@ -401,7 +401,7 @@ export default defineComponent({
       // 获取文章
       getBlogArticle(newArticleObj.page);
       // 获取相册
-      getBlogPhotos(BlogPhotosList.page);
+      getBlogPhotos(BlogPhotosList.PhotosPage);
     });
     return {
       ...toRefs(newArticleObj),
@@ -423,7 +423,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 #blogHome {
   height: 100%;
-  background: #eeeeee;
+  background: $my-theme-background;
   .blog_banner {
     width: 100%;
     height: 2rem;
@@ -437,7 +437,7 @@ export default defineComponent({
     .right {
       overflow: hidden;
       height: 100%;
-      box-shadow: inset 0 0 0.05rem 0.02rem #cccccc;
+      box-shadow: $my-theme-box-shadow;
       user-select: none;
       .jokeTiele {
         text-align: center;
@@ -489,7 +489,7 @@ export default defineComponent({
         font-weight: bold;
         letter-spacing: 0.02rem;
         user-select: none;
-        border-bottom: 0.02rem solid #cccccc;
+        border-bottom: 0.02rem solid $my-theme-border;
         position: relative;
         i {
           font-size: 0.1rem;
@@ -497,6 +497,7 @@ export default defineComponent({
           top: -0.06rem;
           left: 56%;
           color: red;
+          animation: rotateZoom 1s infinite ease-in-out;
         }
       }
       .blog_articleBody {
@@ -505,11 +506,10 @@ export default defineComponent({
         .article_item {
           height: 1.5rem;
           padding: 0.05rem 0.05rem;
-          box-shadow: inset 0 0 0.03rem 0.02rem #cccccc;
+          box-shadow: $my-theme-box-shadow;
           border-radius: 0.05rem;
           user-select: none;
           margin: 0.05rem 0;
-          background: rgba(204, 201, 201, 0.5);
           .articleImg {
             float: left;
             width: 1.5rem;
@@ -621,7 +621,6 @@ export default defineComponent({
         .pagination {
           height: 0.3rem;
           margin-top: 0.01rem;
-          background: #eeeeee;
         }
       }
     }
@@ -630,18 +629,18 @@ export default defineComponent({
       overflow: hidden;
       padding: 0.05rem;
       border-radius: 0.05rem;
-      box-shadow: inset 0 0 0.05rem 0.02rem #cccccc;
+      box-shadow: $my-theme-box-shadow;
       user-select: none;
       .blogInfo {
         .title {
-          border-bottom: 0.02rem solid #cccccc;
+          border-bottom: 0.02rem solid $my-theme-border;
           padding: 0.077rem 0;
           letter-spacing: 0.02rem;
         }
         ul {
           li {
             margin: 0.1rem 0;
-            border-bottom: 0.01rem solid #cccccccc;
+            border-bottom: 0.01rem solid $my-theme-border;
             padding: 0.05rem 0.01rem;
             span {
               display: inline-block;
@@ -663,7 +662,17 @@ export default defineComponent({
     }
   }
 }
-
+@keyframes rotateZoom {
+  0% {
+    transform: scale(1.05);
+  }
+  50% {
+    transform: scale(0.9);
+  }
+  100% {
+    transform: scale(1.05);
+  }
+}
 @keyframes likes {
   to {
     transform: scale(1.05);

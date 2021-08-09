@@ -10,6 +10,7 @@
             v-model="blogUserInfo.username"
             id="userName"
             placeholder="请输入用户名"
+            autocomplete="off"
           />
         </div>
         <div class="userPassBox">
@@ -19,6 +20,7 @@
             v-model="blogUserInfo.password"
             id="userPass"
             placeholder="请输入密码"
+            autocomplete="off"
           />
         </div>
         <div class="userEmailBox">
@@ -28,11 +30,14 @@
             v-model="blogUserInfo.email"
             id="userEmail"
             placeholder="请输入邮箱"
+            autocomplete="off"
           />
           <span>@qq.com</span>
         </div>
         <div class="sendCode">
-          <button @click="sendEmailCode">发送验证码</button>
+          <button :disabled="blogUserInfo.isDis" @click="sendEmailCode">
+            {{ blogUserInfo.btnCon }}
+          </button>
         </div>
         <div class="emaiCodeBox">
           <label class="iconfont icon-yanzhengma1" for="emaiCode"></label>
@@ -41,15 +46,16 @@
             v-model.number="blogUserInfo.code"
             id="emaiCode"
             placeholder="请输入验证码 "
+            autocomplete="off"
           />
         </div>
         <div class="subRegisterBox">
           <button @click="subRegister">注册</button>
         </div>
         <div class="tip">
-          <router-link to="/users/blogLogin"
-            >这里前往登录的地方,欢迎您</router-link
-          >
+          <router-link to="/users/blogLogin">
+            这里前往<i>登录</i>的地方
+          </router-link>
         </div>
       </form>
     </div>
@@ -76,15 +82,15 @@ export default defineComponent({
       password: "",
       email: "",
       code: null,
+      btnCon: "发送验证码",
+      countDown: 60,
+      isDis: false,
     });
     // 发送邮箱验证码
     const sendEmailCode = async () => {
       // 判断有没有填写邮箱
       if (!blogUserInfo.email) {
-        ElMessage.warning({
-          message: "你还没有填写邮箱",
-          type: "warning",
-        });
+        ElMessage.warning("你还没有填写邮箱");
         return false;
       }
       // 判断邮箱格式是否正确
@@ -94,10 +100,18 @@ export default defineComponent({
             email: blogUserInfo.email + "@qq.com",
           });
           if (res.data.code == 200) {
-            ElMessage.success({
-              message: "验证码已发送，请在邮箱查收",
-              type: "success",
-            });
+            ElMessage.success("验证码已发送，请在邮箱查收");
+            const timer = setInterval(() => {
+              blogUserInfo.countDown--;
+              if (blogUserInfo.countDown == 0) {
+                blogUserInfo.isDis = false;
+                blogUserInfo.btnCon = "发送验证码";
+                clearInterval(timer);
+              } else {
+                blogUserInfo.isDis = true;
+                blogUserInfo.btnCon = `${blogUserInfo.countDown}秒  后发送验证码`;
+              }
+            }, 1000);
           } else {
             ElMessage.error("验证码发送失败！");
           }
@@ -105,10 +119,7 @@ export default defineComponent({
           console.log("请求超时");
         }
       } else {
-        ElMessage.warning({
-          message: "填写正确邮箱",
-          type: "warning",
-        });
+        ElMessage.warning("填写正确邮箱");
         return false;
       }
     };
@@ -121,14 +132,10 @@ export default defineComponent({
         blogUserInfo.email == "" ||
         blogUserInfo.code == null
       ) {
-        ElMessage.warning({
-          message: "选项不能为空",
-          type: "warning",
-        });
-        return false;
+        ElMessage.warning("你还没有开始注册！");
       } else {
         try {
-          await userRegister({
+          userRegister({
             username: blogUserInfo.username,
             password: blogUserInfo.password,
             email: blogUserInfo.email + "@qq.com",
@@ -137,20 +144,13 @@ export default defineComponent({
             .then((res) => {
               const { code } = res.data;
               if (code == 200) {
-                setStorage("blogUserToken",res.data.token);
-                ElMessage.success({
-                  message: "注册成功，即将去首页",
-                  type: "success",
-                });
+                setStorage("blogUserToken", { userToken: res.data.token });
+                ElMessage.success("注册成功，即将去首页");
                 setTimeout(() => {
                   router.push(`/creepreBlog/blogHome`);
-                }, 2000);
+                }, 1000);
               } else if (code == 400) {
-                ElMessage.warning({
-                  message: "该账号已注册，请重新注册",
-                  type: "warning",
-                });
-                return;
+                ElMessage.warning("该账号已注册，请重新注册");
               }
             })
             .catch((err) => {
@@ -235,6 +235,9 @@ export default defineComponent({
           background: #67c23a;
           padding: 0.08rem 0.15rem;
           border-radius: 0.08rem;
+          &:hover {
+            cursor: pointer;
+          }
         }
       }
       .subRegisterBox {
@@ -249,6 +252,12 @@ export default defineComponent({
           letter-spacing: 0.04rem;
           font-size: 0.16rem;
           font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+          &:active {
+            transform: scale(0.99);
+          }
+          &:hover {
+            cursor: pointer;
+          }
         }
       }
       .tip {
@@ -256,9 +265,14 @@ export default defineComponent({
         text-align: right;
         width: 100%;
         margin-right: 0.1rem;
-        &:hover {
-          text-decoration: underline;
-          color: rgb(235, 178, 72);
+        a {
+          &:hover {
+            border-bottom: 0.01rem solid black;
+          }
+        }
+        i {
+          color: orangered;
+          margin: 0 0.05rem;
         }
       }
     }

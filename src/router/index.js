@@ -19,7 +19,8 @@ const routes = [{
                     import ( /* webpackChunkName: "blogHome" */ '@/views/blogHome'),
                 meta: {
                     routerName: "Blog首页",
-                    requireAuth: false
+                    requireAuth: false,
+                    icon: "icon-shouye"
                 },
             },
             {
@@ -29,7 +30,8 @@ const routes = [{
                     import ( /* webpackChunkName: "blogArticle" */ '@/views/blogArticle'),
                 meta: {
                     routerName: "Blog文章",
-                    requireAuth: false
+                    requireAuth: false,
+                    icon: "icon-wenzhang"
                 },
             }, {
                 path: "/creepreBlog/blogPhoto",
@@ -38,7 +40,8 @@ const routes = [{
                     import ( /* webpackChunkName: "blogPhoto" */ '@/views/blogPhoto'),
                 meta: {
                     routerName: "个人相册",
-                    requireAuth: false
+                    requireAuth: false,
+                    icon: "icon-xiangce"
                 },
             },
             {
@@ -48,7 +51,8 @@ const routes = [{
                     import ( /* webpackChunkName: "blogDemo" */ '@/views/blogDemo'),
                 meta: {
                     routerName: "私人视频",
-                    requireAuth: false
+                    requireAuth: false,
+                    icon: "icon-shipin"
                 },
             },
             {

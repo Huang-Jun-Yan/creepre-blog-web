@@ -70,7 +70,7 @@
     <h3 class="Links_title">友情链接</h3>
     <ul>
       <li>
-        <el-tooltip
+        <!-- <el-tooltip
           class="blog_own_link_item_child"
           effect="light"
           content="QQ联系:2503705169"
@@ -82,7 +82,7 @@
             class="iconfont icon-QQ btn"
           ></el-button>
         </el-tooltip>
-        <p>微信</p>
+        <p>微信</p> -->
       </li>
     </ul>
   </div>
@@ -106,11 +106,10 @@ export default defineComponent({
     font-size: 0.16rem;
     padding: 0.05rem 0 0.05rem 0.05rem;
     letter-spacing: 0.01rem;
-    border-bottom: 0.01rem solid #cccccc;
+    border-bottom: 0.01rem solid $my-theme-border;
   }
   ul {
     width: 100%;
-    // height: .73rem;
     display: flex;
     justify-content: space-evenly;
     align-items: center;
@@ -131,7 +130,7 @@ export default defineComponent({
     font-size: 0.16rem;
     padding: 0.05rem 0 0.05rem 0.05rem;
     letter-spacing: 0.01rem;
-    border-bottom: 0.01rem solid #cccccc;
+    border-bottom: 0.01rem solid $my-theme-border;
   }
   ul {
     width: 100%;

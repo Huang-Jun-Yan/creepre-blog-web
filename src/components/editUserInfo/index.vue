@@ -72,15 +72,11 @@ export default defineComponent({
       dialogImageUrl: "",
       dialogVisible: false,
     });
-    // 挂载阶段
-    onMounted(async () => {
-      getUserInfo();
-    });
     // 获取当前用户信息
     const getUserInfo = () => {
-      userInfo.username = getStorage("blogUserInfo").name;
+      userInfo.username = getStorage("blogUserInfo").name || "";
       userInfo.introduction = getStorage("blogUserInfo").introduction;
-      userInfo.circleUrl = getStorage("blogUserInfo").avatar;
+      userInfo.circleUrl = getStorage("blogUserInfo").avatar || "";
     };
     // 计算属性
     const ImageUpload = computed(() => {
@@ -146,7 +142,6 @@ export default defineComponent({
       })
         .then((res) => {
           if (res.data.code == 200) {
-            console.log(res.data.data);
             setStorage("blogUserInfo", {
               avatar: res.data.data.avatar,
               email: res.data.data.email,
@@ -174,7 +169,10 @@ export default defineComponent({
         userInfo.circleUrl = res.file.url;
       }
     };
-
+    // 挂载阶段
+    onMounted(async () => {
+      getUserInfo();
+    });
     return {
       ...toRefs(upLoadImg),
       ...toRefs(userInfo),
@@ -194,6 +192,7 @@ export default defineComponent({
   height: 100%;
   display: flex;
   justify-content: center;
+  background: $my-theme-background;
   .EditInfoBox {
     width: 5rem;
     height: auto;
@@ -220,7 +219,7 @@ export default defineComponent({
     .editCon {
       margin: 0.1rem 0;
       input {
-        border-bottom: 0.01rem solid #cccccc;
+        border-bottom: 0.01rem solid $my-theme-border;
         width: 3rem;
       }
       #editUserName {
@@ -246,6 +245,9 @@ export default defineComponent({
         letter-spacing: 0.01rem;
         font-size: 0.12rem;
         font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+        &:hover {
+          cursor: pointer;
+        }
       }
       .outEdit {
         background: #f56c6c;

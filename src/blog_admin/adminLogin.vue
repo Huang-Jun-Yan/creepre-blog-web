@@ -11,6 +11,7 @@
               type="text"
               id="userName"
               placeholder="请输入用户名"
+              autocomplete="off"
             />
           </div>
           <div class="userPassBox">
@@ -20,6 +21,7 @@
               type="password"
               id="userPass"
               placeholder="请输入密码"
+              autocomplete="off"
             />
           </div>
           <div class="subLoginBox">
@@ -92,13 +94,14 @@ export default defineComponent({
 #login {
   width: 100%;
   height: 100%;
-  background: url("../assets/images/backgroundImg.jpg") no-repeat 100%/100%;
+  background-image: url("../assets/images/backgroundImg.jpg");
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
   display: flex;
   justify-content: center;
   align-items: center;
   .loginBox {
     width: 4rem;
-    // height: 5rem;
     border-radius: 0.05rem;
     overflow: hidden;
     background: rgba(230, 225, 225, 0.5);
@@ -145,6 +148,12 @@ export default defineComponent({
           letter-spacing: 0.04rem;
           font-size: 0.16rem;
           font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+            &:hover {
+            cursor: pointer;
+          }
+          &:active {
+            transform: scale(1.05);
+          }
         }
       }
     }

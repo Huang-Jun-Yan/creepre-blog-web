@@ -162,19 +162,13 @@ export default defineComponent({
         type: "warning",
       })
         .then(() => {
-          ElMessage({
-            type: "success",
-            message: "确定返回,在1秒后返回",
-          });
+          ElMessage.success("回到首页");
           setTimeout(() => {
             router.replace("/");
           }, 1000);
         })
         .catch(() => {
-          ElMessage({
-            type: "info",
-            message: "已取消",
-          });
+          ElMessage.info("已取消");
         });
     };
     const handleOpen = () => {};

@@ -1,7 +1,7 @@
 <template>
   <div id="MessageBox">
     <ul>
-      <li @click="$router.push('/creepreBlog/messageBoard')">
+      <li @click="onMessageBoard">
         <i class="iconfont icon-liuyanban"></i>
         <span>留言板</span>
         <i class="iconfont icon-youjiantou1"></i>
@@ -13,69 +13,47 @@
       </li>
       <li style="padding: 0.05rem 0.03rem; border-bottom: none">
         <i class="iconfont icon-ecs-running"></i>
-        <span>此网站勉强运行了 {{ siteTime() }} 天</span>
+        <span>此网站勉强运行了 {{ runDays }} 天</span>
       </li>
     </ul>
   </div>
 </template>
 
 <script>
-import { defineComponent, onMounted } from "vue";
+import { defineComponent, onMounted, ref } from "vue";
+import { useRouter } from "vue-router";
+import { getStorage } from "@/util/Storage";
+import { ElMessage } from "element-plus";
 export default defineComponent({
   name: "templateMessageBoard",
   components: {},
   setup() {
-    const onMessageBoard = () => {};
-    const onAboutMe = () => {};
-    const siteTime = () => {
-      window.setTimeout("siteTime()", 1000);
-      var seconds = 1000;
-      var minutes = seconds * 60;
-      var hours = minutes * 60;
-      var days = hours * 24;
-      var years = days * 365;
-      var today = new Date();
-      var todayYear = today.getFullYear();
-      var todayMonth = today.getMonth() + 1;
-      var todayDate = today.getDate();
-      var todayHour = today.getHours();
-      var todayMinute = today.getMinutes();
-      var todaySecond = today.getSeconds();
-      /* Date.UTC() -- 返回date对象距世界标准时间(UTC)1970年1月1日午夜之间的毫秒数(时间戳) */
-      var t1 = Date.UTC(2021, 8, 7, 11, 56, 22); //北京时间2016-12-1 00:00:00
-      var t2 = Date.UTC(
-        todayYear,
-        todayMonth,
-        todayDate,
-        todayHour,
-        todayMinute,
-        todaySecond
-      );
-      var diff = t2 - t1;
-      var diffYears = Math.floor(diff / years);
-      var diffDays = Math.floor(diff / days - diffYears * 365);
-      // var diffHours = Math.floor(
-      //   (diff - (diffYears * 365 + diffDays) * days) / hours
-      // );
-      // var diffMinutes = Math.floor(
-      //   (diff - (diffYears * 365 + diffDays) * days - diffHours * hours) /
-      //     minutes
-      // );
-      // var diffSeconds = Math.floor(
-      //   (diff -
-      //     (diffYears * 365 + diffDays) * days -
-      //     diffHours * hours -
-      //     diffMinutes * minutes) /
-      //     seconds
-      // );
-      return diffDays;
+    const router = useRouter();
+    const runDays = ref(0);
+    const onMessageBoard = () => {
+      if (!getStorage("blogUserToken")) {
+        ElMessage.error("你还没有登录,不能前往留言板！");
+      } else {
+        router.replace("/creepreBlog/messageBoard");
+      }
+    };
+    const onAboutMe = () => {
+      ElMessage.warning("暂时没有开发哦！");
+    };
+    const siteTime = (date) => {
+      let now = new Date().valueOf();
+      let nTime = now - date;
+      runDays.value = Math.floor(nTime / 86400000);
     };
     // 挂载阶段
-    onMounted(() => {});
+    onMounted(() => {
+      siteTime(1628389176512);
+    });
     return {
       onMessageBoard,
       onAboutMe,
       siteTime,
+      runDays,
     };
   },
 });
@@ -86,7 +64,7 @@ export default defineComponent({
   min-height: 1.1rem;
   ul {
     li {
-      border-bottom: 0.02rem solid #cccccc;
+      border-bottom: 0.01rem solid $my-theme-border;
       padding: 0.1rem 0.03rem;
       margin: 0.03rem 0;
       transition: 0.3s all;
@@ -100,19 +78,21 @@ export default defineComponent({
         font-weight: bold;
       }
       &:hover {
+        background: $my-theme-background;
         cursor: pointer;
       }
       &:active {
         background: #fff;
+        i,
+        span {
+          animation: yd 1s ease-in-out;
+        }
       }
       &:nth-child(3) {
         i {
           font-size: 0.16rem;
           animation: xz 1s infinite linear;
           border-radius: 50%;
-        }
-        span {
-          // float: right;
         }
       }
     }
@@ -121,6 +101,11 @@ export default defineComponent({
 @keyframes xz {
   to {
     transform: rotate(360deg);
+  }
+}
+@keyframes yd {
+  to {
+    transform: scaleX(1rem);
   }
 }
 </style>

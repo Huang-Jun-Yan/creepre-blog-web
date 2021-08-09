@@ -58,7 +58,6 @@ export default defineComponent({
         pageSize: BlogPhotosList.pageSize,
       })
         .then((res) => {
-          console.log(res);
           if (res.data.code == 200) {
             const { data } = res.data;
             BlogPhotosList.count = data.count;
@@ -109,7 +108,7 @@ export default defineComponent({
   border-radius: 0.04rem;
   position: relative;
   transition: all 1s;
-  background: #eeeeee;
+  background: $my-theme-background;
   #container {
     width: 100%;
     min-height: 3rem;
@@ -143,7 +142,6 @@ export default defineComponent({
   .pagination {
     height: 0.5rem;
     margin-top: 0.02rem;
-    background: #eeeeee;
   }
   @media screen and (max-width: 1500px) {
     #container {

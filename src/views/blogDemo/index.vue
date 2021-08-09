@@ -109,7 +109,7 @@ export default defineComponent({
       height: 5.8rem;
       .blogDemoItem {
         height: 5.8rem;
-        background: #eeeeee;
+        background: $my-theme-background;
         border-radius: 0.05rem;
         .blogDemoSelf {
           height: 3rem;
@@ -120,8 +120,6 @@ export default defineComponent({
             display: flex;
             align-items: center;
             justify-content: center;
-            // box-shadow: inset 0 0 0.04rem 0.03rem #cccccc;
-            // border-radius: 0.05rem;
             height: 100%;
             width: 6.1rem;
             video {
@@ -134,7 +132,7 @@ export default defineComponent({
         .blogDemoIntroduction {
           min-height: 2.5rem;
           padding: 0.05rem 0.05rem;
-          box-shadow: inset 0 0 0.03rem 0.02rem #cccccc;
+          box-shadow: $my-theme-box-shadow;
           span {
             float: right;
             user-select: none;
@@ -146,7 +144,6 @@ export default defineComponent({
   .pagination {
     height: 0.62rem;
     margin-top: 0.01rem;
-    background: #eeeeee;
   }
 }
 </style>

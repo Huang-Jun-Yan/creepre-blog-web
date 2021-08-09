@@ -1,5 +1,8 @@
 <template>
   <div id="login">
+    <div class="blogLogo" @click="$router.replace('/')">
+      <img src="@/assets/images/bloglogo.png" alt="" />
+    </div>
     <div class="loginBox">
       <div class="blogLoginTitle"><h2>LOGIN</h2></div>
       <transition name="el-fade-in">
@@ -11,6 +14,7 @@
               type="text"
               id="userName"
               placeholder="请输入用户名"
+              autocomplete="off"
             />
           </div>
           <div class="userPassBox">
@@ -20,15 +24,16 @@
               type="password"
               id="userPass"
               placeholder="请输入密码"
+              autocomplete="off"
             />
           </div>
           <div class="subLoginBox">
             <button @click="userLogin">登录</button>
           </div>
           <div class="tip">
-            <router-link to="/users/blogRegister"
-              >这里前往注册的地方,欢迎您</router-link
-            >
+            <router-link to="/users/blogRegister">
+              这里前往<i>注册</i>的地方=>
+            </router-link>
           </div>
         </form>
       </transition>
@@ -72,13 +77,8 @@ export default defineComponent({
               username: res.data.data.username,
             });
             setStorage("blogUserToken", { userToken: res.data.token });
-            ElMessage.success({
-              message: "登陆成功，即将前往首页",
-              type: "success",
-            });
-            setTimeout(() => {
-              router.push("/creepreBlog/blogHome");
-            }, 2000);
+            ElMessage.success("登陆成功");
+            router.replace("/creepreBlog/blogHome");
           } else if (res.data.code == 400) {
             ElMessage.error({
               message: res.data.msg,
@@ -108,11 +108,19 @@ export default defineComponent({
   height: 100%;
   background: url("../../assets/images/backgroundImg.jpg") no-repeat 100%/100%;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
+  .blogLogo {
+    margin: 0.2rem 0;
+    &:hover {
+      cursor: pointer;
+    }
+    &:active {
+      transform: scale(1.05);
+    }
+  }
   .loginBox {
     width: 4rem;
-    // height: 5rem;
     border-radius: 0.05rem;
     overflow: hidden;
     background: rgba(230, 225, 225, 0.5);
@@ -133,7 +141,7 @@ export default defineComponent({
       flex-direction: column;
       align-items: center;
       div {
-        margin: 0.1rem 0;
+        margin: 0.2rem 0;
         padding-bottom: 0.1rem;
         border-bottom: 0.02rem solid #cccccc;
         width: 3rem;
@@ -151,6 +159,7 @@ export default defineComponent({
         border-bottom: none;
         text-align: center;
         padding: 0;
+        margin: 0.1rem 0;
         button {
           background: #409eff;
           width: 2.4rem;
@@ -159,16 +168,28 @@ export default defineComponent({
           letter-spacing: 0.04rem;
           font-size: 0.16rem;
           font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+          &:active {
+            transform: scale(.99);
+          }
+        }
+        &:hover button {
+          cursor: pointer;
         }
       }
       .tip {
+        margin: 0.1rem 0;
         border-bottom: none;
         text-align: right;
         width: 100%;
         margin-right: 0.1rem;
-        &:hover {
-          text-decoration: underline;
-          color: rgb(235, 178, 72);
+        a {
+          &:hover {
+            border-bottom: 0.01rem solid black;
+          }
+        }
+        i {
+          color: orangered;
+          margin: 0 0.05rem;
         }
       }
     }

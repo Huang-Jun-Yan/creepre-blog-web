@@ -7,15 +7,22 @@
       <el-table-column prop="username" label="用户名" width="100">
       </el-table-column>
       <el-table-column prop="name" label="昵称" width="100"> </el-table-column>
-      <el-table-column prop="email" label="邮箱" width="200"> </el-table-column>
+      <el-table-column prop="email" label="邮箱" width="180"> </el-table-column>
       <el-table-column prop="introduction" label="简介"> </el-table-column>
-      <el-table-column fixed="right" label="操作" width="80">
+      <el-table-column fixed="right" label="操作" width="205">
         <template #default="scope">
+          <el-button
+            @click="addAdmin(scope.row)"
+            :type="scope.row.isAdmin == 0 ? 'primary' : 'warning'"
+            size="small"
+          >
+            {{ scope.row.isAdmin == 0 ? "添加管理员" : "删除管理员" }}
+          </el-button>
           <el-button
             @click="removeUser(scope.row, scope.$index)"
             type="danger"
             size="small"
-            >删除</el-button
+            >删除用户</el-button
           >
         </template>
       </el-table-column>
@@ -25,7 +32,7 @@
 
 <script>
 import { defineComponent, ref, onMounted } from "vue";
-import { getUser, deleteUser } from "../http/api";
+import { getUser, deleteUser, addAdmins } from "@/http/api";
 import { ElMessageBox } from "element-plus";
 import { ElMessage } from "element-plus";
 export default defineComponent({
@@ -82,9 +89,51 @@ export default defineComponent({
 
       console.log(username, index);
     };
+    const addAdmin = async ({ username, avatar, name, isAdmin, password }) => {
+      try {
+        if (isAdmin == 0) {
+          const res = await addAdmins({
+            username,
+            avatar,
+            name,
+            isAdmin,
+            password,
+          });
+          if (res.data.code == 200) {
+            ElMessage.success(res.data.msg);
+            getUserInfo();
+          }
+        } else {
+          ElMessageBox.confirm("此操作将移除该管理员, 是否继续?", "操作提示", {
+            confirmButtonText: "确定",
+            cancelButtonText: "取消",
+            type: "warning",
+          })
+            .then(async () => {
+              const res = await addAdmins({
+                username,
+                avatar,
+                name,
+                isAdmin,
+                password,
+              });
+              if (res.data.code == 200) {
+                ElMessage.success(res.data.msg);
+                getUserInfo();
+              }
+            })
+            .catch(() => {
+              ElMessage.info("已取消删除");
+            });
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    };
     return {
       tableData,
       removeUser,
+      addAdmin,
     };
   },
 });

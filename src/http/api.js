@@ -27,6 +27,15 @@ export const adminIsLogined = val => post('/blogApi/admin/adminIsLogined', val);
  */
 export const getAdminAcc = val => get('/blogApi/getAdminAccount', val);
 /**
+ * @method 添加管理
+ * @param {string} username
+ * @param {string} avatar
+ * @param {string} name
+ * @param {string} password
+ * @param {number} isAdmin
+ */
+export const addAdmins = val => post('/blogApi/admin/addAdmins', val);
+/**
  * @method 退出管理
  * @param {Object} 
  */
