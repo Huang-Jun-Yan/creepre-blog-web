@@ -182,8 +182,8 @@ export default defineComponent({
           img: upArticleObj.img,
           label: upArticleObj.label,
           content: upArticleObj.content,
-          name: getStorage("blogUserInfo").username.name,
-          avatar: getStorage("blogUserInfo").username.avatar,
+          name: getStorage("blogUserInfo").name,
+          avatar: getStorage("blogUserInfo").avatar,
         })
           .then((res) => {
             console.log(res);

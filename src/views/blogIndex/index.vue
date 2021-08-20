@@ -2,7 +2,7 @@
   <div id="index">
     <blogDusk v-show="!backgroundTab" />
     <clearSky v-show="backgroundTab" />
-    <highlight />
+    <highlight v-show="windoWwidth >= 640"/>
     <div ref="templateButton" id="templateButton">
       <i @click="onHideAside" class="iconfont icon-caidan"></i>
     </div>
@@ -256,6 +256,7 @@ export default defineComponent({
       templateButton,
       onHideAside,
       isHideAside,
+      windoWwidth
     };
   },
 });

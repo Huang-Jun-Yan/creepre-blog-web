@@ -25,7 +25,7 @@
             />
           </div>
           <div class="subLoginBox">
-            <button @click="adminLogin">登录</button>
+            <button @click.prevent="adminLogin">登录</button>
           </div>
         </form>
       </transition>
