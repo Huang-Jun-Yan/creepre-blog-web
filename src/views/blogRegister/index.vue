@@ -50,7 +50,7 @@
           />
         </div>
         <div class="subRegisterBox">
-          <button @click="subRegister">注册</button>
+          <button @click.prevent="subRegister">注册</button>
         </div>
         <div class="tip">
           <router-link to="/users/blogLogin">
@@ -127,10 +127,10 @@ export default defineComponent({
     const subRegister = async () => {
       //   判断有没有输入
       if (
-        blogUserInfo.username == "" ||
-        blogUserInfo.password == "" ||
-        blogUserInfo.email == "" ||
-        blogUserInfo.code == null
+        !blogUserInfo.username ||
+        !blogUserInfo.password ||
+        !blogUserInfo.email ||
+        !blogUserInfo.code
       ) {
         ElMessage.warning("你还没有开始注册！");
       } else {
@@ -145,9 +145,9 @@ export default defineComponent({
               const { code } = res.data;
               if (code == 200) {
                 setStorage("blogUserToken", { userToken: res.data.token });
-                ElMessage.success("注册成功，即将去首页");
+                ElMessage.success("注册成功，去首页登录吧");
                 setTimeout(() => {
-                  router.push(`/creepreBlog/blogHome`);
+                  router.replace(`/users/admin/adminLogin`);
                 }, 1000);
               } else if (code == 400) {
                 ElMessage.warning("该账号已注册，请重新注册");
@@ -174,7 +174,9 @@ export default defineComponent({
 #register {
   width: 100%;
   height: 100%;
-  background: url("../../assets/images/backgroundImg.jpg") no-repeat 100%/100%;
+  background-image: url("../../assets/images/backgroundImg.jpg");
+    background-repeat: no-repeat;
+  background-size: 100% 100%;
   display: flex;
   justify-content: center;
   align-items: center;

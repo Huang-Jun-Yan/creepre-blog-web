@@ -105,6 +105,7 @@ export default defineComponent({
 #BlogPhoto {
   width: 100%;
   min-height: 6.52rem;
+  height: 100%;
   border-radius: 0.04rem;
   position: relative;
   transition: all 1s;
@@ -142,6 +143,17 @@ export default defineComponent({
   .pagination {
     height: 0.5rem;
     margin-top: 0.02rem;
+  }
+  @media screen and (max-width: 640px) {
+    #BlogPhoto {
+      height: calc(100% - 0.8rem) !important;
+    }
+    .pagination {
+      position: absolute;
+      bottom: 0.1rem;
+      left: 50%;
+      transform: translate(-50%);
+    }
   }
   @media screen and (max-width: 1500px) {
     #container {

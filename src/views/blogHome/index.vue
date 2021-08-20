@@ -495,7 +495,7 @@ export default defineComponent({
           font-size: 0.1rem;
           position: absolute;
           top: -0.06rem;
-          left: 56%;
+          left: 57%;
           color: red;
           animation: rotateZoom 1s infinite ease-in-out;
         }
@@ -659,6 +659,38 @@ export default defineComponent({
           }
         }
       }
+    }
+  }
+}
+@media screen and (max-width: 640px) {
+  .blog_banner {
+    .left{
+      width: 7rem !important;
+    }
+    .right {
+      display: none;
+    }
+  }
+  .blog_newArticle{
+    .newArticle_left{
+      .blog_newArticle_title{
+        height: .5rem !important;
+        line-height: 0.5rem !important;
+        i{
+          left: 61% !important;
+        }
+      }
+      .blog_articleBody {
+        .article_item{
+          height: 1.8rem !important;
+          .articleCon {
+            height: 100% !important;
+          }
+        }
+      }
+    }
+    .right{
+      display: none;
     }
   }
 }

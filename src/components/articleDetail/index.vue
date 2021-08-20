@@ -11,7 +11,7 @@
           class="grid-content bg-purple"
           style="min-height: 6.4rem; padding: 0.05rem 0.05rem"
         >
-          <el-scrollbar style="width: 100%" height="6.4rem">
+          <el-scrollbar style="width: 100%">
             <div class="articleDetailTitle">
               <h2>
                 {{ selfArticleObj.title }}
@@ -127,7 +127,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 #articleDetail {
-  background: #eeeeee;
+  background: $my-theme-background;
   height: 100%;
   .el-row {
     .el-col {
@@ -164,7 +164,6 @@ export default defineComponent({
         }
         .articleDetailTitle {
           min-height: 0.3rem;
-          background: white;
           line-height: 0.4rem;
           letter-spacing: 0.01rem;
           margin-bottom: 0.05rem;
@@ -172,7 +171,6 @@ export default defineComponent({
         .articleDetailLabel {
           height: 0.5rem;
           margin-bottom: 0.05rem;
-          background: white;
           .top {
             height: 50%;
             display: flex;
@@ -211,11 +209,24 @@ export default defineComponent({
         }
         .articleDetailContent {
           min-height: 5.24rem;
-          background: white;
           padding: 0.05rem 0.05rem;
         }
       }
     }
+  }
+}
+@media screen and (max-width:640px){
+  .createTime{
+    display: none !important;
+  }
+  .bottom{
+    display: none !important;
+  }
+  .el-row {
+     height: 100% !important;
+  }
+  .grid-content{
+    height: 14rem !important;
   }
 }
 </style>

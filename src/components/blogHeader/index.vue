@@ -13,7 +13,7 @@
         <el-row class="blogMusicDome">
           <el-col
             style="display: flex; align-items: center; justify-content: center"
-            :span="6"
+            :span="9"
           >
             <div class="grid-content bg-purple">
               <el-progress
@@ -35,12 +35,13 @@
                   fit="fit"
                   :size="56"
                   :src="musicItem.music_img"
+                  @click="onHidePlayer"
                   >未上传</el-avatar
                 >
               </el-progress>
             </div>
           </el-col>
-          <el-col :span="18" style="padding: 0.01rem 0">
+          <el-col :span="15" style="padding: 0.01rem 0">
             <div class="grid-content bg-purple">
               <el-col :span="16" style="margin-right: 0.2rem">
                 <transition name="el-fade-in">
@@ -54,35 +55,27 @@
                 </transition>
                 <div class="musicControl">
                   <div
-                    style="font-size: 0.2rem;"
+                    style="font-size: 0.2rem"
                     class="controlRight iconfont icon-youjiantou"
                     @click="onPreviousMusic"
                   ></div>
                   <div
-                    style="font-size: 0.2rem;"
+                    style="font-size: 0.2rem"
                     class="controlMiddle iconfont"
                     :class="isPlay"
                     @click="onPauseMusic"
                   ></div>
                   <div
-                    style="font-size: 0.2rem;"
+                    style="font-size: 0.2rem"
                     class="controlLeft iconfont icon-zuojiantou1"
                     @click="onNextMusic"
                   ></div>
                 </div>
               </el-col>
-              <el-col :span="8" style="padding-top: 0.02rem">
-                <!-- <el-slider
-                  v-model="volumeValue"
-                  :show-tooltip="false"
-                  vertical
-                  height=".45rem"
-                >
-                </el-slider> -->
-              </el-col>
             </div>
           </el-col>
         </el-row>
+
         <div class="navMenu">
           <ul>
             <li
@@ -131,12 +124,15 @@ import {
 } from "vue";
 import { getBlogMusic } from "@/http/api";
 import { useRoute } from "vue-router";
+import { useStore } from "vuex";
 export default defineComponent({
   name: "headers",
   components: {},
   setup() {
     /* 路由实例 */
     const route = useRoute();
+    /* store实例 */
+    const store = useStore();
     const routerInfoArr = ref([]);
     const activeIndex = ref(0);
     // 当前路由
@@ -262,6 +258,16 @@ export default defineComponent({
         musicListObj.audio.currentTime / musicListObj.audio.duration;
       musicListObj.percentage = Number((percent * 100).toFixed(0));
     };
+    /* 隐藏播放器 */
+    const onHidePlayer = (e) => {
+      if (store.state.globalConfig.isHidePlayer) {
+        store.commit("globalConfig/handleChangeHidePlayer");
+        e.path[6].style.transform = `translate(1.9rem)`;
+      } else {
+        store.commit("globalConfig/handleChangeHidePlayer");
+        e.path[6].style.transform = `translate(0)`;
+      }
+    };
     // 监听
     watch(
       () => musicListObj.index,
@@ -290,6 +296,7 @@ export default defineComponent({
       timeUpDate,
       musicEnded,
       jump,
+      onHidePlayer,
     };
   },
   data() {
@@ -350,9 +357,9 @@ export default defineComponent({
           justify-content: space-evenly;
           width: 1rem;
           margin-top: 0.07rem;
-            div {
-              color: $my-theme-border;
-            }
+          div {
+            color: $my-theme-border;
+          }
           .controlRight {
             &:hover {
               color: orange !important;
@@ -409,6 +416,38 @@ export default defineComponent({
           }
         }
       }
+    }
+  }
+}
+@media screen and (max-width: 640px) {
+  .left {
+    display: none;
+  }
+  .blogMusicDome {
+    position: fixed;
+    bottom: 0.4rem;
+    right: 0;
+    background: $my-theme-background;
+    margin: 0 !important;
+    transition: 1s all ease-in-out;
+    .songTitle {
+      margin: 0.1rem 0;
+    }
+    .musicControl {
+      margin: 0.3rem 0 !important;
+      div {
+        font-size: 0.3rem !important;
+        margin: 0 0.06rem !important;
+      }
+    }
+  }
+  .navMenu {
+    width: 100%;
+    margin: 0 !important;
+    ul {
+      display: flex;
+      align-content: center;
+      justify-content: space-evenly;
     }
   }
 }

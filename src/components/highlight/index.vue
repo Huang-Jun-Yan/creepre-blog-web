@@ -1,5 +1,5 @@
 <template>
-  <div id="lampadario" @click="changebg">
+  <div id="lampadario" @click.stop="changebg">
     <input type="radio" name="switch" value="on" />
     <input type="radio" name="switch" value="off" checked="checked" />
     <label for="switch"></label>
@@ -20,7 +20,7 @@ export default defineComponent({
     // vuex
     const store = useStore();
     const changebg = () => {
-      store.commit('globalConfig/handleChange');
+      store.commit('globalConfig/handleChangeBackgroundTab');
     };
     return {
       changebg,
@@ -34,7 +34,7 @@ export default defineComponent({
   left: 5%;
   top: 0;
   cursor: pointer;
-  z-index: 1;
+  z-index: 9999;
 }
 #filo {
   position: relative;

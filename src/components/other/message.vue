@@ -13,7 +13,7 @@
       </li>
       <li style="padding: 0.05rem 0.03rem; border-bottom: none">
         <i class="iconfont icon-ecs-running"></i>
-        <span>此网站勉强运行了 {{ runDays }} 天</span>
+        <span>勉强运行了 {{ runDays }} 天</span>
       </li>
     </ul>
   </div>
@@ -62,6 +62,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 #MessageBox {
   min-height: 1.1rem;
+  width: 2.3rem;
   ul {
     li {
       border-bottom: 0.01rem solid $my-theme-border;
@@ -96,6 +97,13 @@ export default defineComponent({
         }
       }
     }
+  }
+}
+@media screen and (max-width: 640px) {
+  #MessageBox {
+    position: absolute;
+    bottom: 0;
+    left: 0;
   }
 }
 @keyframes xz {

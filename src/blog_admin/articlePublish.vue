@@ -173,10 +173,9 @@ export default defineComponent({
       )
         return ElMessage.warning("请输入完整的文章信息");
       upArticleObj.content = instance.txt.html();
-      console.log(upArticleObj.content, "这是我");
       if (upArticleObj.content) {
         upArticle({
-          admin_id: getStorage("adminInfo").admin_id,
+          admin_id: getStorage("admin_id"),
           title: upArticleObj.title,
           brief: upArticleObj.brief,
           category: upArticleObj.category,

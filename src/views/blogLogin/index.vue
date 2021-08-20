@@ -28,7 +28,7 @@
             />
           </div>
           <div class="subLoginBox">
-            <button @click="userLogin">登录</button>
+            <button @click.prevent="userLogin">登录</button>
           </div>
           <div class="tip">
             <router-link to="/users/blogRegister">
@@ -106,7 +106,9 @@ export default defineComponent({
 #login {
   width: 100%;
   height: 100%;
-  background: url("../../assets/images/backgroundImg.jpg") no-repeat 100%/100%;
+  background-image: url("../../assets/images/backgroundImg.jpg");
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
   display: flex;
   flex-direction: column;
   align-items: center;

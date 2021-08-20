@@ -146,4 +146,15 @@ export default defineComponent({
     margin-top: 0.01rem;
   }
 }
+@media screen and (max-width: 640px) {
+  .blogDemoShow {
+    height: 100% !important;
+  }
+  .pagination {
+    position:absolute;
+    bottom: .1rem;
+    left: 50%;
+    transform: translate(-50%);
+  }
+}
 </style>

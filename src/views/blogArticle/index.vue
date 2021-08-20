@@ -1,6 +1,10 @@
 <template>
   <div id="blogArticle">
-    <el-row :gutter="20" style="margin: 0.1rem 0; min-height: 5.8rem">
+    <el-row
+      class="blogArticleMain"
+      :gutter="20"
+      style="margin: 0.1rem 0; min-height: 5.8rem"
+    >
       <el-col :span="24">
         <div
           class="grid-content bg-purple"
@@ -293,6 +297,24 @@ export default defineComponent({
     align-items: center;
     justify-content: space-between;
     height: 0.5rem;
+  }
+}
+@media screen and (max-width: 640px) {
+  #blogArticle {
+    .blogArticleMain {
+      height: calc(100% - 0.8rem);
+      .articleDetailLabel {
+        .createTime {
+          display: none;
+        }
+        .bottom {
+          display: none !important;
+        }
+      }
+    }
+    .grid-content{
+      height: 11.7rem !important;
+    }
   }
 }
 </style>

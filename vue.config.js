@@ -1,10 +1,11 @@
 module.exports = {
+    // publicPath: process.env.NODE_ENV === "production" ? "./" : "./",
     devServer: {
         port: 8080,
         open: true,
         proxy: {
             '/blogApi': {
-                target: 'http://localhost:3000',
+                target: 'http://localhost:3000', // http://localhost:3000 --- http://121.43.188.162:3300/
                 changeOrigin: true,
                 pathRewrite: {
                     '^/blogApi': ''

@@ -98,7 +98,7 @@ export default defineComponent({
   min-height: 95vh;
   position: relative;
   transition: all 1s;
-  background: #eeeeee;
+  background: $my-theme-background;
   h2 {
     height: 0.5rem;
     line-height: 0.5rem;

@@ -258,4 +258,22 @@ export default defineComponent({
     }
   }
 }
+@media screen and (max-width: 640px) {
+  .editIntroduction{
+    input {
+      width: 4rem !important;
+    }
+  }
+  .editUserName{
+    input {
+      width: 1.5rem !important;
+    }
+  }
+  .editBtn {
+    button {
+      width: 1.2rem !important;
+      height: 0.55rem !important;
+    }
+  }
+}
 </style>
