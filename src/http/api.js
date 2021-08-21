@@ -7,7 +7,7 @@ import {get, post } from './index.js'
 /**
  * @param baseUrl
  */
-export const BASEURL = "http://121.43.188.162/blogApi" // http://localhost:3000 --- http://121.43.188.162/blogApi
+export const BASEURL = "http://localhost:3000" // http://localhost:3000 --- http://121.43.188.162/blogApi
 
 /**
  * @Types  管理员

@@ -1,7 +1,7 @@
 @font-face {
     font-family: "iconfont";
     /* Project id 2418760 */
-    src: url('//at.alicdn.com/t/font_2418760_ffqm4j6b4rl.woff2?t=1629441953306') format('woff2'), url('//at.alicdn.com/t/font_2418760_ffqm4j6b4rl.woff?t=1629441953306') format('woff'), url('//at.alicdn.com/t/font_2418760_ffqm4j6b4rl.ttf?t=1629441953306') format('truetype');
+    src: url('//at.alicdn.com/t/font_2418760_i5txdgou7o.woff2?t=1629545789537') format('woff2'), url('//at.alicdn.com/t/font_2418760_i5txdgou7o.woff?t=1629545789537') format('woff'), url('//at.alicdn.com/t/font_2418760_i5txdgou7o.ttf?t=1629545789537') format('truetype');
 }
 
 .iconfont {
@@ -10,6 +10,30 @@
     font-style: normal;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-lifangtilitiduomiantifangkuai2:before {
+    content: "\e7fb";
+}
+
+.icon-niao:before {
+    content: "\e61e";
+}
+
+.icon-feiji:before {
+    content: "\e64a";
+}
+
+.icon-chongwushe:before {
+    content: "\e609";
+}
+
+.icon-A:before {
+    content: "\e6f0";
+}
+
+.icon-youxi:before {
+    content: "\e6cb";
 }
 
 .icon-caidan:before {

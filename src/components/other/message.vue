@@ -28,6 +28,7 @@ export default defineComponent({
   name: "templateMessageBoard",
   components: {},
   setup() {
+    const activeName = ref("1");
     const router = useRouter();
     const runDays = ref(0);
     const onMessageBoard = () => {
@@ -54,6 +55,7 @@ export default defineComponent({
       onAboutMe,
       siteTime,
       runDays,
+      activeName,
     };
   },
 });

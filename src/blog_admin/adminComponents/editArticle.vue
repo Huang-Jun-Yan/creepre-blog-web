@@ -193,11 +193,11 @@ export default defineComponent({
       Object.assign(instance.config, {
         onchange() {},
         linkImgCallback(src) {
-          console.log(src);
+          console.log(src, "图片地址");
         },
         onlineVideoCallback(video) {
           // 自定义回调内容，内容成功插入后会执行该函数
-          console.log(video);
+          console.log(video, "video");
         },
       });
 

@@ -1,24 +1,24 @@
 <template>
-  <div id="blogSpare">
-     Spare
+  <div id="blogTanChiShe">
+    tanchishe
   </div>
 </template>
 
 <script>
 import { defineComponent } from "vue";
 export default defineComponent({
-  name: "blogWebSpare",
+  name: "blogWebTanChiShe",
   components: {},
-  directives: {},
-  data() {
+  setup() {
+
     return {};
   },
-
-  mounted() {},
-
-  methods: {},
 });
 </script>
 
 <style lang="scss" scoped>
+#blogTanChiShe {
+  background: $my-theme-background;
+  height: 100%;
+}
 </style>

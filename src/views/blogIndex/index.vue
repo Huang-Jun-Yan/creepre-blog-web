@@ -2,7 +2,8 @@
   <div id="index">
     <blogDusk v-show="!backgroundTab" />
     <clearSky v-show="backgroundTab" />
-    <highlight v-show="windoWwidth >= 640"/>
+    <highlight v-show="windoWwidth >= 640" />
+    <otherMenu />
     <div ref="templateButton" id="templateButton">
       <i @click="onHideAside" class="iconfont icon-caidan"></i>
     </div>
@@ -96,6 +97,7 @@ import blogHeaders from "@/components/blogHeader";
 import blogDusk from "@/components/dusk";
 import clearSky from "@/components/clearSky";
 import highlight from "@/components/highlight";
+import otherMenu from "@/components/other/otherMenu";
 import { useRouter } from "vue-router";
 import {
   defineComponent,
@@ -124,6 +126,7 @@ export default defineComponent({
     blogDusk,
     clearSky,
     highlight,
+    otherMenu,
   },
   setup() {
     // 路由实例
@@ -256,7 +259,7 @@ export default defineComponent({
       templateButton,
       onHideAside,
       isHideAside,
-      windoWwidth
+      windoWwidth,
     };
   },
 });
@@ -422,6 +425,7 @@ export default defineComponent({
         height: 3.5rem !important;
         .blog_readNumber {
           line-height: 0.25rem !important;
+          font-size: 0.26rem !important;
         }
       }
     }

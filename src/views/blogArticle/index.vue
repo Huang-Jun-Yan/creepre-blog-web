@@ -10,7 +10,7 @@
           class="grid-content bg-purple"
           style="min-height: 5.4rem; padding: 0.05rem 0.05rem"
         >
-          <el-scrollbar style="width: 100%" height="5.5rem">
+          <el-scrollbar style="width: 100%">
             <div class="articleDetailTitle">
               <h2>
                 {{ ArticleList.title

@@ -16,7 +16,6 @@
                 v-for="(imgSrcItem, imgSrcIndex) in PhotoList"
                 :key="imgSrcIndex"
               >
-                <!-- <img class="blog_banner_img" :src="imgSrcItem" alt="" /> -->
                 <el-image fit="fill" :src="imgSrcItem" class="blog_banner_img">
                   <template #error>
                     <div class="image-slot">
@@ -286,8 +285,8 @@ export default defineComponent({
             const { data } = res.data;
             data.data.map((item) => {
               item.imgsrc = JSON.parse(item.imgsrc).splice(
-                5,
-                JSON.parse(item.imgsrc).length - 5
+                6,
+                JSON.parse(item.imgsrc).length - 6
               );
             });
             BlogPhotosList.PhotoList = data.data[0].imgsrc;
@@ -687,6 +686,9 @@ export default defineComponent({
             height: 100% !important;
           }
         }
+         .pagination {
+           margin-top: .2rem !important;
+         }
       }
     }
     .right{

@@ -15,6 +15,7 @@
                   :poster="videoItem.video_pic"
                   :preload="true"
                   controls
+                  :autobuffer="true"
                 ></video>
               </div>
             </div>

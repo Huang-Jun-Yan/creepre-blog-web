@@ -77,11 +77,12 @@
         </el-row>
 
         <div class="navMenu">
-          <ul>
+          <ul class="navMenuParent">
             <li
               v-for="(routerItem, index) in routerInfoArr[0]"
               :key="index"
               :class="{ active: activeIndex == index }"
+              class="navMenuItem"
             >
               <i class="iconfont" :class="routerItem.meta.icon"></i>
               <router-link
@@ -346,7 +347,7 @@ export default defineComponent({
     .right {
       height: 100%;
       margin: 0;
-      overflow: hidden;
+      // overflow: hidden;
       display: flex;
       .blogMusicDome {
         width: 3rem;
@@ -386,10 +387,10 @@ export default defineComponent({
       .navMenu {
         height: 100%;
         margin-left: 0.09rem;
-        ul {
+        .navMenuParent {
           height: 100%;
           display: flex;
-          li {
+          .navMenuItem {
             height: calc(100% - 0.03rem);
             line-height: 0.6rem;
             letter-spacing: 0.01rem;
@@ -425,7 +426,7 @@ export default defineComponent({
   }
   .blogMusicDome {
     position: fixed;
-    bottom: 0.4rem;
+    bottom: 0.2rem;
     right: 0;
     background: $my-theme-background;
     margin: 0 !important;
@@ -448,6 +449,15 @@ export default defineComponent({
       display: flex;
       align-content: center;
       justify-content: space-evenly;
+      li {
+        i {
+          font-size: 0.2rem;
+        }
+        a,
+        span {
+          font-size: 0.26rem !important;
+        }
+      }
     }
   }
 }
