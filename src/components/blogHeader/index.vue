@@ -347,7 +347,7 @@ export default defineComponent({
     .right {
       height: 100%;
       margin: 0;
-      // overflow: hidden;
+      overflow: hidden;
       display: flex;
       .blogMusicDome {
         width: 3rem;

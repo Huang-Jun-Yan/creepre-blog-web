@@ -8,7 +8,7 @@
       <i @click="onHideAside" class="iconfont icon-caidan"></i>
     </div>
     <!-- 页头 -->
-    <blogHeaders></blogHeaders>
+    <blogHeaders />
     <div class="el-main">
       <div class="mainBox">
         <div ref="isHideAside" class="leftAside clearfix">
@@ -88,6 +88,7 @@
         </div>
       </div>
     </div>
+    <blogFooters />
   </div>
 </template>
 
@@ -98,6 +99,7 @@ import blogDusk from "@/components/dusk";
 import clearSky from "@/components/clearSky";
 import highlight from "@/components/highlight";
 import otherMenu from "@/components/other/otherMenu";
+import blogFooters from "@/components/blogFooter";
 import { useRouter } from "vue-router";
 import {
   defineComponent,
@@ -127,6 +129,7 @@ export default defineComponent({
     clearSky,
     highlight,
     otherMenu,
+    blogFooters
   },
   setup() {
     // 路由实例

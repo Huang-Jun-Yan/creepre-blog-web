@@ -56,44 +56,55 @@ const routes = [{
                 },
             },
             {
-                path: "/creepreGame/blogFeiJi",
-                name: 'blogFeiJi',
+                path: "/creepreBlog/blogGame",
+                name: 'blogGame',
                 component: () =>
-                    import ( /* webpackChunkName: "blogSpare" */ '@/components/blogGame/feiji.vue'),
+                    import ( /* webpackChunkName: "blogDemo" */ '@/components/blogGame'),
                 meta: {
-                    routerName: "飞机大战",
-                    requireAuth: false
+                    routerName: "游戏",
+                    requireAuth: false,
                 },
-            },
-            {
-                path: "/creepreGame/blogTanChiShe",
-                name: 'blogTanChiShe',
-                component: () =>
-                    import ( /* webpackChunkName: "blogSpare" */ '@/components/blogGame/tanchishe.vue'),
-                meta: {
-                    routerName: "贪吃蛇",
-                    requireAuth: false
-                },
-            },
-            {
-                path: "/creepreGame/XiaoNiao",
-                name: 'blogXiaoNiao',
-                component: () =>
-                    import ( /* webpackChunkName: "blogSpare" */ '@/components/blogGame/xiaoniao.vue'),
-                meta: {
-                    routerName: "飞翔小鸟",
-                    requireAuth: false
-                },
-            },
-            {
-                path: "/creepreGame/FangKuai",
-                name: 'blogFangKuai',
-                component: () =>
-                    import ( /* webpackChunkName: "blogSpare" */ '@/components/blogGame/fangkuai.vue'),
-                meta: {
-                    routerName: "别踩白块",
-                    requireAuth: false
-                },
+                children: [{
+                        path: "/game/blogFeiJi",
+                        name: 'blogFeiJi',
+                        component: () =>
+                            import ( /* webpackChunkName: "blogSpare" */ '@/components/blogGame/gameComponents/feiji.vue'),
+                        meta: {
+                            routerName: "飞机大战",
+                            requireAuth: false
+                        },
+                    },
+                    {
+                        path: "/game/blogTanChiShe",
+                        name: 'blogTanChiShe',
+                        component: () =>
+                            import ( /* webpackChunkName: "blogSpare" */ '@/components/blogGame/gameComponents/tanchishe.vue'),
+                        meta: {
+                            routerName: "贪吃蛇",
+                            requireAuth: false
+                        },
+                    },
+                    {
+                        path: "/game/XiaoNiao",
+                        name: 'blogXiaoNiao',
+                        component: () =>
+                            import ( /* webpackChunkName: "blogSpare" */ '@/components/blogGame/gameComponents/xiaoniao.vue'),
+                        meta: {
+                            routerName: "飞翔小鸟",
+                            requireAuth: false
+                        },
+                    },
+                    {
+                        path: "/game/FangKuai",
+                        name: 'blogFangKuai',
+                        component: () =>
+                            import ( /* webpackChunkName: "blogSpare" */ '@/components/blogGame/gameComponents/fangkuai.vue'),
+                        meta: {
+                            routerName: "别踩白块",
+                            requireAuth: false
+                        },
+                    },
+                ]
             },
             {
                 path: "/creepreBlog/editInfo",

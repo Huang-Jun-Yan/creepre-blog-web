@@ -1,23 +1,22 @@
 <template>
-  <div id="blogTanChiShe">
-    tanchishe
+  <div id="blogFangKuai">
+    
   </div>
 </template>
 
 <script>
 import { defineComponent } from "vue";
 export default defineComponent({
-  name: "blogWebTanChiShe",
+  name: "blogWebFangKuai",
   components: {},
   setup() {
-
     return {};
   },
 });
 </script>
 
 <style lang="scss" scoped>
-#blogTanChiShe {
+#blogFangKuai {
   background: $my-theme-background;
   height: 100%;
 }

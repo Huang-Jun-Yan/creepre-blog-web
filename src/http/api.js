@@ -261,3 +261,18 @@ export const leaveMessage = val => post('/blogApi/message/leaveMessage', val);
  * @param {number}  reply_id --------------->回复的id
  */
 export const messageReply = val => post('/blogApi/message/messageReply', val);
+
+/* <---------------------------------------------------------------------------------------->  */
+/**
+ * @param {获取这类游戏的分数}
+ * @param {string} username
+ * @param {string} gameType tanchishe
+ */
+export const getBlogGameScore = val => get('/blogApi/Game/getBlogGameScore', val);
+/**
+ * @param {更新分数}
+ * @param {Number} gameScore
+ * @param {Number} username
+ * @param {string} gameType tanchishe
+ */
+export const addBlogGameScore = val => post('/blogApi/Game/addBlogGameScore', val);

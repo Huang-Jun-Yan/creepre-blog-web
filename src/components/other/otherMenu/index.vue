@@ -1,23 +1,23 @@
 <template>
-  <div id="menu">
-    <div id="list">
+  <div ref="home" id="menu">
+    <div ref="list" id="list">
       <img
-        @click="$router.replace('/creepreGame/blogFeiJi')"
+        @click="$router.replace('/game/blogFeiJi')"
         src=""
         class="iconfont icon-feiji"
       />
       <img
-        @click="$router.replace('/creepreGame/blogTanChiShe')"
+        @click="$router.replace('/game/blogTanChiShe')"
         class="iconfont icon-chongwushe"
         src=""
       />
       <img
-        @click="$router.replace('/creepreGame/XiaoNiao')"
+        @click="$router.replace('/game/XiaoNiao')"
         class="iconfont icon-niao"
         src=""
       />
       <img
-        @click="$router.replace('/creepreGame/FangKuai')"
+        @click="$router.replace('/game/FangKuai')"
         class="iconfont icon-lifangtilitiduomiantifangkuai2"
         src=""
       />
@@ -38,8 +38,9 @@ export default {
   },
   mounted() {
     let this_ = this;
-    let hom = document.getElementById("home");
-    let imgs = document.getElementById("list").getElementsByTagName("img");
+    let hom = this_.$refs.home;
+    let imgs = this_.$refs.list.getElementsByTagName("img");
+    
     for (var i = 0; i < imgs.length; i++) {
       imgs[i].onclick = function () {
         this.style.transition = "0.3s";
