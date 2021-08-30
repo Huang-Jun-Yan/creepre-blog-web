@@ -1,26 +1,10 @@
 <template>
   <div ref="home" id="menu">
     <div ref="list" id="list">
-      <img
-        @click="$router.replace('/game/blogFeiJi')"
-        src=""
-        class="iconfont icon-feiji"
-      />
-      <img
-        @click="$router.replace('/game/blogTanChiShe')"
-        class="iconfont icon-chongwushe"
-        src=""
-      />
-      <img
-        @click="$router.replace('/game/XiaoNiao')"
-        class="iconfont icon-niao"
-        src=""
-      />
-      <img
-        @click="$router.replace('/game/FangKuai')"
-        class="iconfont icon-lifangtilitiduomiantifangkuai2"
-        src=""
-      />
+      <img src="" class="iconfont icon-feiji" />
+      <img class="iconfont icon-chongwushe" src="" />
+      <img class="iconfont icon-niao" src="" />
+      <img class="iconfont icon-lifangtilitiduomiantifangkuai2" src="" />
     </div>
     <div class="iconfont icon-youxi" id="home"></div>
   </div>
@@ -40,13 +24,14 @@ export default {
     let this_ = this;
     let hom = this_.$refs.home;
     let imgs = this_.$refs.list.getElementsByTagName("img");
-    
+
     for (var i = 0; i < imgs.length; i++) {
       imgs[i].onclick = function () {
         this.style.transition = "0.3s";
         this.style.transform = " scale(1.5) ";
         this.style.opacity = 0;
-        this_.addEnd(this, this_.end);
+        const className = this.className.slice(9, this.className.length);
+        this_.nav(className, this_);
       };
     }
     hom.onclick = function () {
@@ -75,28 +60,26 @@ export default {
   },
 
   methods: {
-    end: () => {
-      let this_ = this;
-      this.style.transition = "0.3s";
-      this.style.transform = " scale(1) ";
-      this.style.opacity = 1;
-      this_.removeEnd(this, this_.end);
-    },
-    addEnd: (obj, fn) => {
-      obj.addEventListener("WebkitTransitionEnd", fn, false);
-      obj.addEventListener("transitionend", fn, false);
-    },
-
-    removeEnd: (obj, fn) => {
-      obj.removeEventListener("WebkitTranstionEnd", fn, false);
-      obj.removeEventListener("transitonend", fn, false);
-    },
-
     toLT: (iR, iDeg) => {
       return {
         l: Math.round(Math.sin((iDeg / 180) * Math.PI) * iR),
         t: Math.round(Math.cos((iDeg / 180) * Math.PI) * iR),
       };
+    },
+    nav: (className, this_) => {
+      if (className === "icon-chongwushe") {
+        // 贪吃蛇
+        this_.$router.replace("/game/blogTanChiShe");
+      } else if (className === "icon-feiji") {
+        // 飞机大战
+        this_.$router.replace("/game/blogFeiJi");
+      } else if (className === "icon-lifangtilitiduomiantifangkuai2") {
+        // 别踩白块
+        this_.$router.replace("/game/FangKuai");
+      } else if (className === "icon-niao") {
+        // 飞翔小鸟
+        this_.$router.replace("/game/XiaoNiao");
+      }
     },
   },
 };

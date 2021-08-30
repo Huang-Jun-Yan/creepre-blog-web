@@ -2,53 +2,11 @@
   <div id="blogHome">
     <el-container style="height: 100%">
       <el-main style="padding: 0.1rem">
-        <!-- 轮播图 -->
-        <div class="blog_banner">
-          <el-row class="left">
-            <el-carousel
-              direction="vertical"
-              :autoplay="true"
-              :interval="3000"
-              height="2rem"
-              style="width: 100%"
-            >
-              <el-carousel-item
-                v-for="(imgSrcItem, imgSrcIndex) in PhotoList"
-                :key="imgSrcIndex"
-              >
-                <el-image fit="fill" :src="imgSrcItem" class="blog_banner_img">
-                  <template #error>
-                    <div class="image-slot">
-                      <i class="el-icon-picture-outline"></i>
-                    </div>
-                  </template>
-                </el-image>
-              </el-carousel-item>
-            </el-carousel>
-          </el-row>
-          <div class="right">
-            <p class="jokeTiele">每日娱乐</p>
-            <p class="jokeContent">
-              <el-empty
-                :image-size="50"
-                v-if="!joke.text"
-                description="今日没有笑话哦"
-              ></el-empty>
-              <el-scrollbar v-if="joke.text" height="1.4rem">
-                <span>{{ joke.text }}</span>
-              </el-scrollbar>
-            </p>
-            <div class="jokeSwitch">
-              <span @click="previousJoke">上一个</span>
-              <span @click="nextJoke">下一个</span>
-            </div>
-          </div>
-        </div>
         <!-- 最新文章 -->
         <div class="blog_newArticle">
           <el-row class="newArticle_left">
             <h2 class="blog_newArticle_title">
-              <i class="iconfont icon-xin"></i>最新文章
+              <i class="iconfont icon-xin"></i>全部文章
             </h2>
             <ul class="blog_articleBody">
               <el-empty
@@ -146,6 +104,23 @@
             </ul>
           </el-row>
           <div class="right">
+            <div class="rightJoke">
+              <p class="jokeTiele">每日娱乐</p>
+              <p class="jokeContent">
+                <el-empty
+                  :image-size="50"
+                  v-if="!joke.text"
+                  description="今日没有笑话哦"
+                ></el-empty>
+                <el-scrollbar v-if="joke.text" height="1.4rem">
+                  <span>{{ joke.text }}</span>
+                </el-scrollbar>
+              </p>
+              <div class="jokeSwitch">
+                <span @click="previousJoke">上一个</span>
+                <span @click="nextJoke">下一个</span>
+              </div>
+            </div>
             <div class="blogInfo">
               <h3 class="title">博客信息</h3>
               <ul>
@@ -188,7 +163,7 @@
 
 <script>
 import callMe from "@/components/call_me";
-import { defineComponent, reactive, onMounted, toRefs, watch } from "vue";
+import { defineComponent, reactive, onMounted, toRefs, watch, ref } from "vue";
 import axios from "axios";
 import {
   getPhotos,
@@ -213,6 +188,7 @@ export default defineComponent({
     // 路由实例
     const router = useRouter();
     // 获取最新的相册展示在轮播图
+    const imageContainer = ref(null);
     // 相册参数
     const BlogPhotosList = reactive({
       // 页数
@@ -276,25 +252,19 @@ export default defineComponent({
     };
     // 获取相册
     const getBlogPhotos = async (page) => {
-      await getPhotos({
-        page: page,
-        pageSize: BlogPhotosList.PhotosPageSize,
-      })
-        .then((res) => {
-          if (res.data.code == 200) {
-            const { data } = res.data;
-            data.data.map((item) => {
-              item.imgsrc = JSON.parse(item.imgsrc).splice(
-                6,
-                JSON.parse(item.imgsrc).length - 6
-              );
-            });
-            BlogPhotosList.PhotoList = data.data[0].imgsrc;
-          }
-        })
-        .catch((err) => {
-          console.log(err);
+      try {
+        const res = await getPhotos({
+          page: page,
+          pageSize: BlogPhotosList.PhotosPageSize,
         });
+        if (res.data.code == 200) {
+          const { data } = res.data.data;
+          const imgSrc = JSON.parse(data.imgsrc);
+          BlogPhotosList.PhotoList = imgSrc;
+        }
+      } catch (err) {
+        console.log(err);
+      }
     };
     // 获取笑话
     const getJokeRes = async (page) => {
@@ -392,7 +362,7 @@ export default defineComponent({
       }
     );
     // 挂载阶段
-    onMounted(() => {
+    onMounted(async () => {
       // 博客信息
       blogInfo();
       // 获取笑话
@@ -414,6 +384,7 @@ export default defineComponent({
       onUserLike,
       router,
       handleChange,
+      imageContainer,
     };
   },
 });
@@ -423,57 +394,8 @@ export default defineComponent({
 #blogHome {
   height: 100%;
   background: $my-theme-background;
-  .blog_banner {
-    width: 100%;
-    height: 2rem;
-    margin-bottom: 0.05rem;
-    .left {
-      height: 100%;
-      width: 6rem;
-      float: left;
-      margin-right: 0.1rem;
-    }
-    .right {
-      overflow: hidden;
-      height: 100%;
-      box-shadow: $my-theme-box-shadow;
-      user-select: none;
-      .jokeTiele {
-        text-align: center;
-        width: 100%;
-        height: 0.3rem;
-        line-height: 0.3rem;
-        letter-spacing: 0.01rem;
-        font-size: 0.16rem;
-        font-weight: bold;
-      }
-      .jokeContent {
-        min-height: 1.4rem;
-        padding: 0 0.2rem;
-        line-height: 0.17rem;
-      }
-      .jokeSwitch {
-        height: 0.25rem;
-        width: 100%;
-        display: flex;
-        justify-content: space-evenly;
-        align-items: center;
-        &:hover span {
-          cursor: pointer;
-        }
-        span:active {
-          transform: scale(1.1);
-          user-select: none;
-        }
-      }
-    }
-    .blog_banner_img {
-      width: 100%;
-      height: 100%;
-    }
-  }
   .blog_newArticle {
-    height: 4.28rem;
+    height: 100%;
     .newArticle_left {
       height: 100%;
       width: 7.5rem;
@@ -501,7 +423,7 @@ export default defineComponent({
       }
       .blog_articleBody {
         width: 100%;
-        height: 3.9rem;
+        height: 100%;
         .article_item {
           height: 1.5rem;
           padding: 0.05rem 0.05rem;
@@ -624,12 +546,45 @@ export default defineComponent({
       }
     }
     .right {
-      height: 4.24rem;
+      height: 100%;
       overflow: hidden;
       padding: 0.05rem;
       border-radius: 0.05rem;
       box-shadow: $my-theme-box-shadow;
       user-select: none;
+      .rightJoke {
+        height: 2rem;
+        user-select: none;
+        margin-bottom: .05rem;
+        .jokeTiele {
+          text-align: center;
+          width: 100%;
+          height: 0.3rem;
+          line-height: 0.3rem;
+          letter-spacing: 0.01rem;
+          font-size: 0.16rem;
+          font-weight: bold;
+        }
+        .jokeContent {
+          min-height: 1.4rem;
+          padding: 0 0.2rem;
+          line-height: 0.17rem;
+        }
+        .jokeSwitch {
+          height: 0.25rem;
+          width: 100%;
+          display: flex;
+          justify-content: space-evenly;
+          align-items: center;
+          &:hover span {
+            cursor: pointer;
+          }
+          span:active {
+            transform: scale(1.1);
+            user-select: none;
+          }
+        }
+      }
       .blogInfo {
         .title {
           border-bottom: 0.02rem solid $my-theme-border;
@@ -662,36 +617,28 @@ export default defineComponent({
   }
 }
 @media screen and (max-width: 640px) {
-  .blog_banner {
-    .left{
-      width: 7rem !important;
-    }
-    .right {
-      display: none;
-    }
-  }
-  .blog_newArticle{
-    .newArticle_left{
-      .blog_newArticle_title{
-        height: .5rem !important;
+  .blog_newArticle {
+    .newArticle_left {
+      .blog_newArticle_title {
+        height: 0.5rem !important;
         line-height: 0.5rem !important;
-        i{
+        i {
           left: 61% !important;
         }
       }
       .blog_articleBody {
-        .article_item{
+        .article_item {
           height: 1.8rem !important;
           .articleCon {
             height: 100% !important;
           }
         }
-         .pagination {
-           margin-top: .2rem !important;
-         }
+        .pagination {
+          margin-top: 0.2rem !important;
+        }
       }
     }
-    .right{
+    .right {
       display: none;
     }
   }

@@ -35,7 +35,7 @@
           <span>@qq.com</span>
         </div>
         <div class="sendCode">
-          <button :disabled="blogUserInfo.isDis" @click="sendEmailCode">
+          <button :disabled="blogUserInfo.isDis" @click.prevent="sendEmailCode">
             {{ blogUserInfo.btnCon }}
           </button>
         </div>
@@ -145,7 +145,7 @@ export default defineComponent({
               const { code } = res.data;
               if (code == 200) {
                 setStorage("blogUserToken", { userToken: res.data.token });
-                ElMessage.success("注册成功，去首页登录吧");
+                ElMessage.success("注册成功，去登录吧");
                 setTimeout(() => {
                   router.replace(`/users/admin/adminLogin`);
                 }, 1000);

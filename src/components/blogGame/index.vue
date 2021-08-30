@@ -6,7 +6,7 @@
     <div class="gameRight">
       <ul class="gameRightBody">
         <h2 class="title">{{ gameTitle }}</h2>
-        <li class="bodyItem" v-for="(item, index) in scoreArr" :key="index">
+        <li class="bodyItem" v-for="(item, index) in scoreArr[0]" :key="index">
           <span>{{ item.username }}</span>
           <span>
             <i>最新时间:</i>
@@ -26,6 +26,7 @@ import { getStorage } from "@/util/Storage";
 import { ElMessage } from "element-plus";
 import { useRoute } from "vue-router";
 import { getDate1 } from "@/util/date";
+import { _Sort } from "@/util/_Sort";
 export default defineComponent({
   name: "blogWebGame",
   components: {},
@@ -48,14 +49,15 @@ export default defineComponent({
             gameType: getScoreObj.gameType,
           });
           if (res.data.code == 200) {
-            if (res.data.data.length == 1) {
-              getScoreObj.scoreArr.push(res.data.data);
-            } else {
-              getScoreObj.scoreArr = res.data.data;
-            }
+            const newArr = _Sort(res.data.data);
+            getScoreObj.scoreArr.push(newArr);
           }
         } else if (route.path === "/game/XiaoNiao") {
           getScoreObj.gameTitle = "飞翔的小鸟分数";
+        } else if (route.path === "/game/FangKuai") {
+          getScoreObj.gameTitle = "别踩白块分数";
+        } else if (route.path === "/game/blogFeiJi") {
+          getScoreObj.gameTitle = "飞机大战分数";
         }
       }
     };
@@ -103,7 +105,7 @@ export default defineComponent({
         span:nth-child(1) {
           font-size: 0.16rem;
           font-weight: bold;
-          width: .8rem;
+          width: 0.8rem;
           text-align: left;
         }
         span:nth-child(2) {
@@ -112,7 +114,7 @@ export default defineComponent({
         }
         span:nth-child(3) {
           font-size: 0.16rem;
-           width: .5rem;
+          width: 0.5rem;
           text-align: right;
         }
       }

@@ -5,7 +5,7 @@ module.exports = {
         open: true,
         proxy: {
             '/blogApi': {
-                target: 'http://localhost:3000', // http://localhost:3000 --- http://121.43.188.162:3300/
+                target: 'http://47.108.78.183:3400/', // http://localhost:3000 --- http://47.108.78.183:3400/
                 changeOrigin: true,
                 pathRewrite: {
                     '^/blogApi': ''
